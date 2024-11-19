@@ -1,0 +1,16 @@
+.workspace {
+  .pages-list,
+  .pages-wrapper,
+  .pages-tabs {
+    scrollbar-color: rgb(218, 218, 218) rgb(39 39 42 / var(--tw-bg-opacity));
+    scrollbar-width: thin;
+  }
+
+  .pane-content-wrapper {
+    display: none;
+
+    &.active {
+      display: block;
+    }
+  }
+}
