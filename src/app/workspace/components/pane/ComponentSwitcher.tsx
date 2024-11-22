@@ -1,4 +1,5 @@
 import dynamic from 'next/dynamic'
+import { memo } from 'react';
 import { Selection } from 'monaco-editor';
 // import { AiEnhancements } from "../AiEnhancements/AiEnhancements";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes } from "@/types/types";
@@ -117,4 +118,4 @@ const ComponentSwitcher = ({
   }
 };
 
-export default ComponentSwitcher;
+export default memo(ComponentSwitcher);

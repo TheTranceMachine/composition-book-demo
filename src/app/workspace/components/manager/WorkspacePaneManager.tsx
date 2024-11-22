@@ -17,7 +17,7 @@ const WorkspacePaneManager = ({ handlePaneComponentChange }: WorkspacePaneManage
   };
 
   return page === 1 ? (
-    <NavigationMenu orientation="vertical">
+    <NavigationMenu orientation="vertical" className="m-3 rounded-md border-2 border-[#151515] bg-neutral-800">
       <NavigationMenuList>
         <Items onClick={(val) => paneComponentSelection(val)} />
       </NavigationMenuList>

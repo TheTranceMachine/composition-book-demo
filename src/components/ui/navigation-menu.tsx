@@ -16,11 +16,15 @@ const NavigationMenuContent = forwardRef<
     className={className}
     {...props}
   />
-))
+)
+);
+
 NavigationMenuContent.displayName = NavigationMenuPrimitive.Content.displayName
 
 const NavigationMenuList = NavigationMenuPrimitive.List
 
 const NavigationMenuItem = NavigationMenuPrimitive.Item
 
-export { NavigationMenu, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuList, NavigationMenuItem }
+const NavigationMenuLink = NavigationMenuPrimitive.Link
+
+export { NavigationMenu, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuList, NavigationMenuItem, NavigationMenuLink }
