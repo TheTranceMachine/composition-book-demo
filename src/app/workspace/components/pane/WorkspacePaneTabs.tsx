@@ -1,5 +1,3 @@
-'use client'
-
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { VscClose } from "react-icons/vsc";
 import { TabTypes } from "@/types/types";
@@ -26,7 +24,7 @@ const WorkspacePaneTabs = ({
   <ReactSortable
     group="tabs"
     list={JSON.parse(JSON.stringify(tabs))} // https://github.com/SortableJS/react-sortablejs/issues/149
-    setList={(tabs) => sortTabs({ tabs: tabs as TabTypes[], paneId })}
+    setList={(updatedTabs) => sortTabs({ tabs: JSON.parse(JSON.stringify(updatedTabs)) as TabTypes[], paneId })}
     onChoose={() => setPaneActive(paneId)}
     onEnd={(val) => setActiveTabOnMove(val)}
     className="pages-tabs flex flex-nowrap gap-0.5 w-full h-8 bg-black overflow-x-auto overflow-y-hidden"

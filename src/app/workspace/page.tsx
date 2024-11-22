@@ -1,5 +1,6 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { Suspense, lazy, useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { PanelGroup } from "react-resizable-panels";
@@ -28,8 +29,11 @@ import {
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
 import { addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType } from "@/types/types";
-import WorkspacePane from "./components/pane/WorkspacePane";
 import "./Workspace.scss";
+
+const WorkspacePane = dynamic(() => import('./components/pane/WorkspacePane'), {
+  ssr: false,
+})
 
 const NewCharacterModal = lazy(() => import("./components/modals/NewCharacterModal"));
 const NewStorySettingModal = lazy(() => import("./components/modals/NewStorySettingModal"));
@@ -37,7 +41,7 @@ const DeletionConfirmationModal = lazy(() => import("./components/modals/Deletio
 
 type HandlePaneComponentChangeTypes = { paneId: string; name: string; type?: string; tabId: string; component: string; };
 
-export default function Workspace() {
+export default function WorkspacePage() {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isLaptop = useMediaQuery("(max-width: 1024px)");

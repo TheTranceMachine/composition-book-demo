@@ -1,5 +1,3 @@
-'use client'
-
 import dynamic from 'next/dynamic'
 import { Selection } from 'monaco-editor';
 // import { AiEnhancements } from "../AiEnhancements/AiEnhancements";
@@ -10,6 +8,7 @@ import StorySettingsPane from "../storySettings/StorySettings";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
 
+// https://www.npmjs.com/package/@monaco-editor/react#for-nextjs-users
 const MonacoEditor = dynamic(() => import('../editor/Editor'), {
   ssr: false,
 })
@@ -53,6 +52,7 @@ const ComponentSwitcher = ({
   handleDeletionRequest,
   handlePaneComponentChange,
 }: ComponentSwitcherPropTypes) => {
+  console.log('ComponentSwitcher', component);
   switch (component) {
     case "Pane Manager":
       return <WorkspacePaneManager handlePaneComponentChange={(val) => handlePaneComponentChange(val)} />;

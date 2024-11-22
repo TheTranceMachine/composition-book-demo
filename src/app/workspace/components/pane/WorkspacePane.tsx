@@ -1,5 +1,4 @@
-'use client'
-
+import dynamic from "next/dynamic";
 import React, { memo, useRef, useState } from "react";
 import { Selection } from 'monaco-editor';
 import { ImperativePanelHandle, Panel, PanelResizeHandle } from "react-resizable-panels";
@@ -7,7 +6,11 @@ import { SortableEvent } from "react-sortablejs";
 import { VscSplitHorizontal } from "react-icons/vsc";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes, TabTypes } from "@/types/types";
 import ComponentSwitcher from "./ComponentSwitcher";
-import WorkspacePaneTabs from "./WorkspacePaneTabs";
+// import WorkspacePaneTabs from "./WorkspacePaneTabs";
+
+const WorkspacePaneTabs = dynamic(() => import('./WorkspacePaneTabs'), {
+  ssr: false,
+})
 
 type SortTabsTypes = {
   tabs: TabTypes[];

@@ -1,5 +1,3 @@
-'use client'
-
 import CustomDialog from "@/components/Modal/Modal";
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogFooter, DialogHeader } from "@/components/ui/dialog";
