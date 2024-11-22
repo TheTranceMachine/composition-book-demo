@@ -1,4 +1,4 @@
-import { Selection } from "monaco-editor";
+import { Selection } from 'monaco-editor';
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import { EditorTypes } from '@/types/types';

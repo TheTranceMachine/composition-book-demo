@@ -23,8 +23,8 @@ export default function FileList({ fileList, level, setSelectedFile }: FileListP
   return (
     <ReactSortable
       tag="ul"
-      list={files}
-      setList={(files) => setFiles(files)}
+      list={JSON.parse(JSON.stringify(files))} // https://github.com/SortableJS/react-sortablejs/issues/149
+      setList={(files) => setFiles(files as FileDataType[])}
       className="file-list"
       group="files"
       onStart={(val) => val.item.classList.add("selected")}

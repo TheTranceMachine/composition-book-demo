@@ -1,11 +1,23 @@
-const useEditorEnhanceFunctions = ({
+import { EditorAction, MonacoEditorCurrentSelectionTypes } from "@/types/types";
+import { editor } from 'monaco-editor';
+
+type EnhanceEditorFunctionsTypes = {
+  editor: editor.IStandaloneCodeEditor | undefined;
+  editorActions: EditorAction[];
+  newCharacter: (currentSelection: string) => void;
+  newSetting: (currentSelection: string) => void;
+  changeEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
+  setEnhancementPaneOpen: () => void;
+};
+
+const enhanceEditorFunctions = ({
   editor,
   editorActions,
   newCharacter,
   newSetting,
   changeEditorCurrentSelection,
   setEnhancementPaneOpen,
-}) => {
+}: EnhanceEditorFunctionsTypes) => {
   if (!editor) return;
   editorActions.map((action) => {
     editor.addAction({
@@ -42,4 +54,4 @@ const useEditorEnhanceFunctions = ({
   return editor;
 };
 
-export { useEditorEnhanceFunctions };
+export { enhanceEditorFunctions };

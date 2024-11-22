@@ -1,9 +1,10 @@
-import { memo, useMemo, useState } from "react";
-import { redirect } from 'next/navigation';
+"use client";
+
+import { memo, useState } from "react";
 import Editor from "@monaco-editor/react";
-import * as monaco from "monaco-editor";
+import { editor, Range } from 'monaco-editor';
 import { toast } from "sonner";
-import { useEditorEnhanceFunctions } from "@hooks/useEditorEnhanceFunctions";
+import { enhanceEditorFunctions } from "./enhanceEditorFunctions";
 import { CharacterTypes, MonacoEditorCurrentSelectionTypes, StorySettingTypes } from "@/types/types";
 import { useEditorDecorations } from "@hooks/useEditorDecorations";
 import { useEditorEnhanceText } from "@hooks/useEditorEnhanceText";
@@ -14,14 +15,14 @@ import "./Editor.scss";
 export type MonacoEditorTypes = {
   changeEditorCurrentSelection: (selection: MonacoEditorCurrentSelectionTypes) => void;
   editorEnhancedSelection: string;
-  editorSelectionRange: monaco.Range;
+  editorSelectionRange: Range;
   characters: CharacterTypes[];
   storySettings: StorySettingTypes[];
   newCharacter: (name: string) => void;
   newSetting: (title: string) => void;
   setEnhancementPaneOpen: () => void;
   handleEditorChange: (value: string | undefined) => void;
-  editorValue: string
+  editorValue: string | undefined;
 };
 
 const MonacoEditor = ({
@@ -36,13 +37,13 @@ const MonacoEditor = ({
   handleEditorChange,
   editorValue,
 }: MonacoEditorTypes) => {
-  const [editorInstance, setEditorInstance] = useState<monaco.editor.IStandaloneCodeEditor | undefined>(undefined);
+  const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor | undefined>(undefined);
 
   useEditorPopup({ editorInstance, characters, storySettings });
 
   // Decorate the editor with characters and story settigns
   // TODO: fix bug when character name is the same as story setting name
-  useMemo(() => useEditorDecorations({ editorInstance, characters, storySettings }), [characters, storySettings]);
+  useEditorDecorations({ editorInstance, characters, storySettings });
 
   // TODO: test if this works - it's about enhancing the text when changes appear
   const enhancedText = useEditorEnhanceText({ editorInstance, editorEnhancedSelection, editorSelectionRange });
@@ -50,8 +51,8 @@ const MonacoEditor = ({
     toast.success("Your text has been enhanced!");
   }
 
-  const handleEditorDidMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
-    const editorConfiguration = useEditorEnhanceFunctions({
+  const handleEditorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+    const editorConfiguration = enhanceEditorFunctions({
       editor,
       editorActions,
       newCharacter,

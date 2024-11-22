@@ -1,9 +1,9 @@
-import * as monaco from "monaco-editor";
+import { editor } from 'monaco-editor';
 import { CharacterTypes, StorySettingTypes } from "@/types/types";
 import { findMatchesAndDecorate } from "@/utils/utils";
 
 type useEditorDecorationsTypes = {
-  editorInstance: monaco.editor.IStandaloneCodeEditor | null;
+  editorInstance: editor.IStandaloneCodeEditor | undefined;
   characters: CharacterTypes[];
   storySettings: StorySettingTypes[];
 };

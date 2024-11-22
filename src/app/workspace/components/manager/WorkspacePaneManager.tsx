@@ -1,9 +1,8 @@
 import { useState } from "react";
-
-import ListGroup from "react-bootstrap/ListGroup";
-import { BackButton } from "./BackButton";
-import { Items } from "./Items";
-import { Input } from "./Input";
+import BackButton from "./BackButton";
+import Items from "./Items";
+import NewFileInput from "./NewFileInput";
+import { NavigationMenu, NavigationMenuList } from "@/components/ui/navigation-menu";
 
 type WorkspacePaneManagerTypes = {
   handlePaneComponentChange: (val: { name: string; type?: string }) => void;
@@ -13,18 +12,20 @@ const WorkspacePaneManager = ({ handlePaneComponentChange }: WorkspacePaneManage
   const [input, setInput] = useState<string>("");
   const [page, setPage] = useState<number>(1);
 
-  const paneComponentSelection = (val) => {
+  const paneComponentSelection = (val: string) => {
     return val === "New File" ? setPage(2) : handlePaneComponentChange({ name: val });
   };
 
   return page === 1 ? (
-    <ListGroup className="m-3" data-bs-theme="dark">
-      <Items onClick={(val) => paneComponentSelection(val)} />
-    </ListGroup>
+    <NavigationMenu orientation="vertical">
+      <NavigationMenuList>
+        <Items onClick={(val) => paneComponentSelection(val)} />
+      </NavigationMenuList>
+    </NavigationMenu>
   ) : (
     <div className="flex flex-col m-3 gap-3">
       <BackButton onClick={() => setPage(1)} />
-      <Input
+      <NewFileInput
         onClick={() => handlePaneComponentChange({ name: input, type: "file" })}
         onChange={(e) => setInput(e.target.value)}
       />

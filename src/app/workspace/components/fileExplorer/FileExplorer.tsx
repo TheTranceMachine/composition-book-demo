@@ -1,11 +1,12 @@
-import { useState, useContext, useRef, memo, useEffect } from "react";
+import { useState, useRef, memo } from "react";
 import { useDispatch } from "react-redux";
-import { VscClose, VscDiffAdded } from "react-icons/vsc";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import { Button, ButtonGroup, Form, InputGroup, Tooltip } from "react-bootstrap";
+import { VscDiffAdded } from "react-icons/vsc";
 import { v4 as uuidv4 } from "uuid";
 import { FileDataType } from "@/types/types";
-import { addFile } from "@/reducers/fileExplorerSlice";
+import { addFile } from "@/redux/slices/fileExplorerSlice";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import FileList from "./FileList";
 import "./fileExplorer.scss";
 
@@ -28,7 +29,6 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
   const dispatch = useDispatch();
   const [expanded, setExpanded] = useState(false);
   const [type, setType] = useState("file");
-  const [showTooltip, setShowTooltip] = useState(false);
   const { children: fileChildren, name: fileName, id: fileId } = file;
 
   // If the children field is present, the item is a directory.
@@ -36,13 +36,7 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
 
   const newFileId = uuidv4();
 
-  const fileNameInputRef = useRef<HTMLInputElement>();
-
-  useEffect(() => {
-    if (showTooltip) {
-      fileNameInputRef.current?.focus();
-    }
-  }, [showTooltip]);
+  const fileNameInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileClick = () => {
     if (!isDirectory) {
@@ -57,43 +51,9 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
       if (inputVal) {
         dispatch(addFile({ id: newFileId, name: inputVal, directoryId: fileId, type }));
         setType("file");
-        setShowTooltip(false);
       }
     }
   };
-
-  const menuTooltip = (
-    <Tooltip>
-      <div className="flex gap-1">
-        <InputGroup size="sm" className="py-0.5">
-          <Form.Control
-            as="input"
-            placeholder="Title"
-            aria-label="Title"
-            onKeyDown={handleInput}
-            ref={fileNameInputRef}
-          />
-          <Button
-            variant="outline-light"
-            onClick={() => setType("file")}
-            className={`${type === "file" && "bg-white text-black"}`}
-          >
-            File
-          </Button>
-          <Button
-            variant="outline-light"
-            onClick={() => setType("dir")}
-            className={`${type === "dir" && "bg-white text-black"}`}
-          >
-            Dir
-          </Button>
-        </InputGroup>
-        <Button variant="link" size="sm" onClick={() => setShowTooltip(false)} className="p-0">
-          <VscClose />
-        </Button>
-      </div>
-    </Tooltip>
-  );
 
   return (
     <li className="file-item">
@@ -107,11 +67,32 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
           </button>
         </div>
         {isDirectory && (
-          <OverlayTrigger placement="auto" overlay={menuTooltip} show={showTooltip}>
-            <div className="flex justify-end">
-              <VscDiffAdded onClick={() => setShowTooltip(true)} />
-            </div>
-          </OverlayTrigger>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="flex justify-end">
+                <VscDiffAdded />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="flex gap-1">
+                <Input placeholder="Title" onKeyDown={handleInput} ref={fileNameInputRef} />
+                <Button
+                  variant="secondary"
+                  onClick={() => setType("file")}
+                  className={`${type === "file" && "bg-white text-black"}`}
+                >
+                  File
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => setType("dir")}
+                  className={`${type === "dir" && "bg-white text-black"}`}
+                >
+                  Dir
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
         )}
       </div>
       {fileChildren && !!fileChildren.length && expanded && (

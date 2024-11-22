@@ -1,9 +1,10 @@
-import { Selection } from "monaco-editor";
+import { Selection } from 'monaco-editor';
 
 export type FileDataType = {
   id: string;
   name: string;
-  children: FileDataType[];
+  content?: string | undefined;
+  children?: FileDataType[];
 };
 
 export type CharacterTypes = {
@@ -22,8 +23,7 @@ export type TabTypes = {
   id: string;
   name: string;
   active: boolean;
-  content: string;
-  children: FileDataType[];
+  content?: string | undefined;
 };
 
 export type PaneTypes = {
@@ -46,7 +46,7 @@ export type MovedTabs = {
 }
 
 export type MonacoEditorCurrentSelectionTypes = {
-  range: Selection;
+  range: Selection | null;
   currentSelection: string;
 };
 
@@ -55,3 +55,11 @@ export type DeletionItemType = {
   title: string;
   type: string;
 };
+
+export type EditorAction = {
+  id: string;
+  label: string;
+  keybindings: number[];
+  contextMenuGroupId: string;
+  contextMenuOrder: number;
+}

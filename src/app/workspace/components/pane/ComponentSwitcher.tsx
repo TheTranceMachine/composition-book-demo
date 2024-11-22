@@ -1,17 +1,23 @@
-import React from "react";
-import { Selection } from "monaco-editor";
+'use client'
+
+import dynamic from 'next/dynamic'
+import { Selection } from 'monaco-editor';
 // import { AiEnhancements } from "../AiEnhancements/AiEnhancements";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes } from "@/types/types";
 import CharactersPane from "../characters/Characters";
 import StorySettingsPane from "../storySettings/StorySettings";
-import MonacoEditor from "../editor/Editor.js";
+// import MonacoEditor from "../editor/Editor";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
+
+const MonacoEditor = dynamic(() => import('../editor/Editor'), {
+  ssr: false,
+})
 
 type ComponentSwitcherPropTypes = {
   id: string;
   component: string;
-  content: string;
+  content: string | undefined;
   files: FileDataType[];
   editorSelectionRange: Selection;
   editorEnhancedSelection: string;

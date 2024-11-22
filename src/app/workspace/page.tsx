@@ -1,14 +1,17 @@
-import { Suspense, lazy, useState, useContext, useReducer, useEffect } from "react";
+'use client'
+
+import { Suspense, lazy, useState, useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { PanelGroup } from "react-resizable-panels";
+import { SortableEvent } from "react-sortablejs";
 import { useMediaQuery } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
-import { toast } from "sonner";
-import { setStorySetting, removeStorySetting } from "@reducers/storySettingsSlice";
+import { toast, Toaster } from "sonner";
+import { setStorySetting, removeStorySetting } from "@/redux/slices/storySettingsSlice";
 import {
   setCharacter,
   removeCharacter,
-} from "@reducers/charactersSlice";
+} from "@/redux/slices/charactersSlice";
 import {
   addPane,
   removePane,
@@ -21,13 +24,12 @@ import {
   updateTab,
   updateTabContent,
   sortTabs,
-} from "@reducers/panesSlice";
-import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@reducers/editorSlice";
-import { addFile } from "@reducers/fileExplorerSlice";
-import WorkspacePane from "./components/pane/WorkspacePane";
+} from "@/redux/slices/panesSlice";
+import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
+import { addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType } from "@/types/types";
+import WorkspacePane from "./components/pane/WorkspacePane";
 import "./Workspace.scss";
-import { SortableEvent } from "react-sortablejs";
 
 const NewCharacterModal = lazy(() => import("./components/modals/NewCharacterModal"));
 const NewStorySettingModal = lazy(() => import("./components/modals/NewStorySettingModal"));
@@ -35,7 +37,7 @@ const DeletionConfirmationModal = lazy(() => import("./components/modals/Deletio
 
 type HandlePaneComponentChangeTypes = { paneId: string; name: string; type?: string; tabId: string; component: string; };
 
-const Workspace = () => {
+export default function Workspace() {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isLaptop = useMediaQuery("(max-width: 1024px)");
@@ -61,7 +63,9 @@ const Workspace = () => {
   });
 
   const handleEditorCurrentSelection = ({ range, currentSelection }: MonacoEditorCurrentSelectionTypes) => {
-    dispatch(setEditorSelectionRange(range));
+    if (range) {
+      dispatch(setEditorSelectionRange(range));
+    }
     dispatch(setEditorCurrentSelection(currentSelection));
     dispatch(setEditorEnhancedSelection(""));
   };
@@ -73,9 +77,9 @@ const Workspace = () => {
     dispatch(addPane({ id: newPaneId, order: panes.length + 1, active: true, tabs: [tab] }));
   }
 
-  const handleEditorEnhancedSelection = (enhancedText: string) => {
-    dispatch(setEditorEnhancedSelection(enhancedText));
-  };
+  // const handleEditorEnhancedSelection = (enhancedText: string) => {
+  //   dispatch(setEditorEnhancedSelection(enhancedText));
+  // };
 
   const handleNewCharacter = (name: string) => {
     setNewCharacterName(name);
@@ -122,7 +126,7 @@ const Workspace = () => {
 
     dispatch(shiftPanes(pane.order));
     dispatch(addPane({ id: newPaneId, order: pane.order + 1, active: true, tabs: [tab] }));
-    dispatch(setPaneOrder(panes));
+    dispatch(setPaneOrder());
     dispatch(setPaneActive(newPaneId));
   };
 
@@ -191,10 +195,10 @@ const Workspace = () => {
     if (movedTabs.to.paneId !== '' && movedTabs.to.tabId !== '') {
       dispatch(setTabActive({ paneId: movedTabs.to.paneId, tabId: movedTabs.to.tabId }));
     }
-    if (movedTabs.from.paneId !== '' && movedTabs.from.tabId !== '') {
+    if (movedTabs.from.paneId !== '' && movedTabs.from.tabId && movedTabs.from.tabId !== '') {
       dispatch(setTabActive({ paneId: movedTabs.from.paneId, tabId: movedTabs.from.tabId }));
     }
-  }, [movedTabs]);
+  }, [movedTabs, dispatch]);
 
   // Pane cleanup
   useEffect(() => {
@@ -205,7 +209,7 @@ const Workspace = () => {
         }
       }
     }
-  }, [panes]);
+  }, [panes, dispatch]);
 
   return (
     <div className="w-full h-full workspace">
@@ -265,8 +269,7 @@ const Workspace = () => {
           type={deletionItem.type}
         />
       </Suspense>
+      <Toaster visibleToasts={4} closeButton />
     </div>
   );
 };
-
-export { Workspace };

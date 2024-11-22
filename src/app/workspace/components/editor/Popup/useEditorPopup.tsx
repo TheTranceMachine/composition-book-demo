@@ -1,11 +1,11 @@
 import { useRef } from "react";
-import * as monaco from "monaco-editor";
+import { editor, Position } from 'monaco-editor';
 import { renderToString } from "react-dom/server";
 import Popup from "./Popup";
 import { CharacterTypes, StorySettingTypes } from "@/types/types";
 
 type showPopupTypes = {
-  position: monaco.Position
+  position: Position
   title: string
   description: string
   type: string
@@ -13,7 +13,7 @@ type showPopupTypes = {
 };
 
 type UseEditorPopupTypes = {
-  editorInstance: monaco.editor.IStandaloneCodeEditor | undefined;
+  editorInstance: editor.IStandaloneCodeEditor | undefined;
   characters: Array<CharacterTypes>;
   storySettings: Array<StorySettingTypes>;
 };
@@ -38,7 +38,7 @@ const useEditorPopup = ({ editorInstance, characters, storySettings }: UseEditor
       getPosition: function () {
         return {
           position: position,
-          preference: [monaco.editor.ContentWidgetPositionPreference.BELOW],
+          preference: [editor.ContentWidgetPositionPreference.BELOW],
         };
       },
     };
@@ -50,7 +50,7 @@ const useEditorPopup = ({ editorInstance, characters, storySettings }: UseEditor
 
   const hidePopup = () => {
     if (currentWidgetIdRef.current) {
-      const contentWidget: monaco.editor.IContentWidget = {
+      const contentWidget: editor.IContentWidget = {
         getId: () => currentWidgetIdRef.current,
         getDomNode: () => document.createElement("div"),
         getPosition: () => null,
@@ -62,10 +62,10 @@ const useEditorPopup = ({ editorInstance, characters, storySettings }: UseEditor
 
   // Show popup when hovering over character or story setting names
 
-  return editorInstance.onMouseMove((event: monaco.editor.IEditorMouseEvent) => {
+  return editorInstance.onMouseMove((event: editor.IEditorMouseEvent) => {
     if (!characters.length && !storySettings.length) return;
-    const target = event.target.element;
-    const position = event.target.position;
+    const target = event.target;
+    const position = target.position;
     if (!position) {
       hidePopup();
       return;

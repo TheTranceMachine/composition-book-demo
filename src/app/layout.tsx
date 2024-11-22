@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { store } from '../store';
-import { Provider } from 'react-redux'
 import localFont from "next/font/local";
-import { Toaster } from "@/components/Toaster/Toaster";
+import ReduxProvider from "@/redux/provider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -27,15 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <Provider store={store}>
-      <html lang="en">
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-          {children}
-        </body>
-      </html>
-      <Toaster visibleToasts={4} closeButton />
-    </Provider>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ReduxProvider>{children}</ReduxProvider>
+      </body>
+    </html>
   );
 }

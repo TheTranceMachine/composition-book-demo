@@ -13,6 +13,7 @@ const CharactersPane = ({ characters, removeCharacter, panelSize }: CharactersPa
     {characters.map(({ id, name, description }) =>
       panelSize && panelSize > 10 ? (
         <FullCard
+          key={id}
           id={id}
           title={name}
           description={description}
@@ -20,7 +21,7 @@ const CharactersPane = ({ characters, removeCharacter, panelSize }: CharactersPa
           deleteItem={() => removeCharacter({ id, name })}
         />
       ) : (
-        <CollapsedCard id={id} title={name} description={description} icon={<BsFileEarmarkPersonFill />} />
+        <CollapsedCard key={id} id={id} title={name} description={description} icon={<BsFileEarmarkPersonFill />} />
       )
     )}
   </div>

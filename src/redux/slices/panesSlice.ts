@@ -9,7 +9,7 @@ const initialState = [
     id: uuidv4(),
     order: 1,
     active: true,
-    tabs: [{ active: true, id: uuidv4(), name: "Pane Manager", children: [] }],
+    tabs: [{ active: true, id: uuidv4(), name: "Pane Manager" }],
   },
 ];
 
@@ -62,7 +62,7 @@ export const panesSlice = createSlice({
           : pane
       )
     },
-    updateTabContent: (state, action: PayloadAction<{ paneId: string, tabId: string, content: string }>) => {
+    updateTabContent: (state, action: PayloadAction<{ paneId: string, tabId: string, content: string | undefined }>) => {
       return state.map((pane) =>
         pane.id === action.payload.paneId
           ? {

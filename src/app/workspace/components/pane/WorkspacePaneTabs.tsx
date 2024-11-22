@@ -1,3 +1,5 @@
+'use client'
+
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { VscClose } from "react-icons/vsc";
 import { TabTypes } from "@/types/types";
@@ -5,7 +7,7 @@ import { TabTypes } from "@/types/types";
 type WorkspacePaneTabsTypes = {
   paneId: string;
   tabs: TabTypes[];
-  sortTabs: (val: { tabs: TabTypes[]; id: string }) => void;
+  sortTabs: (val: { tabs: TabTypes[]; paneId: string }) => void;
   setPaneActive: (val: string) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
   setTabActive: (val: string) => void;
@@ -23,8 +25,8 @@ const WorkspacePaneTabs = ({
 }: WorkspacePaneTabsTypes) => (
   <ReactSortable
     group="tabs"
-    list={tabs}
-    setList={(tabs) => sortTabs({ tabs, id: paneId })}
+    list={JSON.parse(JSON.stringify(tabs))} // https://github.com/SortableJS/react-sortablejs/issues/149
+    setList={(tabs) => sortTabs({ tabs: tabs as TabTypes[], paneId })}
     onChoose={() => setPaneActive(paneId)}
     onEnd={(val) => setActiveTabOnMove(val)}
     className="pages-tabs flex flex-nowrap gap-0.5 w-full h-8 bg-black overflow-x-auto overflow-y-hidden"

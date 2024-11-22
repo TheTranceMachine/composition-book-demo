@@ -1,11 +1,17 @@
+import { editor } from 'monaco-editor';
+import { type ClassValue, clsx } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 import { CharacterTypes, StorySettingTypes } from "@/types/types";
-import * as monaco from "monaco-editor";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const findMatchesAndDecorate = (
-  model: monaco.editor.ITextModel | null,
+  model: editor.ITextModel | null,
   matchArray: CharacterTypes[] | StorySettingTypes[],
   decorationClass: string
-) => {
+): editor.IModelDeltaDecoration[] => {
   const matches = matchArray.map((item) => {
     const searchString = 'name' in item ? item.name : item.title; // The string used to search. If it is a regular expression, set isRegex to true
     const searchOnlyEditableRange = true; // Limit the searching to only search inside the editable range of the model
@@ -26,7 +32,7 @@ export const findMatchesAndDecorate = (
   });
 
   if (matches[0] && !!matches[0].length) {
-    return matches.map((match) => {
+    const decorations = matches.map((match) => {
       if (!match) return;
       return {
         range: match[0].range,
@@ -36,6 +42,7 @@ export const findMatchesAndDecorate = (
         }
       };
     });
+    return decorations.filter((decoration) => !!decoration);
   }
   return [];
 };

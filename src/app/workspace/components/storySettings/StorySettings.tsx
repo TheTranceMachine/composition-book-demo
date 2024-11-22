@@ -13,6 +13,7 @@ const StorySettingsPane = ({ storySettings, removeStorySetting, panelSize }: Sto
     {storySettings.map(({ id, title, description }) =>
       panelSize && panelSize > 10 ? (
         <FullCard
+          key={id}
           id={id}
           title={title}
           description={description}
@@ -20,7 +21,7 @@ const StorySettingsPane = ({ storySettings, removeStorySetting, panelSize }: Sto
           deleteItem={() => removeStorySetting({ id, title })}
         />
       ) : (
-        <CollapsedCard id={id} title={title} description={description} icon={<BsImageFill />} />
+        <CollapsedCard key={id} id={id} title={title} description={description} icon={<BsImageFill />} />
       )
     )}
   </div>

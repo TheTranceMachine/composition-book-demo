@@ -1,5 +1,7 @@
+'use client'
+
 import React, { memo, useRef, useState } from "react";
-import { Selection } from "monaco-editor";
+import { Selection } from 'monaco-editor';
 import { ImperativePanelHandle, Panel, PanelResizeHandle } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
 import { VscSplitHorizontal } from "react-icons/vsc";
@@ -9,7 +11,7 @@ import WorkspacePaneTabs from "./WorkspacePaneTabs";
 
 type SortTabsTypes = {
   tabs: TabTypes[];
-  id: string;
+  paneId: string;
 };
 
 type WorkspacePaneProps = {
