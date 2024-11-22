@@ -3,12 +3,13 @@ import { BsFileEarmarkPersonFill, BsImageFill } from "react-icons/bs";
 import { VscFolder, VscFile } from "react-icons/vsc";
 import { NavigationMenu, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { FaMagic } from "react-icons/fa";
+import { PaneChoicesTypes } from "@/types/types";
 import BackButton from "./BackButton";
 import Items from "./Items";
 import NewFileInput from "./NewFileInput";
 
 // TODO: Move to global store
-const items = [{
+const items: PaneChoicesTypes[] = [{
   id: "1",
   name: "File Explorer",
   icon: <VscFolder />,

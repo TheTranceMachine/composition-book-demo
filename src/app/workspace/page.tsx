@@ -55,11 +55,11 @@ export default function WorkspacePage() {
 
   const [movedTabs, setMovedTabs] = useState<MovedTabs>({ from: { paneId: '', tabId: '' }, to: { paneId: '', tabId: '' } });
 
-  const [newCharacterName, setNewCharacterName] = useState("");
-  const [newStorySettingTitle, setNewStorySettingTitle] = useState("");
-  const [newCharacterModal, setNewCharacterModal] = useState(false);
-  const [newStorySettingModal, setNewStorySettingModal] = useState(false);
-  const [deletionConfirmationModal, setDeletionConfirmationModal] = useState(false);
+  const [newCharacterName, setNewCharacterName] = useState<string>("");
+  const [newStorySettingTitle, setNewStorySettingTitle] = useState<string>("");
+  const [newCharacterModal, setNewCharacterModal] = useState<boolean>(false);
+  const [newStorySettingModal, setNewStorySettingModal] = useState<boolean>(false);
+  const [deletionConfirmationModal, setDeletionConfirmationModal] = useState<boolean>(false);
   const [deletionItem, setDeletionItem] = useState({
     id: "",
     title: "",
