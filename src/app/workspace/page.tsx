@@ -28,7 +28,7 @@ import {
 } from "@/redux/slices/panesSlice";
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
 import { addFile } from "@/redux/slices/fileExplorerSlice";
-import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType } from "@/types/types";
+import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState } from "@/types/types";
 import "./Workspace.scss";
 
 const WorkspacePane = dynamic(() => import('./components/pane/WorkspacePane'), {
@@ -47,8 +47,8 @@ export default function WorkspacePage() {
   const isLaptop = useMediaQuery("(max-width: 1024px)");
 
   const files = useSelector((state: { fileExplorer: FileDataType[] }) => state.fileExplorer);
-  const characters = useSelector((state: { characters: CharacterTypes[] }) => state.characters);
-  const storySettings = useSelector((state: { storySettings: StorySettingTypes[] }) => state.storySettings);
+  const { characters } = useSelector((state: { characters: CharactersState }) => state.characters);
+  const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
   const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;

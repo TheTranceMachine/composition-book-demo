@@ -1,14 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { StorySettingTypes } from '@/types/types';
-
-export type StorySettingsState = {
-  selectedStorySetting: StorySettingTypes;
-  storySettings: StorySettingTypes[];
-}
+import { StorySettingsState, StorySettingTypes } from '@/types/types';
 
 const initialState: StorySettingsState = {
-  selectedStorySetting: {} as StorySettingTypes,
   storySettings: []
 }
 
@@ -22,13 +16,11 @@ export const storySettingSlice = createSlice({
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
       return {
-        selectedStorySetting: action.payload,
         storySettings: [...state.storySettings, action.payload],
       }
     },
     removeStorySetting: (state, action: PayloadAction<string>) => {
       return {
-        selectedStorySetting: {} as StorySettingTypes,
         storySettings: state.storySettings.filter((storySetting) => storySetting.id !== action.payload),
       }
     },

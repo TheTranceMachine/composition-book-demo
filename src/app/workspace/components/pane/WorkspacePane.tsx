@@ -6,7 +6,6 @@ import { SortableEvent } from "react-sortablejs";
 import { VscSplitHorizontal } from "react-icons/vsc";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes, TabTypes } from "@/types/types";
 import ComponentSwitcher from "./ComponentSwitcher";
-// import WorkspacePaneTabs from "./WorkspacePaneTabs";
 
 const WorkspacePaneTabs = dynamic(() => import('./WorkspacePaneTabs'), {
   ssr: false,

@@ -7,11 +7,19 @@ export type FileDataType = {
   children?: FileDataType[];
 };
 
+export type CharactersState = {
+  characters: CharacterTypes[];
+}
+
 export type CharacterTypes = {
   id: string;
   name: string;
   description: string;
 };
+
+export type StorySettingsState = {
+  storySettings: StorySettingTypes[];
+}
 
 export type StorySettingTypes = {
   id: string;
@@ -24,6 +32,13 @@ export type TabTypes = {
   name: string;
   active: boolean;
   content?: string | undefined;
+};
+
+export type PaneChoicesTypes = {
+  id: string;
+  name: string;
+  icon: JSX.Element;
+  description: string;
 };
 
 export type PaneTypes = {

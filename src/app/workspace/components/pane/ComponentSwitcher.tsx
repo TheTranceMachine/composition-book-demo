@@ -53,7 +53,6 @@ const ComponentSwitcher = ({
   handleDeletionRequest,
   handlePaneComponentChange,
 }: ComponentSwitcherPropTypes) => {
-  console.log('ComponentSwitcher', component);
   switch (component) {
     case "Pane Manager":
       return <WorkspacePaneManager handlePaneComponentChange={(val) => handlePaneComponentChange(val)} />;

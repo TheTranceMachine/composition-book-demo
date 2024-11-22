@@ -1,14 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { CharacterTypes } from '@/types/types';
-
-export type CharactersState = {
-  selectedCharacter: Record<string, string>;
-  characters: CharacterTypes[];
-}
+import { CharactersState, CharacterTypes } from '@/types/types';
 
 const initialState: CharactersState = {
-  selectedCharacter: {},
   characters: [],
 }
 
@@ -22,13 +16,11 @@ export const charactersSlice = createSlice({
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
       return {
-        selectedCharacter: action.payload,
         characters: [...state.characters, action.payload],
       }
     },
     removeCharacter: (state, action: PayloadAction<string>) => {
       return {
-        selectedCharacter: {},
         characters: state.characters.filter((character) => character.id !== action.payload),
       }
     },
