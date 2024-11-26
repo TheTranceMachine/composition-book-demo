@@ -58,7 +58,7 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
   return (
     <li className="file-item">
       <div
-        className={`file-item-button flex items-center justify-between text-white ${isDirectory && "file-item-button--directory"}`}
+        className={`file-item-button flex items-center justify-between text-white ${isDirectory && "file-item-button--directory"} hover:bg-gray-800`}
       >
         <div className="flex items-center gap-1 w-10/12">
           <button className="flex items-center gap-1 truncate" onClick={handleFileClick}>

@@ -134,23 +134,19 @@ export default function WorkspacePage() {
     dispatch(setPaneActive(newPaneId));
   };
 
-  const handleSelectedFile = (file: FileDataType) => {
-    if (!panes.length) {
-      dispatch(addPane({ id: uuidv4(), order: 1, active: true, tabs: [{ ...file, active: true }] }));
-    } else {
-      const tabExists = panes.map((pane) => {
-        const tab = pane.tabs.find((tab) => tab.id === file.id);
-        if (!!tab) {
-          return { pane, tab };
-        } else {
-          return null;
-        }
-      });
-      if (tabExists[0] !== null) {
-        dispatch(setTabActive({ paneId: tabExists[0].pane.id, tabId: tabExists[0].tab.id }));
+  const handleSelectedFile = ({ paneId, file }: { paneId: string; file: FileDataType; }) => {
+    const tabExists = panes.map((pane) => {
+      const tab = pane.tabs.find((tab) => tab.id === file.id);
+      if (!!tab) {
+        return { pane, tab };
       } else {
-        dispatch(addTab(file));
+        return null;
       }
+    });
+    if (tabExists[0] !== null) {
+      dispatch(setTabActive({ paneId: tabExists[0].pane.id, tabId: tabExists[0].tab.id }));
+    } else {
+      dispatch(addTab({ paneId, tab: file }));
     }
   };
 
@@ -163,9 +159,21 @@ export default function WorkspacePage() {
       } else if (activeTabIndex > 0) {
         dispatch(setTabActive({ paneId, tabId: activePane.tabs[activeTabIndex - 1].id }));
       }
-      dispatch(removeTab(tabId));
+      if (activePane.tabs.length > 1) {
+        dispatch(removeTab({ paneId, tabId }));
+      } else {
+        toast.error("Cannot remove the last tab");
+      }
     }
   };
+
+  const handleRemovePane = (paneId: string) => {
+    if (panes.length > 1) {
+      dispatch(removePane(paneId));
+    } else {
+      toast.error("Cannot remove the last pane");
+    }
+  }
 
   const handleTabContentUpdate = ({ tabId, content, paneId }: { tabId: string; content: string | undefined; paneId: string }) => {
     dispatch(updateTabContent({ paneId, tabId, content }));
@@ -204,16 +212,16 @@ export default function WorkspacePage() {
     }
   }, [movedTabs, dispatch]);
 
-  // Pane cleanup
-  useEffect(() => {
-    if (!!panes.length) {
-      for (const pane of panes) {
-        if (!pane.tabs.length) {
-          dispatch(removePane(pane.id));
-        }
-      }
-    }
-  }, [panes, dispatch]);
+  // TODO: Optional - Pane cleanup when no tabs are present
+  // useEffect(() => {
+  //   if (!!panes.length) {
+  //     for (const pane of panes) {
+  //       if (!pane.tabs.length) {
+  //         dispatch(removePane(pane.id));
+  //       }
+  //     }
+  //   }
+  // }, [panes, dispatch]);
 
   return (
     <div className="workspace w-full h-full">
@@ -232,13 +240,14 @@ export default function WorkspacePage() {
             isMobile={isMobile}
             isLaptop={isLaptop}
             setEnhancementPaneOpen={handleOpenEnhancementPane}
-            handleSelectedFile={(val) => handleSelectedFile(val)}
+            handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
             setTabContent={(val) => handleTabContentUpdate({ ...val, paneId })}
             setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
             setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
             sortTabs={(val) => dispatch(sortTabs(val))}
             removeTab={(val) => handleRemoveTab(val)}
             addPane={(val) => handleAddNewPane(val)}
+            removePane={(val) => handleRemovePane(val)}
             setPaneActive={(val) => dispatch(setPaneActive(val))}
             handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
             handleNewCharacter={(val) => handleNewCharacter(val)}

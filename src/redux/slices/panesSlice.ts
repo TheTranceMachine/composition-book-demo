@@ -9,7 +9,7 @@ const initialState = [
     id: uuidv4(),
     order: 1,
     active: true,
-    tabs: [{ active: true, id: uuidv4(), name: "Pane Manager" }],
+    tabs: [{ active: true, id: uuidv4(), name: "File Explorer" }],
   },
 ];
 
@@ -32,11 +32,11 @@ export const panesSlice = createSlice({
     setPaneActive: (state, action: PayloadAction<string>) => {
       return state.map((pane) => pane.id === action.payload ? { ...pane, active: true } : { ...pane, active: false })
     },
-    addTab: (state, action: PayloadAction<FileDataType>) => {
-      return state.map((pane) => pane.active ? { ...pane, tabs: uniqueObjectsById<FileDataType>([...pane.tabs, action.payload]) } : pane)
+    addTab: (state, action: PayloadAction<{ paneId: string; tab: FileDataType; }>) => {
+      return state.map((pane) => pane.id === action.payload.paneId ? { ...pane, tabs: uniqueObjectsById<FileDataType>([...pane.tabs, action.payload.tab]) } : pane)
     },
-    removeTab: (state, action: PayloadAction<string>) => {
-      return state.map((pane) => pane.active ? { ...pane, tabs: pane.tabs.filter((tab) => tab.id !== action.payload) } : pane)
+    removeTab: (state, action: PayloadAction<{ paneId: string, tabId: string }>) => {
+      return state.map((pane) => pane.id === action.payload.paneId ? { ...pane, tabs: pane.tabs.filter((tab) => tab.id !== action.payload.tabId) } : pane)
     },
     setTabActive: (state, action: PayloadAction<{ paneId: string, tabId: string }>) => {
       return state.map((pane) =>
