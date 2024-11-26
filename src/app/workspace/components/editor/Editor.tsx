@@ -10,7 +10,7 @@ import { useEditorDecorations } from "@hooks/useEditorDecorations";
 import { useEditorEnhanceText } from "@hooks/useEditorEnhanceText";
 import { useEditorPopup } from "./Popup/useEditorPopup";
 import editorActions from "./editor-actions";
-import "./Editor.css";
+import "./Editor.scss";
 
 export type MonacoEditorTypes = {
   changeEditorCurrentSelection: (selection: MonacoEditorCurrentSelectionTypes) => void;
