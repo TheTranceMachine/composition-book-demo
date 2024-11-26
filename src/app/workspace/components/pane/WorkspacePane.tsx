@@ -80,13 +80,13 @@ const WorkspacePane = ({
       <Panel
         id={paneId}
         minSize={isMobile || isLaptop ? 8 : 5}
-        className="bg-[#1e1e1e] h-full"
+        className="workspace-pane bg-[#15222e] h-full"
         order={order}
         ref={panelRef}
         onResize={handleResize}
       >
         <div className="flex flex-col h-full">
-          <div className="flex flex-row justify-end bg-black">
+          <div className="flex flex-row justify-end bg-black h-8">
             {!!tabs.length && (
               <WorkspacePaneTabs
                 paneId={paneId}
@@ -105,7 +105,7 @@ const WorkspacePane = ({
           </div>
           {tabs.map(({ id, content, active, name }) => (
             <div
-              className={`pane-content-wrapper ${active ? "active" : ""} ${name === "Characters" || name === "Story Settings" ? "overflow-y-auto" : ""}`}
+              className={`pane-content-wrapper relative ${active ? "active" : ""} ${name === "Characters" || name === "Story Settings" ? "overflow-y-auto" : ""}`}
               key={id}
               id={`editor-${id}`}
             >

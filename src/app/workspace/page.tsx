@@ -29,7 +29,7 @@ import {
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
 import { addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState } from "@/types/types";
-import "./Workspace.scss";
+import "./Workspace.css";
 
 const WorkspacePane = dynamic(() => import('./components/pane/WorkspacePane'), {
   ssr: false,
@@ -216,7 +216,7 @@ export default function WorkspacePage() {
   }, [panes, dispatch]);
 
   return (
-    <div className="w-full h-full workspace">
+    <div className="workspace w-full h-full">
       <PanelGroup direction="horizontal">
         {panes.map(({ id: paneId, order, tabs }) => (
           <WorkspacePane

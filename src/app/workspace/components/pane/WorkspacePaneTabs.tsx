@@ -33,7 +33,7 @@ const WorkspacePaneTabs = ({
       <div
         key={id}
         className={`page-tab flex items-center justify-center gap-2 w-fit min-w-24 h-8 px-2 text-white cursor-pointer 
-                      ${active ? `bg-[#1e1e1e] ${active && "border-t border-t-white"}` : "bg-[#0e0e0e]"}
+                      ${active ? `bg-[#15222e] ${active && "border-t border-t-white"}` : "bg-[#0e0e0e]"}
                       `}
       >
         <div onClick={() => setTabActive(id)} className="truncate">

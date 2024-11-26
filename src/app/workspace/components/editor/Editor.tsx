@@ -10,7 +10,7 @@ import { useEditorDecorations } from "@hooks/useEditorDecorations";
 import { useEditorEnhanceText } from "@hooks/useEditorEnhanceText";
 import { useEditorPopup } from "./Popup/useEditorPopup";
 import editorActions from "./editor-actions";
-import "./Editor.scss";
+import "./Editor.css";
 
 export type MonacoEditorTypes = {
   changeEditorCurrentSelection: (selection: MonacoEditorCurrentSelectionTypes) => void;
@@ -77,7 +77,6 @@ const MonacoEditor = ({
         wordWrap: "on",
       }}
       width="100%"
-      height="100vh"
       onMount={handleEditorDidMount}
       onChange={(val: string | undefined) => handleEditorChange(val)}
     />
