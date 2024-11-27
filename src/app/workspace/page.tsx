@@ -124,7 +124,7 @@ export default function WorkspacePage() {
     toast.success(`${type} deleted successfully`);
   };
 
-  const handleAddNewPane = (pane: { paneId: string; order: number }) => {
+  const handleAddNewPane = (pane: { order: number }) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
     const newPaneId = uuidv4();
 

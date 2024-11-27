@@ -34,7 +34,7 @@ type WorkspacePaneProps = {
   removeTab: (val: { paneId: string; tabId: string; }) => void;
   setTabActive: (val: string) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
-  addPane: (val: { paneId: string; order: number }) => void;
+  addPane: (val: { order: number }) => void;
   removePane: (val: string) => void;
   setPaneActive: (val: string) => void;
   handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
@@ -112,7 +112,7 @@ const WorkspacePane = ({
             <VscClose className="text-white cursor-pointer w-8 h-8 p-1.5" onClick={() => removePane(paneId)} />
             <VscSplitHorizontal
               className="text-white cursor-pointer w-8 h-8 p-1.5"
-              onClick={() => addPane({ paneId, order })}
+              onClick={() => addPane({ order })}
             />
           </div>
           {tabs.map(({ id, content, active, name }) => (
