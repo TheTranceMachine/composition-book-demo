@@ -15,6 +15,7 @@ import {
 } from "@/redux/slices/charactersSlice";
 import {
   addPane,
+  addVerticalPane,
   removePane,
   shiftPanes,
   setPaneOrder,
@@ -30,6 +31,7 @@ import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelecti
 import { addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState } from "@/types/types";
 import "./Workspace.scss";
+import WorkspaceVerticalPane from './components/pane/WorkspaceVerticalPane';
 
 const WorkspacePane = dynamic(() => import('./components/pane/WorkspacePane'), {
   ssr: false,
@@ -50,6 +52,7 @@ export default function WorkspacePage() {
   const { characters } = useSelector((state: { characters: CharactersState }) => state.characters);
   const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
+  console.log("panes", panes)
   const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
 
@@ -150,6 +153,11 @@ export default function WorkspacePage() {
     }
   };
 
+  const handleAddVerticalPane = ({ paneId }: { paneId: string; }) => {
+    const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
+    dispatch(addVerticalPane({ paneId, tab }));
+  }
+
   const handleRemoveTab = ({ paneId, tabId }: { paneId: string; tabId: string }) => {
     const activePane = panes.find((pane) => pane.id === paneId);
     if (activePane) {
@@ -212,50 +220,73 @@ export default function WorkspacePage() {
     }
   }, [movedTabs, dispatch]);
 
-  // TODO: Optional - Pane cleanup when no tabs are present
-  // useEffect(() => {
-  //   if (!!panes.length) {
-  //     for (const pane of panes) {
-  //       if (!pane.tabs.length) {
-  //         dispatch(removePane(pane.id));
-  //       }
-  //     }
-  //   }
-  // }, [panes, dispatch]);
-
   return (
     <div className="workspace w-full h-full">
       <PanelGroup direction="horizontal">
-        {panes.map(({ id: paneId, order, tabs }) => (
-          <WorkspacePane
-            key={paneId}
-            paneId={paneId}
-            order={order}
-            tabs={tabs}
-            files={files}
-            editorEnhancedSelection={editorEnhancedSelection}
-            editorSelectionRange={editorSelectionRange}
-            characters={characters}
-            storySettings={storySettings}
-            isMobile={isMobile}
-            isLaptop={isLaptop}
-            setEnhancementPaneOpen={handleOpenEnhancementPane}
-            handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
-            setTabContent={(val) => handleTabContentUpdate({ ...val, paneId })}
-            setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
-            setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
-            sortTabs={(val) => dispatch(sortTabs(val))}
-            removeTab={(val) => handleRemoveTab(val)}
-            addPane={(val) => handleAddNewPane(val)}
-            removePane={(val) => handleRemovePane(val)}
-            setPaneActive={(val) => dispatch(setPaneActive(val))}
-            handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-            handleNewCharacter={(val) => handleNewCharacter(val)}
-            handleNewSetting={(val) => handleNewSetting(val)}
-            handleDeletionRequest={(val) => handleDeletionRequest(val)}
-            handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
-          />
-        ))}
+        {panes.map(({ id: paneId, order, tabs, group }) =>
+          group ? (
+            <WorkspaceVerticalPane
+              key={paneId}
+              paneId={paneId}
+              order={order}
+              group={group}
+              tabs={tabs}
+              files={files}
+              editorEnhancedSelection={editorEnhancedSelection}
+              editorSelectionRange={editorSelectionRange}
+              characters={characters}
+              storySettings={storySettings}
+              isMobile={isMobile}
+              isLaptop={isLaptop}
+              setEnhancementPaneOpen={handleOpenEnhancementPane}
+              handleSelectedFile={(val) => handleSelectedFile(val)}
+              setTabContent={(val) => handleTabContentUpdate(val)}
+              setTabActive={(val) => handleSelectTab(val)}
+              setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
+              addVerticalPane={(val) => handleAddVerticalPane(val)}
+              sortTabs={(val) => dispatch(sortTabs(val))}
+              removeTab={(val) => handleRemoveTab(val)}
+              addPane={(val) => handleAddNewPane(val)}
+              removePane={(val) => handleRemovePane(val)}
+              setPaneActive={(val) => dispatch(setPaneActive(val))}
+              handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
+              handleNewCharacter={(val) => handleNewCharacter(val)}
+              handleNewSetting={(val) => handleNewSetting(val)}
+              handleDeletionRequest={(val) => handleDeletionRequest(val)}
+              handlePaneComponentChange={(val) => handlePaneComponentChange(val)}
+            />
+          ) : (
+            <WorkspacePane
+              key={paneId}
+              paneId={paneId}
+              order={order}
+              tabs={tabs}
+              files={files}
+              editorEnhancedSelection={editorEnhancedSelection}
+              editorSelectionRange={editorSelectionRange}
+              characters={characters}
+              storySettings={storySettings}
+              isMobile={isMobile}
+              isLaptop={isLaptop}
+              resizeHandleClassName="w-[3px]"
+              setEnhancementPaneOpen={handleOpenEnhancementPane}
+              handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
+              setTabContent={(val) => handleTabContentUpdate({ ...val, paneId })}
+              setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
+              setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
+              addVerticalPane={(val) => handleAddVerticalPane(val)}
+              sortTabs={(val) => dispatch(sortTabs(val))}
+              removeTab={(val) => handleRemoveTab(val)}
+              addPane={(val) => handleAddNewPane(val)}
+              removePane={(val) => handleRemovePane(val)}
+              setPaneActive={(val) => dispatch(setPaneActive(val))}
+              handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
+              handleNewCharacter={(val) => handleNewCharacter(val)}
+              handleNewSetting={(val) => handleNewSetting(val)}
+              handleDeletionRequest={(val) => handleDeletionRequest(val)}
+              handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
+            />
+          ))}
       </PanelGroup>
       <Suspense>
         <NewCharacterModal

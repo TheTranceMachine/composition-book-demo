@@ -46,6 +46,7 @@ export type PaneTypes = {
   order: number;
   active: boolean;
   tabs: TabTypes[];
+  group?: PaneTypes[];
 };
 
 export type EditorTypes = {

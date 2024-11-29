@@ -3,7 +3,7 @@ import React, { memo, useRef, useState } from "react";
 import { Selection } from 'monaco-editor';
 import { ImperativePanelHandle, Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
-import { VscClose, VscSplitHorizontal } from "react-icons/vsc";
+import { VscClose, VscSplitHorizontal, VscSplitVertical } from "react-icons/vsc";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes, TabTypes } from "@/types/types";
 import ComponentSwitcher from "./ComponentSwitcher";
 
@@ -27,6 +27,7 @@ type WorkspacePaneProps = {
   storySettings: StorySettingTypes[];
   isMobile: boolean;
   isLaptop: boolean;
+  resizeHandleClassName: string;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
   setTabContent: (val: { tabId: string; content: string | undefined; }) => void;
@@ -34,6 +35,7 @@ type WorkspacePaneProps = {
   removeTab: (val: { paneId: string; tabId: string; }) => void;
   setTabActive: (val: string) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
+  addVerticalPane: (val: { paneId: string; }) => void;
   addPane: (val: { order: number }) => void;
   removePane: (val: string) => void;
   setPaneActive: (val: string) => void;
@@ -55,6 +57,7 @@ const WorkspacePane = ({
   storySettings,
   isMobile,
   isLaptop,
+  resizeHandleClassName,
   setEnhancementPaneOpen,
   handleSelectedFile,
   setTabContent,
@@ -62,6 +65,7 @@ const WorkspacePane = ({
   removeTab,
   setTabActive,
   setActiveTabOnMove,
+  addVerticalPane,
   addPane,
   removePane,
   setPaneActive,
@@ -110,6 +114,10 @@ const WorkspacePane = ({
               )) : <div className="flex items-center justify-center w-full h-full text-white opacity-20 text-sm">Empty</div>}
             </ReactSortable>
             <VscClose className="text-white cursor-pointer w-8 h-8 p-1.5" onClick={() => removePane(paneId)} />
+            <VscSplitVertical
+              className="text-white cursor-pointer w-8 h-8 p-1.5"
+              onClick={() => addVerticalPane({ paneId })}
+            />
             <VscSplitHorizontal
               className="text-white cursor-pointer w-8 h-8 p-1.5"
               onClick={() => addPane({ order })}
@@ -146,7 +154,7 @@ const WorkspacePane = ({
           ))}
         </div>
       </Panel>
-      <PanelResizeHandle className="bg-black w-[3px]" />
+      <PanelResizeHandle className={`bg-amber-700 ${resizeHandleClassName}`} />
     </>
   );
 };
