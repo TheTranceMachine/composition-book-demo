@@ -17,6 +17,7 @@ import {
   addPane,
   addVerticalPane,
   removePane,
+  removeGroupedPane,
   shiftPanes,
   setPaneOrder,
   setPaneActive,
@@ -130,7 +131,7 @@ export default function WorkspacePage() {
   const handleAddNewPane = (order: number) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
     const newPaneId = uuidv4();
-    console.log('order', order);
+
     dispatch(shiftPanes(order));
     dispatch(addPane({ id: newPaneId, order: order + 1, active: true, tabs: [tab], group: [] }));
     dispatch(setPaneOrder());
@@ -183,6 +184,10 @@ export default function WorkspacePage() {
     } else {
       toast.error("Cannot remove the last pane");
     }
+  }
+
+  const removePaneGroup = ({ parentPaneId, groupPaneId }: { parentPaneId: string; groupPaneId: string; }) => {
+    dispatch(removeGroupedPane({ parentPaneId, groupPaneId }));
   }
 
   const handleTabContentUpdate = ({ tabId, content, paneId }: { tabId: string; content: string | undefined; paneId: string }) => {
@@ -249,7 +254,7 @@ export default function WorkspacePage() {
               sortTabs={(val) => dispatch(sortTabs(val))}
               removeTab={(val) => handleRemoveTab(val)}
               addPane={() => handleAddNewPane(order)}
-              removePane={(val) => handleRemovePane(val)}
+              removePane={(val) => removePaneGroup({ parentPaneId: paneId, groupPaneId: val })}
               setPaneActive={(val) => dispatch(setPaneActive(val))}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
               handleNewCharacter={(val) => handleNewCharacter(val)}

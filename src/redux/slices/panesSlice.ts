@@ -21,7 +21,7 @@ export const panesSlice = createSlice({
     addPane: (state, action: PayloadAction<PaneTypes>) => {
       return [...state, action.payload]
     },
-    addVerticalPane: (state, action: PayloadAction<{ paneId: string; tab: TabTypes }>) => {
+    addVerticalPane: (state, action: PayloadAction<{ paneId: string; tab: TabTypes; }>) => {
       return state.map(
         (pane) => {
           if (!!pane.group.length) {
@@ -69,6 +69,9 @@ export const panesSlice = createSlice({
     },
     removePane: (state, action: PayloadAction<string>) => {
       return state.filter((pane) => pane.id !== action.payload)
+    },
+    removeGroupedPane: (state, action: PayloadAction<{ parentPaneId: string; groupPaneId: string; }>) => {
+      return state.map((pane) => pane.id === action.payload.parentPaneId ? { ...pane, group: pane.group.filter((group) => group.id !== action.payload.groupPaneId) } : pane)
     },
     shiftPanes: (state, action: PayloadAction<number>) => {
       return state.map((pane) => (pane.order > action.payload ? { ...pane, order: pane.order + 1 } : pane))
@@ -133,6 +136,7 @@ export const {
   addPane,
   addVerticalPane,
   removePane,
+  removeGroupedPane,
   shiftPanes,
   setPaneOrder,
   setPaneActive,
