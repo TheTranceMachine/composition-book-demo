@@ -81,7 +81,7 @@ export default function WorkspacePage() {
     // Add new pane rendering AI Enhancement Tab with current selection
     const tab = { id: uuidv4(), name: "AI Enhancement", content: editorCurrentSelection, active: true };
     const newPaneId = uuidv4();
-    dispatch(addPane({ id: newPaneId, order: panes.length + 1, active: true, tabs: [tab] }));
+    dispatch(addPane({ id: newPaneId, order: panes.length + 1, active: true, tabs: [tab], group: [] }));
   }
 
   // const handleEditorEnhancedSelection = (enhancedText: string) => {
@@ -132,7 +132,7 @@ export default function WorkspacePage() {
     const newPaneId = uuidv4();
 
     dispatch(shiftPanes(pane.order));
-    dispatch(addPane({ id: newPaneId, order: pane.order + 1, active: true, tabs: [tab] }));
+    dispatch(addPane({ id: newPaneId, order: pane.order + 1, active: true, tabs: [tab], group: [] }));
     dispatch(setPaneOrder());
     dispatch(setPaneActive(newPaneId));
   };
@@ -224,7 +224,7 @@ export default function WorkspacePage() {
     <div className="workspace w-full h-full">
       <PanelGroup direction="horizontal">
         {panes.map(({ id: paneId, order, tabs, group }) =>
-          group ? (
+          !!group.length ? (
             <WorkspaceVerticalPane
               key={paneId}
               paneId={paneId}

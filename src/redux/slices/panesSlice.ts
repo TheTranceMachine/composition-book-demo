@@ -4,12 +4,13 @@ import { v4 as uuidv4 } from "uuid"
 import { uniqueObjectsById } from '@utils/utils'
 import { FileDataType, PaneTypes, TabTypes } from '@/types/types';
 
-const initialState = [
+const initialState: PaneTypes[] = [
   {
     id: uuidv4(),
     order: 1,
     active: true,
     tabs: [{ active: true, id: uuidv4(), name: "File Explorer" }],
+    group: [],
   },
 ];
 
@@ -19,6 +20,52 @@ export const panesSlice = createSlice({
   reducers: {
     addPane: (state, action: PayloadAction<PaneTypes>) => {
       return [...state, action.payload]
+    },
+    addVerticalPane: (state, action: PayloadAction<{ paneId: string; tab: TabTypes }>) => {
+      return state.map(
+        (pane) => {
+          if (!!pane.group.length) {
+            const findGroup = pane.group.find((group: PaneTypes) => group.id === action.payload.paneId);
+            if (findGroup) {
+              return {
+                ...pane,
+                group: [
+                  ...pane.group,
+                  {
+                    id: uuidv4(),
+                    order: pane.group.length + 1,
+                    active: true,
+                    tabs: [action.payload.tab],
+                    group: []
+                  }
+                ]
+              }
+            } else {
+              return pane;
+            }
+          } else {
+            if (pane.id === action.payload.paneId) {
+              return {
+                ...pane,
+                group: [{
+                  id: uuidv4(),
+                  order: 1,
+                  active: false,
+                  tabs: pane.tabs,
+                  group: [],
+                }, {
+                  id: uuidv4(),
+                  order: 2,
+                  active: true,
+                  tabs: [action.payload.tab],
+                  group: []
+                }]
+              }
+            } else {
+              return pane;
+            }
+          }
+        })
     },
     removePane: (state, action: PayloadAction<string>) => {
       return state.filter((pane) => pane.id !== action.payload)
@@ -31,27 +78,6 @@ export const panesSlice = createSlice({
     },
     setPaneActive: (state, action: PayloadAction<string>) => {
       return state.map((pane) => pane.id === action.payload ? { ...pane, active: true } : { ...pane, active: false })
-    },
-    addVerticalPane: (state, action: PayloadAction<{ paneId: string; tab: TabTypes }>) => {
-      return state.map(
-        (pane) => pane.id === action.payload.paneId
-          ? {
-            ...pane,
-            tabs: [],
-            group: [{
-              id: uuidv4(),
-              order: 1,
-              active: false,
-              tabs: pane.tabs,
-            }, {
-              id: uuidv4(),
-              order: 2,
-              active: true,
-              tabs: [action.payload.tab],
-            }]
-          }
-          : pane
-      )
     },
     addTab: (state, action: PayloadAction<{ paneId: string; tab: FileDataType; }>) => {
       return state.map((pane) => pane.id === action.payload.paneId ? { ...pane, tabs: uniqueObjectsById<FileDataType>([...pane.tabs, action.payload.tab]) } : pane)
