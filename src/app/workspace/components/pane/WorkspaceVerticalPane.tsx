@@ -29,8 +29,8 @@ type WorkspaceVerticalPaneProps = {
   removeTab: (val: { paneId: string; tabId: string; }) => void;
   setTabActive: (val: { paneId: string; tabId: string; }) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
-  addVerticalPane: (val: { paneId: string; }) => void;
-  addPane: (val: { order: number }) => void;
+  addVerticalPane: (val: string) => void;
+  addPane: () => void;
   removePane: (val: string) => void;
   setPaneActive: (val: string) => void;
   handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
@@ -93,10 +93,10 @@ const WorkspaceVerticalPane = (
               setTabContent={(val) => setTabContent({ ...val, paneId })}
               setTabActive={(val) => setTabActive({ paneId, tabId: val })}
               setActiveTabOnMove={(val) => setActiveTabOnMove(val)}
-              addVerticalPane={(val) => addVerticalPane(val)}
+              addVerticalPane={() => addVerticalPane(paneId)}
               sortTabs={(val) => sortTabs(val)}
               removeTab={(val) => removeTab(val)}
-              addPane={(val) => addPane(val)}
+              addPane={addPane}
               removePane={(val) => removePane(val)}
               setPaneActive={(val) => setPaneActive(val)}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}

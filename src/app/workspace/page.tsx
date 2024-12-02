@@ -127,12 +127,12 @@ export default function WorkspacePage() {
     toast.success(`${type} deleted successfully`);
   };
 
-  const handleAddNewPane = (pane: { order: number }) => {
+  const handleAddNewPane = (order: number) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
     const newPaneId = uuidv4();
-
-    dispatch(shiftPanes(pane.order));
-    dispatch(addPane({ id: newPaneId, order: pane.order + 1, active: true, tabs: [tab], group: [] }));
+    console.log('order', order);
+    dispatch(shiftPanes(order));
+    dispatch(addPane({ id: newPaneId, order: order + 1, active: true, tabs: [tab], group: [] }));
     dispatch(setPaneOrder());
     dispatch(setPaneActive(newPaneId));
   };
@@ -153,8 +153,10 @@ export default function WorkspacePage() {
     }
   };
 
-  const handleAddVerticalPane = ({ paneId }: { paneId: string; }) => {
+  const handleAddVerticalPane = ({ paneId, order }: { paneId: string; order: number }) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
+
+    dispatch(shiftPanes(order));
     dispatch(addVerticalPane({ paneId, tab }));
   }
 
@@ -243,10 +245,10 @@ export default function WorkspacePage() {
               setTabContent={(val) => handleTabContentUpdate(val)}
               setTabActive={(val) => handleSelectTab(val)}
               setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
-              addVerticalPane={(val) => handleAddVerticalPane(val)}
+              addVerticalPane={(val) => handleAddVerticalPane({ paneId: val, order })}
               sortTabs={(val) => dispatch(sortTabs(val))}
               removeTab={(val) => handleRemoveTab(val)}
-              addPane={(val) => handleAddNewPane(val)}
+              addPane={() => handleAddNewPane(order)}
               removePane={(val) => handleRemovePane(val)}
               setPaneActive={(val) => dispatch(setPaneActive(val))}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
@@ -274,10 +276,10 @@ export default function WorkspacePage() {
               setTabContent={(val) => handleTabContentUpdate({ ...val, paneId })}
               setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
               setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
-              addVerticalPane={(val) => handleAddVerticalPane(val)}
+              addVerticalPane={() => handleAddVerticalPane({ paneId, order })}
               sortTabs={(val) => dispatch(sortTabs(val))}
               removeTab={(val) => handleRemoveTab(val)}
-              addPane={(val) => handleAddNewPane(val)}
+              addPane={() => handleAddNewPane(order)}
               removePane={(val) => handleRemovePane(val)}
               setPaneActive={(val) => dispatch(setPaneActive(val))}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
