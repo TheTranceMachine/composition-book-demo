@@ -11,11 +11,6 @@ const WorkspacePaneTabs = dynamic(() => import('./WorkspacePaneTabs'), {
   ssr: false,
 })
 
-type SortTabsTypes = {
-  tabs: TabTypes[];
-  paneId: string;
-};
-
 type WorkspacePaneProps = {
   paneId: string;
   order: number;
@@ -31,14 +26,14 @@ type WorkspacePaneProps = {
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
   setTabContent: (val: { tabId: string; content: string | undefined; }) => void;
-  sortTabs: (val: SortTabsTypes) => void;
-  removeTab: (val: { paneId: string; tabId: string; }) => void;
+  sortTabs: (val: TabTypes[]) => void;
+  removeTab: (val: string) => void;
   setTabActive: (val: string) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
   addVerticalPane: () => void;
   addPane: () => void;
-  removePane: (val: string) => void;
-  setPaneActive: (val: string) => void;
+  removePane: () => void;
+  setPaneActive: () => void;
   handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
   handleNewCharacter: (val: string) => void;
   handleNewSetting: (val: string) => void;
@@ -96,24 +91,21 @@ const WorkspacePane = ({
             <ReactSortable
               group="tabs"
               list={JSON.parse(JSON.stringify(tabs))} // https://github.com/SortableJS/react-sortablejs/issues/149
-              setList={(updatedTabs) => sortTabs({ tabs: JSON.parse(JSON.stringify(updatedTabs)) as TabTypes[], paneId })}
-              onChoose={() => setPaneActive(paneId)}
+              setList={(updatedTabs) => sortTabs(JSON.parse(JSON.stringify(updatedTabs)))}
+              onChoose={setPaneActive}
               onEnd={(val) => setActiveTabOnMove(val)}
               className="pages-tabs flex flex-nowrap gap-0.5 w-full h-8 bg-black overflow-x-auto overflow-y-hidden"
             >
               {!!tabs.length ? tabs.map(({ id, name, active }) => (
                 <WorkspacePaneTabs
                   key={id}
-                  id={id}
                   active={active}
                   name={name}
-                  paneId={paneId}
-                  setTabActive={(val) => setTabActive(val)}
-                  removeTab={(val) => removeTab(val)}
+                  setTabActive={() => setTabActive(id)}
+                  removeTab={() => removeTab(id)}
                 />
               )) : <div className="flex items-center justify-center w-full h-full text-white opacity-20 text-sm">Empty</div>}
             </ReactSortable>
-            <VscClose className="text-white cursor-pointer w-8 h-8 p-1.5" onClick={() => removePane(paneId)} />
             <VscSplitVertical
               className="text-white cursor-pointer w-8 h-8 p-1.5"
               onClick={addVerticalPane}
@@ -122,6 +114,7 @@ const WorkspacePane = ({
               className="text-white cursor-pointer w-8 h-8 p-1.5"
               onClick={addPane}
             />
+            <VscClose className="text-white cursor-pointer w-8 h-8 p-1.5" onClick={removePane} />
           </div>
           {tabs.map(({ id, content, active, name }) => (
             <div
@@ -154,7 +147,7 @@ const WorkspacePane = ({
           ))}
         </div>
       </Panel>
-      <PanelResizeHandle className={`bg-amber-700 ${resizeHandleClassName}`} />
+      <PanelResizeHandle className={`bg-black hover:bg-neutral-700 ${resizeHandleClassName}`} />
     </>
   );
 };

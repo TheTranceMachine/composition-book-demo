@@ -1,17 +1,13 @@
 import { VscClose } from "react-icons/vsc";
 
 type WorkspacePaneTabsTypes = {
-  paneId: string;
-  id: string;
   active: boolean;
   name: string;
-  setTabActive: (val: string) => void;
-  removeTab: (val: { paneId: string; tabId: string }) => void;
+  setTabActive: () => void;
+  removeTab: () => void;
 };
 
 const WorkspacePaneTabs = ({
-  paneId,
-  id,
   active,
   name,
   setTabActive,
@@ -23,10 +19,10 @@ const WorkspacePaneTabs = ({
                       ${active ? `bg-[#15222e] ${active && "border-t border-t-white"}` : "bg-[#0e0e0e]"}
                       `}
   >
-    <div onClick={() => setTabActive(id)} className="truncate">
+    <div onClick={setTabActive} className="truncate">
       {name}
     </div>
-    <VscClose onClick={() => removeTab({ paneId, tabId: id })} />
+    <VscClose onClick={removeTab} />
   </div>
 );
 

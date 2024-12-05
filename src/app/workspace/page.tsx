@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Suspense, lazy, useState, useEffect } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { PanelGroup } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
@@ -15,34 +15,46 @@ import {
 } from "@/redux/slices/charactersSlice";
 import {
   addPane,
-  addVerticalPane,
+  addGroupPane,
   removePane,
   removeGroupedPane,
   shiftPanes,
   setPaneOrder,
   setPaneActive,
+  setGoupPaneActive,
   addTab,
+  addGroupTab,
   removeTab,
+  removeGroupedTab,
   setTabActive,
+  setGroupTabActive,
+  setGroupTabActiveByName,
+  setTabActiveByName,
   updateTab,
+  updateGroupTab,
   updateTabContent,
   sortTabs,
+  sortGroupTabs,
 } from "@/redux/slices/panesSlice";
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
 import { addFile } from "@/redux/slices/fileExplorerSlice";
-import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState } from "@/types/types";
+import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState, TabTypes } from "@/types/types";
+import WorkspaceVerticalPane from './_components/pane/WorkspaceVerticalPane';
 import "./Workspace.scss";
-import WorkspaceVerticalPane from './components/pane/WorkspaceVerticalPane';
 
-const WorkspacePane = dynamic(() => import('./components/pane/WorkspacePane'), {
+const WorkspacePane = dynamic(() => import('./_components/pane/WorkspacePane'), {
   ssr: false,
 })
 
-const NewCharacterModal = lazy(() => import("./components/modals/NewCharacterModal"));
-const NewStorySettingModal = lazy(() => import("./components/modals/NewStorySettingModal"));
-const DeletionConfirmationModal = lazy(() => import("./components/modals/DeletionConfirmationModal"));
+const NewCharacterModal = lazy(() => import("./_components/modals/NewCharacterModal"));
+const NewStorySettingModal = lazy(() => import("./_components/modals/NewStorySettingModal"));
+const DeletionConfirmationModal = lazy(() => import("./_components/modals/DeletionConfirmationModal"));
 
 type HandlePaneComponentChangeTypes = { paneId: string; name: string; type?: string; tabId: string; component: string; };
+
+interface HandleVerticalPaneComponentChangeTypes extends HandlePaneComponentChangeTypes {
+  groupPaneId: string;
+};
 
 export default function WorkspacePage() {
   const dispatch = useDispatch();
@@ -56,8 +68,6 @@ export default function WorkspacePage() {
   console.log("panes", panes)
   const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
-
-  const [movedTabs, setMovedTabs] = useState<MovedTabs>({ from: { paneId: '', tabId: '' }, to: { paneId: '', tabId: '' } });
 
   const [newCharacterName, setNewCharacterName] = useState<string>("");
   const [newStorySettingTitle, setNewStorySettingTitle] = useState<string>("");
@@ -138,45 +148,82 @@ export default function WorkspacePage() {
     dispatch(setPaneActive(newPaneId));
   };
 
-  const handleSelectedFile = ({ paneId, file }: { paneId: string; file: FileDataType; }) => {
+  const handleSelectedFile = ({ paneId, groupPaneId, file }: { paneId: string; groupPaneId?: string; file: FileDataType; }) => {
     const tabExists = panes.map((pane) => {
       const tab = pane.tabs.find((tab) => tab.id === file.id);
-      if (!!tab) {
+      if (tab) {
         return { pane, tab };
       } else {
-        return null;
+        const group = pane.group.find((group) => group.tabs.some((tab) => tab.id === file.id));
+        if (group) {
+          const groupTab = group.tabs.find((tab) => tab.id === file.id);
+          return { pane, group, tab: groupTab };
+        }
       }
-    });
-    if (tabExists[0] !== null) {
-      dispatch(setTabActive({ paneId: tabExists[0].pane.id, tabId: tabExists[0].tab.id }));
-    } else {
-      dispatch(addTab({ paneId, tab: file }));
-    }
-  };
+      return null;
+    }).filter(Boolean);
 
-  const handleAddVerticalPane = ({ paneId, order }: { paneId: string; order: number }) => {
+    if (!!tabExists.length) {
+      if (tabExists[0]?.group) {
+        dispatch(setGroupTabActive({ paneId: tabExists[0]?.pane.id, groupPaneId: tabExists[0]?.group.id, tabId: tabExists[0]?.tab?.id }));
+      } else {
+        dispatch(setTabActive({ paneId: tabExists[0]?.pane.id, tabId: tabExists[0]?.tab?.id }));
+      }
+    } else {
+      if (groupPaneId) {
+        dispatch(addGroupTab({ paneId, groupPaneId, tab: file }));
+      } else {
+        dispatch(addTab({ paneId, tab: file }));
+      }
+    }
+  }
+
+  const handleAddGroupPane = ({ paneId, order }: { paneId: string; order: number }) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
 
     dispatch(shiftPanes(order));
-    dispatch(addVerticalPane({ paneId, tab }));
+    dispatch(addGroupPane({ paneId, tab }));
   }
 
   const handleRemoveTab = ({ paneId, tabId }: { paneId: string; tabId: string }) => {
     const activePane = panes.find((pane) => pane.id === paneId);
     if (activePane) {
-      const activeTabIndex = activePane.tabs.findIndex((tab) => tab.id === tabId);
-      if (activeTabIndex === 0 && activePane.tabs.length > 1) {
-        dispatch(setTabActive({ paneId, tabId: activePane.tabs[1].id }));
-      } else if (activeTabIndex > 0) {
-        dispatch(setTabActive({ paneId, tabId: activePane.tabs[activeTabIndex - 1].id }));
-      }
+      const activePaneTabs = activePane.tabs;
+      const activeTabIndex = activePaneTabs.findIndex((tab) => tab.id === tabId);
       if (activePane.tabs.length > 1) {
+        if (activeTabIndex === 0) {
+          dispatch(setTabActive({ paneId, tabId: activePaneTabs[1].id }));
+        } else {
+          dispatch(setTabActive({ paneId, tabId: activePaneTabs[activeTabIndex - 1].id }));
+        }
         dispatch(removeTab({ paneId, tabId }));
       } else {
         toast.error("Cannot remove the last tab");
       }
     }
   };
+
+  const handleRemoveGroupTab = ({ paneId, groupPaneId, tabId }: { paneId: string; groupPaneId: string; tabId: string }) => {
+    const activePane = panes.find((pane) => pane.id === paneId);
+    if (activePane) {
+      const activePaneGroup = activePane.group.find((group) => group.id === groupPaneId);
+      if (activePaneGroup) {
+        const activePaneGroupTabs = activePaneGroup.tabs;
+        const activePaneGroupIndex = activePaneGroupTabs.findIndex((tab) => tab.id === tabId);
+
+        if (activePaneGroupTabs.length > 1) {
+          if (activePaneGroupIndex === 0) {
+            dispatch(setGroupTabActive({ paneId, groupPaneId, tabId: activePaneGroupTabs[1].id }));
+          } else {
+            dispatch(setGroupTabActive({ paneId, groupPaneId, tabId: activePaneGroupTabs[activePaneGroupIndex - 1].id }));
+          }
+          dispatch(removeGroupedTab({ paneId, groupPaneId, tabId }));
+        } else {
+          toast.error("Cannot remove the last tab");
+        }
+      }
+    }
+  }
 
   const handleRemovePane = (paneId: string) => {
     if (panes.length > 1) {
@@ -186,8 +233,8 @@ export default function WorkspacePage() {
     }
   }
 
-  const removePaneGroup = ({ parentPaneId, groupPaneId }: { parentPaneId: string; groupPaneId: string; }) => {
-    dispatch(removeGroupedPane({ parentPaneId, groupPaneId }));
+  const removePaneGroup = ({ paneId, groupPaneId }: { paneId: string; groupPaneId: string; }) => {
+    dispatch(removeGroupedPane({ paneId, groupPaneId }));
   }
 
   const handleTabContentUpdate = ({ tabId, content, paneId }: { tabId: string; content: string | undefined; paneId: string }) => {
@@ -198,17 +245,60 @@ export default function WorkspacePage() {
     dispatch(setTabActive({ paneId, tabId }));
   };
 
-  const handleSelectTabOnMove = (onMoveData: SortableEvent) => {
-    const toPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.dataset.panelId || "";
-    const fromPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.dataset.panelId || "";
-    const tabId = onMoveData.item.dataset.id || "";
-    const inactiveTab = panes.find((pane) => pane.id === fromPaneId)?.tabs.find((tab) => tab.id !== tabId);
-
-    setMovedTabs({
-      from: { paneId: fromPaneId, tabId: inactiveTab?.id },
-      to: { paneId: toPaneId, tabId },
-    });
+  const handleSelectGroupTab = ({ paneId, groupPaneId, tabId }: { paneId: string; groupPaneId: string; tabId: string; }) => {
+    dispatch(setGroupTabActive({ paneId, groupPaneId, tabId }));
   };
+
+  const handleSetActiveTabsOnMove = (onMoveData: SortableEvent) => {
+    // TODO: Change to use tabId instead of tabName
+    const tabName = onMoveData.item.innerText || "";
+
+    const fromPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.id;
+    const toPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.id;
+
+    const toPaneGroup = onMoveData.to.parentElement?.parentElement?.parentElement?.parentElement;
+    const toPaneGroupDirection = toPaneGroup?.dataset.panelGroupDirection;
+
+    const fromPaneGroup = onMoveData.from.parentElement?.parentElement?.parentElement?.parentElement;
+    const fromPaneGroupDirection = fromPaneGroup?.dataset.panelGroupDirection;
+
+
+    // to vertical pane
+    if (toPaneGroupDirection === "vertical") {
+      // make "to pane group" tab active
+      const toParentPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
+      const toGroupPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.dataset.panelId;
+      dispatch(setGroupTabActiveByName({ paneId: toParentPaneId, groupPaneId: toGroupPaneId, tabName }));
+    }
+    console.log("toPaneId", toPaneId)
+
+    // to horizontal pane
+    if (toPaneId) {
+      dispatch(setTabActiveByName({ paneId: toPaneId, tabName }));
+    }
+
+    // from vertical pane
+    if (fromPaneGroupDirection === "vertical") {
+      // make "from pane group" tab active
+      const fromParentPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
+      const fromGroupPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.dataset.panelId;
+      const findParentPane = panes.find((pane) => pane.id === fromParentPaneId);
+      const findGroupPane = findParentPane?.group.find((group) => group.id === fromGroupPaneId);
+      const inactiveTab = findGroupPane?.tabs.find((tab) => tab.name !== tabName);
+      if (inactiveTab) {
+        dispatch(setGroupTabActiveByName({ paneId: fromParentPaneId, groupPaneId: fromGroupPaneId, tabName: inactiveTab.name }));
+      }
+    }
+
+    // from horizontal pane
+    const activePane = panes.find((pane) => pane.id === fromPaneId);
+    if (activePane) {
+      const inactiveTab = activePane.tabs.find((tab) => tab.name !== tabName);
+      if (inactiveTab) {
+        dispatch(setTabActiveByName({ paneId: fromPaneId, tabName: inactiveTab.name }));
+      }
+    }
+  }
 
   const handlePaneComponentChange = ({ paneId, tabId, component, type }: HandlePaneComponentChangeTypes) => {
     dispatch(updateTab({ paneId, tabId, name: component }));
@@ -218,14 +308,13 @@ export default function WorkspacePage() {
     }
   };
 
-  useEffect(() => {
-    if (movedTabs.to.paneId !== '' && movedTabs.to.tabId !== '') {
-      dispatch(setTabActive({ paneId: movedTabs.to.paneId, tabId: movedTabs.to.tabId }));
+  const handleGroupPaneComponentChange = ({ paneId, groupPaneId, tabId, component, type }: HandleVerticalPaneComponentChangeTypes) => {
+    dispatch(updateGroupTab({ paneId, groupPaneId, tabId, name: component }));
+    if (type === "file") {
+      // Add new file to the file explorer
+      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), type }));
     }
-    if (movedTabs.from.paneId !== '' && movedTabs.from.tabId && movedTabs.from.tabId !== '') {
-      dispatch(setTabActive({ paneId: movedTabs.from.paneId, tabId: movedTabs.from.tabId }));
-    }
-  }, [movedTabs, dispatch]);
+  }
 
   return (
     <div className="workspace w-full h-full">
@@ -246,21 +335,21 @@ export default function WorkspacePage() {
               isMobile={isMobile}
               isLaptop={isLaptop}
               setEnhancementPaneOpen={handleOpenEnhancementPane}
-              handleSelectedFile={(val) => handleSelectedFile(val)}
-              setTabContent={(val) => handleTabContentUpdate(val)}
-              setTabActive={(val) => handleSelectTab(val)}
-              setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
-              addVerticalPane={(val) => handleAddVerticalPane({ paneId: val, order })}
-              sortTabs={(val) => dispatch(sortTabs(val))}
-              removeTab={(val) => handleRemoveTab(val)}
+              handleSelectedFile={(val) => handleSelectedFile({ paneId, ...val })}
+              setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
+              setTabActive={(val) => handleSelectGroupTab({ paneId, ...val })}
+              setActiveTabOnMove={(val) => handleSetActiveTabsOnMove(val)}
+              addVerticalPane={(val) => handleAddGroupPane({ paneId: val, order })}
+              sortTabs={(val) => dispatch(sortGroupTabs({ paneId, ...val }))}
+              removeTab={(val) => handleRemoveGroupTab({ paneId, ...val })}
               addPane={() => handleAddNewPane(order)}
-              removePane={(val) => removePaneGroup({ parentPaneId: paneId, groupPaneId: val })}
-              setPaneActive={(val) => dispatch(setPaneActive(val))}
+              removePane={(val) => removePaneGroup({ paneId, groupPaneId: val })}
+              setPaneActive={(val) => dispatch(setGoupPaneActive({ paneId, groupPaneId: val }))}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
               handleNewCharacter={(val) => handleNewCharacter(val)}
               handleNewSetting={(val) => handleNewSetting(val)}
               handleDeletionRequest={(val) => handleDeletionRequest(val)}
-              handlePaneComponentChange={(val) => handlePaneComponentChange(val)}
+              handlePaneComponentChange={(val) => handleGroupPaneComponentChange({ paneId, ...val })}
             />
           ) : (
             <WorkspacePane
@@ -278,15 +367,15 @@ export default function WorkspacePage() {
               resizeHandleClassName="w-[3px]"
               setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
-              setTabContent={(val) => handleTabContentUpdate({ ...val, paneId })}
+              setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
               setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
-              setActiveTabOnMove={(val) => handleSelectTabOnMove(val)}
-              addVerticalPane={() => handleAddVerticalPane({ paneId, order })}
-              sortTabs={(val) => dispatch(sortTabs(val))}
-              removeTab={(val) => handleRemoveTab(val)}
+              setActiveTabOnMove={(val) => handleSetActiveTabsOnMove(val)}
+              addVerticalPane={() => handleAddGroupPane({ paneId, order })}
+              sortTabs={(val) => dispatch(sortTabs({ paneId, tabs: val }))}
+              removeTab={(val) => handleRemoveTab({ paneId, tabId: val })}
               addPane={() => handleAddNewPane(order)}
-              removePane={(val) => handleRemovePane(val)}
-              setPaneActive={(val) => dispatch(setPaneActive(val))}
+              removePane={() => handleRemovePane(paneId)}
+              setPaneActive={() => dispatch(setPaneActive(paneId))}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
               handleNewCharacter={(val) => handleNewCharacter(val)}
               handleNewSetting={(val) => handleNewSetting(val)}

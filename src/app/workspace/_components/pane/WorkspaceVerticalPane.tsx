@@ -4,12 +4,6 @@ import { SortableEvent } from "react-sortablejs";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, PaneTypes, StorySettingTypes, TabTypes } from "@/types/types";
 import WorkspacePane from "./WorkspacePane";
 
-
-type SortTabsTypes = {
-  tabs: TabTypes[];
-  paneId: string;
-};
-
 type WorkspaceVerticalPaneProps = {
   paneId: string;
   order: number;
@@ -23,11 +17,11 @@ type WorkspaceVerticalPaneProps = {
   isMobile: boolean;
   isLaptop: boolean;
   setEnhancementPaneOpen: () => void;
-  handleSelectedFile: (val: { paneId: string; file: FileDataType }) => void;
-  setTabContent: (val: { tabId: string; content: string | undefined; paneId: string; }) => void;
-  sortTabs: (val: SortTabsTypes) => void;
-  removeTab: (val: { paneId: string; tabId: string; }) => void;
-  setTabActive: (val: { paneId: string; tabId: string; }) => void;
+  handleSelectedFile: (val: { groupPaneId: string; file: FileDataType }) => void;
+  setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined; }) => void;
+  sortTabs: (val: { groupPaneId: string; tabs: TabTypes[] }) => void;
+  removeTab: (val: { groupPaneId: string; tabId: string; }) => void;
+  setTabActive: (val: { groupPaneId: string; tabId: string; }) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
   addVerticalPane: (val: string) => void;
   addPane: () => void;
@@ -37,7 +31,7 @@ type WorkspaceVerticalPaneProps = {
   handleNewCharacter: (val: string) => void;
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
-  handlePaneComponentChange: (val: { paneId: string; name: string; type?: string; tabId: string; component: string; }) => void;
+  handlePaneComponentChange: (val: { groupPaneId: string; name: string; type?: string; tabId: string; component: string; }) => void;
 }
 
 const WorkspaceVerticalPane = (
@@ -74,10 +68,10 @@ const WorkspaceVerticalPane = (
     <>
       <Panel order={order} id={paneId} minSize={5}>
         <PanelGroup direction="vertical">
-          {group.map(({ id: paneId, order, tabs }) => (
+          {group.map(({ id: groupPaneId, order, tabs }) => (
             <WorkspacePane
-              key={paneId}
-              paneId={paneId}
+              key={groupPaneId}
+              paneId={groupPaneId}
               order={order}
               tabs={tabs}
               files={files}
@@ -89,26 +83,26 @@ const WorkspaceVerticalPane = (
               isLaptop={isLaptop}
               resizeHandleClassName="h-[3px]"
               setEnhancementPaneOpen={setEnhancementPaneOpen}
-              handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
-              setTabContent={(val) => setTabContent({ ...val, paneId })}
-              setTabActive={(val) => setTabActive({ paneId, tabId: val })}
+              handleSelectedFile={(val) => handleSelectedFile({ groupPaneId, file: val })}
+              setTabContent={(val) => setTabContent({ groupPaneId, ...val })}
+              setTabActive={(val) => setTabActive({ groupPaneId, tabId: val })}
               setActiveTabOnMove={(val) => setActiveTabOnMove(val)}
-              addVerticalPane={() => addVerticalPane(paneId)}
-              sortTabs={(val) => sortTabs(val)}
-              removeTab={(val) => removeTab(val)}
+              addVerticalPane={() => addVerticalPane(groupPaneId)}
+              sortTabs={(val) => sortTabs({ groupPaneId, tabs: val })}
+              removeTab={(val) => removeTab({ groupPaneId, tabId: val })}
               addPane={addPane}
-              removePane={(val) => removePane(val)}
-              setPaneActive={(val) => setPaneActive(val)}
+              removePane={() => removePane(groupPaneId)}
+              setPaneActive={() => setPaneActive(groupPaneId)}
               handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
               handleNewCharacter={(val) => handleNewCharacter(val)}
               handleNewSetting={(val) => handleNewSetting(val)}
               handleDeletionRequest={(val) => handleDeletionRequest(val)}
-              handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
+              handlePaneComponentChange={(val) => handlePaneComponentChange({ groupPaneId, ...val })}
             />
           ))}
         </PanelGroup>
       </Panel>
-      <PanelResizeHandle className="bg-amber-700 w-[3px]" />
+      <PanelResizeHandle className="bg-black hover:bg-neutral-700 w-[3px]" />
     </>
   );
 }
