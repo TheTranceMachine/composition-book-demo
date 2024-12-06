@@ -34,7 +34,7 @@ const NewStorySettingModal = ({ show, setShow, onSave, newSettingTitle }: NewSto
       dialogOpen={show}
       setDialogOpen={setShow}
     >
-      <DialogContent className="bg-amber-300 border border-amber-500">
+      <DialogContent>
         <DialogTitle>
           <div className="flex gap-2 items-center text-black">
             <BsImageFill />
@@ -43,37 +43,35 @@ const NewStorySettingModal = ({ show, setShow, onSave, newSettingTitle }: NewSto
         </DialogTitle>
         <div>
           <div className="mb-3">
-            <Label id="character-name" className="text-black">
+            <Label id="character-name">
               Name
             </Label>
             <Input
               placeholder="Title"
               aria-label="Title"
               aria-describedby="setting-title"
-              className="border-1 border-amber-500"
               value={newSetting.title}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setNewSetting({ ...newSetting, title: e.target.value })}
             />
           </div>
           <div className="mb-3">
-            <Label id="character-name" className="text-black">
+            <Label id="character-name">
               Description
             </Label>
             <Textarea
               placeholder="Description"
               aria-label="Description"
               aria-describedby="character-name"
-              className="border-1 border-amber-500"
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNewSetting({ ...newSetting, description: e.target.value })}
             />
           </div>
         </div>
         <DialogFooter>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => onSave(newSetting)} className="border-r border-2 border-r-slate-800">
+            <Button variant="default" onClick={() => onSave(newSetting)}>
               Save
             </Button>
-            <Button variant="secondary" onClick={setShow} className="border-l border-l-slate-600">
+            <Button variant="secondary" onClick={setShow}>
               Cancel
             </Button>
           </div>

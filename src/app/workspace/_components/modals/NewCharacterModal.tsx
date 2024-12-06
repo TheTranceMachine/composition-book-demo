@@ -34,46 +34,44 @@ const NewCharacterModal = ({ show, setShow, onSave, newCharacterName }: NewChara
       dialogOpen={show}
       setDialogOpen={setShow}
     >
-      <DialogContent className="bg-amber-300 border border-amber-500">
+      <DialogContent>
         <DialogTitle>
-          <div className="flex gap-2 items-center text-black">
+          <div className="flex gap-2 items-center text-neutral-800">
             <BsFileEarmarkPersonFill />
             New Character
           </div>
         </DialogTitle>
         <div>
           <div className="mb-3">
-            <Label id="character-name" className="text-black">
+            <Label id="character-name">
               Name
             </Label>
             <Input
               placeholder="Name"
               aria-label="Name"
               aria-describedby="character-name"
-              className="border-1 border-amber-500"
               value={newCharacter.name}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setNewCharacter({ ...newCharacter, name: e.target.value })}
             />
           </div>
           <div className="mb-3">
-            <Label id="character-name" className="text-black">
+            <Label id="character-name">
               Description
             </Label>
             <Textarea
               placeholder="Description"
               aria-label="Description"
               aria-describedby="character-name"
-              className="border-1 border-amber-500"
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNewCharacter({ ...newCharacter, description: e.target.value })}
             />
           </div>
         </div>
         <DialogFooter>
           <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => onSave(newCharacter)} className="border-r border-2 border-r-slate-800">
+            <Button variant="default" onClick={() => onSave(newCharacter)}>
               Save
             </Button>
-            <Button variant="secondary" onClick={setShow} className="border-l border-l-slate-600">
+            <Button variant="secondary" onClick={setShow}>
               Cancel
             </Button>
           </div>

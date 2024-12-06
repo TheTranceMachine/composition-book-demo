@@ -15,7 +15,7 @@ const DeletionConfirmationModal = ({ show, setShow, onDelete, item, type }: Dele
     dialogOpen={show}
     setDialogOpen={setShow}
   >
-    <DialogContent className="bg-amber-300 border border-amber-500">
+    <DialogContent>
       <DialogTitle>
         <div className="flex gap-2 items-center text-black">
           You&apos;re deleting a {type}
@@ -26,10 +26,10 @@ const DeletionConfirmationModal = ({ show, setShow, onDelete, item, type }: Dele
       </p>
       <DialogFooter>
         <div className="flex gap-2">
-          <Button variant="secondary" onClick={onDelete} className="border-r border-2 border-r-slate-800">
+          <Button variant="default" onClick={onDelete}>
             Yes
           </Button>
-          <Button variant="secondary" onClick={setShow} className="border-l border-l-slate-600">
+          <Button variant="secondary" onClick={setShow}>
             No
           </Button>
         </div>

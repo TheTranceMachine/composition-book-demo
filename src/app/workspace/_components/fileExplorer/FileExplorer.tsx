@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import FileList from "./FileList";
 import "./fileExplorer.scss";
+import { FaFile, FaFolder, FaFolderOpen } from "react-icons/fa6";
 
 type FileExplorerPropsType = Readonly<{
   data: ReadonlyArray<FileDataType>;
@@ -61,8 +62,8 @@ export function FileObject({ file, level, setSelectedFile }: FileObjectPropsType
         className={`file-item-button flex items-center justify-between text-white ${isDirectory && "file-item-button--directory"} hover:bg-gray-800`}
       >
         <div className="flex items-center gap-1 w-10/12">
-          <button className="flex items-center gap-1 truncate" onClick={handleFileClick}>
-            {isDirectory && <div className="text-xs">{expanded ? "▼" : "▶"}</div>}
+          <button className="flex items-center gap-2 truncate" onClick={handleFileClick}>
+            {isDirectory ? expanded ? <FaFolderOpen /> : <FaFolder /> : <FaFile />}
             <div className="truncate">{fileName}</div>
           </button>
         </div>

@@ -326,7 +326,6 @@ export default function WorkspacePage() {
               paneId={paneId}
               order={order}
               group={group}
-              tabs={tabs}
               files={files}
               editorEnhancedSelection={editorEnhancedSelection}
               editorSelectionRange={editorSelectionRange}
