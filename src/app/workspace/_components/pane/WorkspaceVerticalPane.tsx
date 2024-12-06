@@ -66,7 +66,7 @@ const WorkspaceVerticalPane = (
   }: WorkspaceVerticalPaneProps) => {
   return (
     <>
-      <Panel order={order} id={paneId} minSize={5}>
+      <Panel order={order} id={paneId} minSize={5} className="workspace-pane bg-[#15222e] h-full">
         <PanelGroup direction="vertical">
           {group.map(({ id: groupPaneId, order, tabs }) => (
             <WorkspacePane
@@ -102,7 +102,7 @@ const WorkspaceVerticalPane = (
           ))}
         </PanelGroup>
       </Panel>
-      <PanelResizeHandle className="bg-black hover:bg-neutral-700 w-[3px]" />
+      <PanelResizeHandle className="bg-black hover:bg-neutral-100 w-[3px]" />
     </>
   );
 }

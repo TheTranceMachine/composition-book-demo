@@ -18,7 +18,7 @@ const CustomDialog = ({
   children,
 }: CustomDialogProps) => (
   <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-    <DialogTrigger />
+    <DialogTrigger asChild />
     <DialogPortal>
       <DialogOverlay>
         {children}

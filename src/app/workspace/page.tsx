@@ -409,7 +409,6 @@ export default function WorkspacePage() {
           type={deletionItem.type}
         />
       </Suspense>
-      <Toaster visibleToasts={4} closeButton />
     </div>
   );
 };

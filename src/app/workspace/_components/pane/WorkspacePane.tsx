@@ -147,7 +147,7 @@ const WorkspacePane = ({
           ))}
         </div>
       </Panel>
-      <PanelResizeHandle className={`bg-black hover:bg-neutral-700 ${resizeHandleClassName}`} />
+      <PanelResizeHandle className={`bg-black hover:bg-neutral-100 ${resizeHandleClassName}`} />
     </>
   );
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { BsFileEarmarkPersonFill, BsImageFill } from "react-icons/bs";
-import { VscFolder, VscFile } from "react-icons/vsc";
+import { BsFileEarmarkPersonFill, BsImageFill, BsFileEarmarkFill } from "react-icons/bs";
+import { VscListTree } from "react-icons/vsc";
 import { NavigationMenu, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { FaMagic } from "react-icons/fa";
 import { PaneChoicesTypes } from "@/types/types";
@@ -12,13 +12,13 @@ import NewFileInput from "./NewFileInput";
 const items: PaneChoicesTypes[] = [{
   id: "1",
   name: "File Explorer",
-  icon: <VscFolder />,
+  icon: <VscListTree />,
   description: "View and manage your files",
 },
 {
   id: "2",
   name: "New File",
-  icon: <VscFile />,
+  icon: <BsFileEarmarkFill />,
   description: "Create a new file",
 },
 {
@@ -54,7 +54,7 @@ const WorkspacePaneManager = ({ handlePaneComponentChange }: WorkspacePaneManage
   };
 
   return page === 1 ? (
-    <NavigationMenu orientation="vertical" className="m-3 rounded-md border-2 border-[#151515] bg-neutral-800">
+    <NavigationMenu orientation="vertical" className="m-3 rounded-md border-2 border-neutral-500 bg-neutral-100">
       <NavigationMenuList>
         {items.map(item => (
           <Items key={item.id} onClick={(val) => paneComponentSelection(val)} item={item} />

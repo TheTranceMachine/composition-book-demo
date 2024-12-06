@@ -9,19 +9,19 @@ const Items = ({ item, onClick }: { item: PaneChoicesTypes, onClick: (val: strin
 
   return (
     <>
-      <NavigationMenuItem onClick={() => onClick(name)} className="cursor-pointer hover:bg-neutral-900 px-3 py-2">
-        <NavigationMenuTrigger className="flex justify-between items-center w-full">
-          <div className="flex gap-2 items-center">
+      <NavigationMenuItem onClick={() => onClick(name)} className="cursor-pointer hover:bg-neutral-300">
+        <NavigationMenuTrigger className="flex justify-between items-center w-full px-3 py-2">
+          <div className="flex gap-2 items-center text-neutral-800">
             {icon}
             {name}
           </div>
-          {name === "New File" && <VscChevronRight className="w-5 h-5 text-white" />}
+          {name === "New File" && <VscChevronRight className="w-5 h-5 text-neutral-800" />}
         </NavigationMenuTrigger>
-        <NavigationMenuContent className="flex justify-between items-center mt-2">
+        <NavigationMenuContent className="flex justify-between items-center px-3 pb-2 pt-0">
           <NavigationMenuLink asChild><span className="text-sm">{description}</span></NavigationMenuLink>
         </NavigationMenuContent>
       </NavigationMenuItem>
-      <Separator className="bg-[#151515] h-0.5 last:hidden" />
+      <Separator className="bg-neutral-300 h-0.5 last:hidden" />
     </>
   )
 };
