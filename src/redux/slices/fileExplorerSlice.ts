@@ -4,14 +4,12 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { uniqueObjectsById } from '@/utils/utils';
 import { FileDataType } from "@/types/types";
 
-export type NewFileDataType = {
-  id: string;
-  name: string;
-  directoryId: string;
-  type: string
-};
 
-const initialState = [
+interface PayloadFileDataType extends FileDataType {
+  directoryId: string;
+}
+
+const initialState: FileDataType[] = [
   {
     id: uuidv4(),
     name: "README.md",
@@ -201,48 +199,30 @@ export const panesSlice = createSlice({
   name: 'fileExplorer',
   initialState,
   reducers: {
-    addFile: (state, action: PayloadAction<NewFileDataType>) => {
-      // filter through state.files including children array if it's present and return the array of matched directories
-      const filterThroughDir = (files: FileDataType[], id: string): FileDataType[] => {
-        return files.reduce((acc: FileDataType[], file) => {
-          if (file.id === id) {
-            acc.push(file);
-          }
-          if (file.children) {
-            const children = filterThroughDir(file.children, id);
-            if (children.length) {
-              acc.push(...children);
-            }
-          }
-          return acc;
-        }, []);
-      };
-      const filteredArray = filterThroughDir(state, (action.payload as NewFileDataType).directoryId);
-      if (!!filteredArray.length) {
-        // Directory found, Create this file/dir in the directory
-        filteredArray[0].children = [
-          ...(filteredArray[0].children || []),
-          {
-            id: (action.payload as NewFileDataType).id,
-            name: (action.payload as NewFileDataType).name,
-            ...((action.payload as NewFileDataType).type === "dir" && { children: [] }),
-          },
-        ];
-        return uniqueObjectsById<FileDataType>([...state])
-      } else {
-        // Directory not found, Create this file/dir in the root directory
-        return uniqueObjectsById<FileDataType>([
-          ...state,
-          {
-            id: (action.payload as NewFileDataType).id,
-            name: (action.payload as NewFileDataType).name,
-            ...((action.payload as NewFileDataType).type === "dir" && { children: [] }),
-          },
-        ]);
-      }
+    addDir: (state, action: PayloadAction<PayloadFileDataType>) => {
+      state.map((dir) => {
+        dir.id === action.payload.directoryId ?
+          dir.children?.push({
+            id: action.payload.id,
+            name: action.payload.name,
+            children: [],
+          })
+          : dir;
+      });
+    },
+    addFile: (state, action: PayloadAction<PayloadFileDataType>) => {
+      state.map((dir) => {
+        dir.id === action.payload.directoryId ?
+          dir.children?.push({
+            id: action.payload.id,
+            name: action.payload.name,
+            content: action.payload.content,
+          })
+          : dir;
+      });
     }
   },
 })
 
-export const { addFile } = panesSlice.actions
+export const { addDir, addFile } = panesSlice.actions
 export default panesSlice.reducer

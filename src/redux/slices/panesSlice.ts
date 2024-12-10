@@ -11,6 +11,7 @@ const initialState: PaneTypes[] = [
     active: true,
     tabs: [{ active: true, id: uuidv4(), name: "File Explorer" }],
     group: [],
+    size: 100,
   },
 ];
 
@@ -36,7 +37,8 @@ export const panesSlice = createSlice({
                     order: pane.group.length + 1,
                     active: true,
                     tabs: [action.payload.tab],
-                    group: []
+                    group: [],
+                    size: 100 / (pane.group.length + 1)
                   }
                 ]
               }
@@ -54,12 +56,14 @@ export const panesSlice = createSlice({
                   active: false,
                   tabs: pane.tabs,
                   group: [],
+                  size: 100 / 2
                 }, {
                   id: uuidv4(),
                   order: 2,
                   active: true,
                   tabs: [action.payload.tab],
-                  group: []
+                  group: [],
+                  size: 100 / 2
                 }]
               }
             } else {
@@ -235,7 +239,15 @@ export const panesSlice = createSlice({
           }
           : pane
       )
-    }
+    },
+    setPaneSize: (state, action: PayloadAction<{ paneId: string; size: number }>) => {
+      return state.map((pane) => pane.id === action.payload.paneId ? { ...pane, size: action.payload.size } : pane)
+    },
+    setGroupPaneSize: (state, action: PayloadAction<{ paneId: string; groupPaneId: string; size: number }>) => {
+      return state.map((pane) => pane.id === action.payload.paneId ? { ...pane, group: pane.group.map((group) => group.id === action.payload.groupPaneId ? { ...group, size: action.payload.size } : group) } :
+        pane
+      )
+    },
   },
 })
 
@@ -261,6 +273,8 @@ export const {
   updateTabContent,
   sortTabs,
   sortGroupTabs,
+  setPaneSize,
+  setGroupPaneSize,
 } = panesSlice.actions
 
 export default panesSlice.reducer

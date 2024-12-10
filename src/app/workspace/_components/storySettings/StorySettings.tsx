@@ -5,13 +5,13 @@ import { FullCard, CollapsedCard } from "@components/CustomCardWithPopover/Custo
 type StorySettingsPaneTypes = {
   storySettings: StorySettingTypes[];
   removeStorySetting: (val: { id: string, title: string }) => void;
-  panelSize: number | undefined;
+  panelExpanded: boolean | 0 | undefined;
 };
 
-const StorySettingsPane = ({ storySettings, removeStorySetting, panelSize }: StorySettingsPaneTypes) => (
+const StorySettingsPane = ({ storySettings, removeStorySetting, panelExpanded }: StorySettingsPaneTypes) => (
   <div className="px-3 py-2">
     {storySettings.map(({ id, title, description }) =>
-      panelSize && panelSize > 10 ? (
+      panelExpanded ? (
         <FullCard
           key={id}
           id={id}

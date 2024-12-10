@@ -1,11 +1,9 @@
-import dynamic from 'next/dynamic'
-import { memo } from 'react';
+import dynamic from 'next/dynamic';
 import { Selection } from 'monaco-editor';
 // import { AiEnhancements } from "../AiEnhancements/AiEnhancements";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes } from "@/types/types";
 import CharactersPane from "../characters/Characters";
 import StorySettingsPane from "../storySettings/StorySettings";
-// import MonacoEditor from "../editor/Editor";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
 
@@ -23,7 +21,8 @@ type ComponentSwitcherPropTypes = {
   editorEnhancedSelection: string;
   characters: CharacterTypes[];
   storySettings: StorySettingTypes[];
-  panelSize: number | undefined;
+  panelExpanded: boolean | 0 | undefined;
+  panelVerticalSize?: number | undefined;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
   handleEditorChange: (val: { tabId: string, content: string | undefined }) => void;
@@ -32,6 +31,7 @@ type ComponentSwitcherPropTypes = {
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { name: string; type?: string }) => void;
+  setNewFile: (val: { name: string, directoryId: string, type: string }) => void;
 };
 
 const ComponentSwitcher = ({
@@ -43,7 +43,8 @@ const ComponentSwitcher = ({
   editorSelectionRange,
   characters,
   storySettings,
-  panelSize,
+  panelExpanded,
+  panelVerticalSize,
   setEnhancementPaneOpen,
   handleSelectedFile,
   handleEditorChange,
@@ -52,10 +53,11 @@ const ComponentSwitcher = ({
   handleNewSetting,
   handleDeletionRequest,
   handlePaneComponentChange,
+  setNewFile,
 }: ComponentSwitcherPropTypes) => {
   switch (component) {
     case "Pane Manager":
-      return <WorkspacePaneManager handlePaneComponentChange={(val) => handlePaneComponentChange(val)} />;
+      return <WorkspacePaneManager handlePaneComponentChange={(val) => handlePaneComponentChange(val)} panelExpanded={panelExpanded} />;
     case "New File":
       return (
         <MonacoEditor
@@ -69,12 +71,19 @@ const ComponentSwitcher = ({
           setEnhancementPaneOpen={setEnhancementPaneOpen}
           handleEditorChange={(val) => handleEditorChange({ tabId: id, content: val })}
           editorValue={content}
+          panelExpanded={panelExpanded}
+          panelVerticalSize={panelVerticalSize}
         />
       );
     case "File Explorer":
       return (
-        <div className="m-3">
-          <FileExplorer data={files} setSelectedFile={(val) => handleSelectedFile(val)} />
+        <div className="p-3">
+          <FileExplorer
+            data={files}
+            setSelectedFile={(val) => handleSelectedFile(val)}
+            panelExpanded={panelExpanded}
+            setNewFile={(val) => setNewFile(val)}
+          />
         </div>
       );
     case "Characters":
@@ -84,7 +93,7 @@ const ComponentSwitcher = ({
           removeCharacter={({ id, name: title }) =>
             handleDeletionRequest({ id, title, type: "character" })
           }
-          panelSize={panelSize}
+          panelExpanded={panelExpanded}
         />
       );
     case "Story Settings":
@@ -94,7 +103,7 @@ const ComponentSwitcher = ({
           removeStorySetting={({ id, title }) =>
             handleDeletionRequest({ id, title, type: "story setting" })
           }
-          panelSize={panelSize}
+          panelExpanded={panelExpanded}
         />
       );
     // case "Enhancements":
@@ -112,9 +121,11 @@ const ComponentSwitcher = ({
           setEnhancementPaneOpen={setEnhancementPaneOpen}
           handleEditorChange={(val) => handleEditorChange({ tabId: id, content: val })}
           editorValue={content}
+          panelExpanded={panelExpanded}
+          panelVerticalSize={panelVerticalSize}
         />
       );
   }
 };
 
-export default memo(ComponentSwitcher);
+export default ComponentSwitcher;

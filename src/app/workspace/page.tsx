@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { Suspense, lazy, useState } from "react";
+import { LegacyRef, Suspense, lazy, useRef, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux'
 import { PanelGroup } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
@@ -35,9 +35,11 @@ import {
   updateTabContent,
   sortTabs,
   sortGroupTabs,
+  setPaneSize,
+  setGroupPaneSize,
 } from "@/redux/slices/panesSlice";
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
-import { addFile } from "@/redux/slices/fileExplorerSlice";
+import { addDir, addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState, TabTypes } from "@/types/types";
 import WorkspaceVerticalPane from './_components/pane/WorkspaceVerticalPane';
 import "./Workspace.scss";
@@ -66,6 +68,7 @@ export default function WorkspacePage() {
   const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
   console.log("panes", panes)
+  console.log("files", files)
   const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
 
@@ -270,7 +273,6 @@ export default function WorkspacePage() {
       const toGroupPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.dataset.panelId;
       dispatch(setGroupTabActiveByName({ paneId: toParentPaneId, groupPaneId: toGroupPaneId, tabName }));
     }
-    console.log("toPaneId", toPaneId)
 
     // to horizontal pane
     if (toPaneId) {
@@ -303,23 +305,44 @@ export default function WorkspacePage() {
   const handlePaneComponentChange = ({ paneId, tabId, component, type }: HandlePaneComponentChangeTypes) => {
     dispatch(updateTab({ paneId, tabId, name: component }));
     if (type === "file") {
-      // Add new file to the file explorer
-      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), type }));
+      // Component type - file. Add new file to the file explorer
+      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), content: '' }));
     }
   };
 
   const handleGroupPaneComponentChange = ({ paneId, groupPaneId, tabId, component, type }: HandleVerticalPaneComponentChangeTypes) => {
     dispatch(updateGroupTab({ paneId, groupPaneId, tabId, name: component }));
     if (type === "file") {
-      // Add new file to the file explorer
-      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), type }));
+      // Component type - file. Add new file to the file explorer
+      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), content: '' }));
     }
+  }
+
+  const handleAddFile = ({ name, directoryId, type }: { name: string; directoryId: string; type: string; }) => {
+    const id = uuidv4();
+    if (type === 'file') {
+      dispatch(addFile({ id, name, directoryId, content: '' }));
+    } else {
+      dispatch(addDir({ id, name, directoryId, children: [] }));
+    }
+  }
+
+  const handlePaneSize = ({ paneId, size }: { paneId: string; size: number }) => {
+    dispatch(setPaneSize({ paneId, size }));
+  }
+
+  const handleVerticalPaneSize = ({ paneId, size }: { paneId: string; size: number }) => {
+    dispatch(setPaneSize({ paneId, size }));
+  }
+
+  const handleGroupPaneSize = ({ paneId, groupPaneId, size }: { paneId: string; groupPaneId: string; size: number }) => {
+    dispatch(setGroupPaneSize({ paneId, groupPaneId, size }));
   }
 
   return (
     <div className="workspace w-full h-full">
       <PanelGroup direction="horizontal">
-        {panes.map(({ id: paneId, order, tabs, group }) =>
+        {panes.map(({ id: paneId, order, tabs, group, size }) =>
           !!group.length ? (
             <WorkspaceVerticalPane
               key={paneId}
@@ -333,6 +356,7 @@ export default function WorkspacePage() {
               storySettings={storySettings}
               isMobile={isMobile}
               isLaptop={isLaptop}
+              panelSize={size}
               setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, ...val })}
               setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
@@ -349,6 +373,9 @@ export default function WorkspacePage() {
               handleNewSetting={(val) => handleNewSetting(val)}
               handleDeletionRequest={(val) => handleDeletionRequest(val)}
               handlePaneComponentChange={(val) => handleGroupPaneComponentChange({ paneId, ...val })}
+              handlePaneSize={(val) => handleGroupPaneSize({ paneId, ...val })}
+              handleVerticalPaneSize={(val) => handleVerticalPaneSize({ paneId, size: val })}
+              setNewFile={(val) => handleAddFile(val)}
             />
           ) : (
             <WorkspacePane
@@ -364,6 +391,7 @@ export default function WorkspacePage() {
               isMobile={isMobile}
               isLaptop={isLaptop}
               resizeHandleClassName="w-[3px]"
+              panelSize={size}
               setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
               setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
@@ -380,6 +408,8 @@ export default function WorkspacePage() {
               handleNewSetting={(val) => handleNewSetting(val)}
               handleDeletionRequest={(val) => handleDeletionRequest(val)}
               handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
+              handlePaneSize={(val) => handlePaneSize({ paneId, size: val })}
+              setNewFile={(val) => handleAddFile(val)}
             />
           ))}
       </PanelGroup>

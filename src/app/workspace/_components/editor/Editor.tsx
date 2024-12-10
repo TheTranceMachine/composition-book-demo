@@ -10,6 +10,7 @@ import { useEditorDecorations } from "@hooks/useEditorDecorations";
 import { useEditorEnhanceText } from "@hooks/useEditorEnhanceText";
 import { useEditorPopup } from "./Popup/useEditorPopup";
 import editorActions from "./editor-actions";
+import MinimizedView from "./MinimizedView";
 import "./Editor.scss";
 
 export type MonacoEditorTypes = {
@@ -23,6 +24,8 @@ export type MonacoEditorTypes = {
   setEnhancementPaneOpen: () => void;
   handleEditorChange: (value: string | undefined) => void;
   editorValue: string | undefined;
+  panelExpanded: boolean | 0 | undefined;
+  panelVerticalSize?: number | undefined;
 };
 
 const MonacoEditor = ({
@@ -36,6 +39,8 @@ const MonacoEditor = ({
   setEnhancementPaneOpen,
   handleEditorChange,
   editorValue,
+  panelExpanded,
+  panelVerticalSize,
 }: MonacoEditorTypes) => {
   const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor | undefined>(undefined);
 
@@ -64,9 +69,11 @@ const MonacoEditor = ({
     setEditorInstance(editorConfiguration);
   };
 
-  return (
+  console.log("panelVerticalSize", panelVerticalSize);
+
+  return panelExpanded ? (
     <Editor
-      className="editor w-full"
+      className="editor w-full h-[calc(100vh-32px)]"
       defaultLanguage="plaintext"
       theme="vs-dark"
       value={editorValue}
@@ -80,6 +87,10 @@ const MonacoEditor = ({
       onMount={handleEditorDidMount}
       onChange={(val: string | undefined) => handleEditorChange(val)}
     />
+  ) : (
+    <div className="flex items-center justify-center p-3 w-full">
+      <MinimizedView />
+    </div>
   );
 };
 

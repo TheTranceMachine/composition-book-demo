@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { Selection } from 'monaco-editor';
 import { SortableEvent } from "react-sortablejs";
 import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, PaneTypes, StorySettingTypes, TabTypes } from "@/types/types";
@@ -16,6 +15,7 @@ type WorkspaceVerticalPaneProps = {
   storySettings: StorySettingTypes[];
   isMobile: boolean;
   isLaptop: boolean;
+  panelSize: number;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: { groupPaneId: string; file: FileDataType }) => void;
   setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined; }) => void;
@@ -32,6 +32,9 @@ type WorkspaceVerticalPaneProps = {
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { groupPaneId: string; name: string; type?: string; tabId: string; component: string; }) => void;
+  handlePaneSize: (val: { groupPaneId: string; size: number }) => void;
+  handleVerticalPaneSize: (val: number) => void;
+  setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
 }
 
 const WorkspaceVerticalPane = (
@@ -46,6 +49,7 @@ const WorkspaceVerticalPane = (
     storySettings,
     isMobile,
     isLaptop,
+    panelSize,
     setEnhancementPaneOpen,
     handleSelectedFile,
     setTabContent,
@@ -62,6 +66,9 @@ const WorkspaceVerticalPane = (
     handleNewSetting,
     handleDeletionRequest,
     handlePaneComponentChange,
+    handlePaneSize,
+    handleVerticalPaneSize,
+    setNewFile,
   }: WorkspaceVerticalPaneProps) => (
   <>
     <Panel
@@ -69,9 +76,10 @@ const WorkspaceVerticalPane = (
       order={order}
       minSize={isMobile || isLaptop ? 8 : 5}
       className="workspace-pane bg-[#15222e] h-full"
+      onResize={(size) => handleVerticalPaneSize(size)}
     >
       <PanelGroup direction="vertical">
-        {group.map(({ id: groupPaneId, order, tabs }) => (
+        {group.map(({ id: groupPaneId, order, tabs, size }) => (
           <WorkspacePane
             key={groupPaneId}
             paneId={groupPaneId}
@@ -85,6 +93,8 @@ const WorkspaceVerticalPane = (
             isMobile={isMobile}
             isLaptop={isLaptop}
             resizeHandleClassName="h-[3px]"
+            panelSize={panelSize}
+            panelVerticalSize={size}
             setEnhancementPaneOpen={setEnhancementPaneOpen}
             handleSelectedFile={(val) => handleSelectedFile({ groupPaneId, file: val })}
             setTabContent={(val) => setTabContent({ groupPaneId, ...val })}
@@ -101,6 +111,8 @@ const WorkspaceVerticalPane = (
             handleNewSetting={(val) => handleNewSetting(val)}
             handleDeletionRequest={(val) => handleDeletionRequest(val)}
             handlePaneComponentChange={(val) => handlePaneComponentChange({ groupPaneId, ...val })}
+            handlePaneSize={(val) => handlePaneSize({ groupPaneId, size: val })}
+            setNewFile={(val) => setNewFile(val)}
           />
         ))}
       </PanelGroup>

@@ -3,7 +3,7 @@ import { Selection } from 'monaco-editor';
 export type FileDataType = {
   id: string;
   name: string;
-  content?: string | undefined;
+  content?: string;
   children?: FileDataType[];
 };
 
@@ -47,6 +47,7 @@ export type PaneTypes = {
   active: boolean;
   tabs: TabTypes[];
   group: PaneTypes[];
+  size: number;
 };
 
 export type EditorTypes = {

@@ -5,13 +5,13 @@ import { FullCard, CollapsedCard } from "@components/CustomCardWithPopover/Custo
 type CharactersPaneTypes = {
   characters: CharacterTypes[];
   removeCharacter: (val: { id: string, name: string }) => void;
-  panelSize: number | undefined;
+  panelExpanded: boolean | 0 | undefined;
 };
 
-const CharactersPane = ({ characters, removeCharacter, panelSize }: CharactersPaneTypes) => (
+const CharactersPane = ({ characters, removeCharacter, panelExpanded }: CharactersPaneTypes) => (
   <div className="px-3 py-2">
     {characters.map(({ id, name, description }) =>
-      panelSize && panelSize > 10 ? (
+      panelExpanded ? (
         <FullCard
           key={id}
           id={id}
