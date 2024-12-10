@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 import { editor, Range } from 'monaco-editor';
 import { toast } from "sonner";
@@ -43,6 +43,7 @@ const MonacoEditor = ({
   panelVerticalSize,
 }: MonacoEditorTypes) => {
   const [editorInstance, setEditorInstance] = useState<editor.IStandaloneCodeEditor | undefined>(undefined);
+  const [height, setHeight] = useState<number | null>(null);
 
   useEditorPopup({ editorInstance, characters, storySettings });
 
@@ -69,11 +70,23 @@ const MonacoEditor = ({
     setEditorInstance(editorConfiguration);
   };
 
-  console.log("panelVerticalSize", panelVerticalSize);
+  const vhToPixels = () => {
+    const tabsAreaHeight = 32;
+    return panelVerticalSize !== undefined ? window.innerHeight * (panelVerticalSize / 100) - tabsAreaHeight : window.innerHeight - tabsAreaHeight;
+  };
+
+  const handleEditorWillMount = () => {
+    setHeight(vhToPixels());
+  };
+
+  useEffect(() => {
+    setHeight(vhToPixels());
+  }, [panelVerticalSize]);
+
 
   return panelExpanded ? (
     <Editor
-      className="editor w-full h-[calc(100vh-32px)]"
+      className={`editor w-full`}
       defaultLanguage="plaintext"
       theme="vs-dark"
       value={editorValue}
@@ -84,6 +97,8 @@ const MonacoEditor = ({
         wordWrap: "on",
       }}
       width="100%"
+      height={`${height}px`}
+      beforeMount={handleEditorWillMount}
       onMount={handleEditorDidMount}
       onChange={(val: string | undefined) => handleEditorChange(val)}
     />

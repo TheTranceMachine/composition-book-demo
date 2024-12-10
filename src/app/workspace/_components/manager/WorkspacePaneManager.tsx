@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavigationMenu, NavigationMenuList } from "@/components/ui/navigation-menu";
-import BackButton from "./BackButton";
+import { VscChevronLeft } from "react-icons/vsc";
+import { Button } from "@/components/ui/button";
 import Items from "./Items";
 import NewFileInput from "./NewFileInput";
 import components from "./components";
@@ -27,12 +28,16 @@ const WorkspacePaneManager = ({ handlePaneComponentChange, panelExpanded }: Work
       </NavigationMenuList>
     </NavigationMenu>
   ) : (
-    <div className="flex flex-col m-3 gap-3">
-      <BackButton onClick={() => setPage(1)} />
-      <div className={`flex items-center gap-2 w-full ${panelExpanded ? '' : 'flex-col'}`}>
+    <div className="flex flex-col m-3 gap-4">
+      <Button variant="secondary" size="sm" onClick={() => setPage(1)} className={`${panelExpanded ? 'w-24' : 'w-full'}`}>
+        <VscChevronLeft className="w-5 h-5 text-black" />
+        Back
+      </Button>
+      <div className={`flex items-center gap-2 ${panelExpanded ? '' : 'flex-col'}`}>
         <NewFileInput
           onClick={() => handlePaneComponentChange({ name: input })}
           onChange={(e) => setInput(e.target.value)}
+          panelExpanded={panelExpanded}
         />
       </div>
     </div>

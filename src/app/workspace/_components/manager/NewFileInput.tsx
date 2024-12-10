@@ -1,13 +1,17 @@
 import { ChangeEvent, memo, MouseEventHandler } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 
-const NewFileInput = ({ onClick, onChange }: { onClick: MouseEventHandler; onChange: (val: ChangeEvent<HTMLInputElement>) => void }) => (
+type NewFileInputTypes = {
+  onClick: MouseEventHandler<HTMLButtonElement>;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  panelExpanded: boolean | 0 | undefined;
+};
+
+const NewFileInput = ({ onClick, onChange, panelExpanded }: NewFileInputTypes) => (
   <>
-    <Label htmlFor="file-name" className="flex justify-center text-white">File Name</Label>
-    <Input onChange={onChange} className="text-white" />
-    <Button variant="secondary" onClick={onClick}>
+    <Input onChange={onChange} className="text-white" placeholder="File Name" />
+    <Button variant="secondary" onClick={onClick} size={`${panelExpanded ? 'default' : 'sm'}`} className={`${panelExpanded ? '' : 'w-full'}`}>
       Create File
     </Button>
   </>
