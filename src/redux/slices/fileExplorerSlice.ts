@@ -195,34 +195,64 @@ const initialState: FileDataType[] = [
   },
 ];
 
+const findInDirectories = (children: FileDataType[], payload: PayloadFileDataType, type: string) => {
+  children.map((dir) => {
+    if (dir.id === payload.directoryId) {
+      dir.children?.push({
+        id: payload.id,
+        name: payload.name,
+        ...(type === 'file' ? { content: payload.content } : { children: [] }),
+      });
+    } else {
+      findInDirectories(dir.children || [], payload, type);
+    }
+  });
+}
+
 export const panesSlice = createSlice({
   name: 'fileExplorer',
   initialState,
   reducers: {
     addDir: (state, action: PayloadAction<PayloadFileDataType>) => {
-      state.map((dir) => {
-        dir.id === action.payload.directoryId ?
-          dir.children?.push({
-            id: action.payload.id,
-            name: action.payload.name,
-            children: [],
-          })
-          : dir;
-      });
+      if (action.payload.directoryId !== '') {
+        findInDirectories(state, action.payload, 'dir');
+      } else {
+        state.push({
+          id: action.payload.id,
+          name: action.payload.name,
+          children: [],
+        })
+      }
     },
     addFile: (state, action: PayloadAction<PayloadFileDataType>) => {
-      state.map((dir) => {
-        dir.id === action.payload.directoryId ?
-          dir.children?.push({
-            id: action.payload.id,
-            name: action.payload.name,
-            content: action.payload.content,
-          })
-          : dir;
-      });
-    }
+      if (action.payload.directoryId !== '') {
+        findInDirectories(state, action.payload, 'file');
+      } else {
+        state.push({
+          id: action.payload.id,
+          name: action.payload.name,
+          content: action.payload.content,
+        })
+      }
+    },
+    removeFile: (state, action: PayloadAction<{ id: string, directoryId: string }>) => {
+      const findInDirectories = (children: FileDataType[]) => {
+        children.map((dir) => {
+          if (dir.id === action.payload.directoryId) {
+            dir.children = dir.children?.filter((file) => file.id !== action.payload.id);
+          } else {
+            findInDirectories(dir.children || []);
+          }
+        });
+      }
+      if (action.payload.directoryId !== '') {
+        findInDirectories(state);
+      } else {
+        return state.filter((file) => file.id !== action.payload.id);
+      }
+    },
   },
 })
 
-export const { addDir, addFile } = panesSlice.actions
+export const { addDir, addFile, removeFile } = panesSlice.actions
 export default panesSlice.reducer

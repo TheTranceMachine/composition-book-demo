@@ -44,6 +44,7 @@ type WorkspacePaneProps = {
   handlePaneComponentChange: (val: { name: string; type?: string; tabId: string; component: string; }) => void;
   handlePaneSize: (val: number) => void
   setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setMovedItem: (val: SortableEvent) => void;
 };
 
 const WorkspacePane = ({
@@ -78,6 +79,7 @@ const WorkspacePane = ({
   handlePaneComponentChange,
   handlePaneSize,
   setNewFile,
+  setMovedItem,
 }: WorkspacePaneProps) => {
   const panelExpanded = panelSize && panelSize > 8;
 
@@ -151,6 +153,7 @@ const WorkspacePane = ({
                 handleNewCharacter={handleNewCharacter}
                 handleNewSetting={handleNewSetting}
                 setNewFile={(val) => setNewFile(val)}
+                setMovedItem={(val) => setMovedItem(val)}
               />
             </div>
           ))}

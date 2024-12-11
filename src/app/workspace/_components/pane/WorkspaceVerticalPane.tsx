@@ -35,6 +35,7 @@ type WorkspaceVerticalPaneProps = {
   handlePaneSize: (val: { groupPaneId: string; size: number }) => void;
   handleVerticalPaneSize: (val: number) => void;
   setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setMovedItem: (val: SortableEvent) => void;
 }
 
 const WorkspaceVerticalPane = (
@@ -69,6 +70,7 @@ const WorkspaceVerticalPane = (
     handlePaneSize,
     handleVerticalPaneSize,
     setNewFile,
+    setMovedItem,
   }: WorkspaceVerticalPaneProps) => (
   <>
     <Panel
@@ -113,6 +115,7 @@ const WorkspaceVerticalPane = (
             handlePaneComponentChange={(val) => handlePaneComponentChange({ groupPaneId, ...val })}
             handlePaneSize={(val) => handlePaneSize({ groupPaneId, size: val })}
             setNewFile={(val) => setNewFile(val)}
+            setMovedItem={(val) => setMovedItem(val)}
           />
         ))}
       </PanelGroup>

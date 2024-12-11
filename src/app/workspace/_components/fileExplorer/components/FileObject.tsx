@@ -4,15 +4,17 @@ import { FileDataType } from "@/types/types";
 import CustomTooltip from "@/components/Tooltip/CustomTooltip";
 import NewFilePopover from "./NewFilePopover";
 import FileExplorer from "../FileExplorer";
+import { SortableEvent } from "react-sortablejs";
 
 type FileObjectPropsType = Readonly<{
   file: FileDataType;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
   setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setMovedItem: (val: SortableEvent) => void;
 }>;
 
-const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile }: FileObjectPropsType) => {
+const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMovedItem }: FileObjectPropsType) => {
   const [expanded, setExpanded] = useState(false);
   const [type, setType] = useState("file");
   const { children: fileChildren, name: fileName, id: fileId } = file;
@@ -40,7 +42,7 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile }: FileOb
   };
 
   return (
-    <li className={`file-item ${!panelExpanded ? 'py-1' : 'pl-2'} ${expanded ? 'bg-gray-800' : ''}`}>
+    <li className={`file-item ${!panelExpanded ? 'py-1' : 'pl-2'} ${expanded ? 'bg-gray-900' : ''}`} id={fileId}>
       <div
         className="file-item-button flex items-center gap-1 justify-between text-white hover:bg-gray-800 cursor-pointer"
       >
@@ -66,6 +68,7 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile }: FileOb
           setSelectedFile={(val) => setSelectedFile(val)}
           panelExpanded={panelExpanded}
           setNewFile={(val) => setNewFile(val)}
+          setMovedItem={(val) => setMovedItem(val)}
         />
       )}
     </li>

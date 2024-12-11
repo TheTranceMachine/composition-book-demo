@@ -39,7 +39,7 @@ import {
   setGroupPaneSize,
 } from "@/redux/slices/panesSlice";
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
-import { addDir, addFile } from "@/redux/slices/fileExplorerSlice";
+import { addDir, addFile, removeFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState, TabTypes } from "@/types/types";
 import WorkspaceVerticalPane from './_components/pane/WorkspaceVerticalPane';
 import "./Workspace.scss";
@@ -252,25 +252,25 @@ export default function WorkspacePage() {
     dispatch(setGroupTabActive({ paneId, groupPaneId, tabId }));
   };
 
-  const handleSetActiveTabsOnMove = (onMoveData: SortableEvent) => {
+  const handleSetActiveTabsOnMove = (dataOnMove: SortableEvent) => {
     // TODO: Change to use tabId instead of tabName
-    const tabName = onMoveData.item.innerText || "";
+    const tabName = dataOnMove.item.innerText || "";
 
-    const fromPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.id;
-    const toPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.id;
+    const fromPaneId = dataOnMove.from.parentElement?.parentElement?.parentElement?.id;
+    const toPaneId = dataOnMove.to.parentElement?.parentElement?.parentElement?.id;
 
-    const toPaneGroup = onMoveData.to.parentElement?.parentElement?.parentElement?.parentElement;
+    const toPaneGroup = dataOnMove.to.parentElement?.parentElement?.parentElement?.parentElement;
     const toPaneGroupDirection = toPaneGroup?.dataset.panelGroupDirection;
 
-    const fromPaneGroup = onMoveData.from.parentElement?.parentElement?.parentElement?.parentElement;
+    const fromPaneGroup = dataOnMove.from.parentElement?.parentElement?.parentElement?.parentElement;
     const fromPaneGroupDirection = fromPaneGroup?.dataset.panelGroupDirection;
 
 
     // to vertical pane
     if (toPaneGroupDirection === "vertical") {
       // make "to pane group" tab active
-      const toParentPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
-      const toGroupPaneId = onMoveData.to.parentElement?.parentElement?.parentElement?.dataset.panelId;
+      const toParentPaneId = dataOnMove.to.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
+      const toGroupPaneId = dataOnMove.to.parentElement?.parentElement?.parentElement?.dataset.panelId;
       dispatch(setGroupTabActiveByName({ paneId: toParentPaneId, groupPaneId: toGroupPaneId, tabName }));
     }
 
@@ -282,8 +282,8 @@ export default function WorkspacePage() {
     // from vertical pane
     if (fromPaneGroupDirection === "vertical") {
       // make "from pane group" tab active
-      const fromParentPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
-      const fromGroupPaneId = onMoveData.from.parentElement?.parentElement?.parentElement?.dataset.panelId;
+      const fromParentPaneId = dataOnMove.from.parentElement?.parentElement?.parentElement?.parentElement?.parentElement?.id;
+      const fromGroupPaneId = dataOnMove.from.parentElement?.parentElement?.parentElement?.dataset.panelId;
       const findParentPane = panes.find((pane) => pane.id === fromParentPaneId);
       const findGroupPane = findParentPane?.group.find((group) => group.id === fromGroupPaneId);
       const inactiveTab = findGroupPane?.tabs.find((tab) => tab.name !== tabName);
@@ -323,7 +323,7 @@ export default function WorkspacePage() {
     if (type === 'file') {
       dispatch(addFile({ id, name, directoryId, content: '' }));
     } else {
-      dispatch(addDir({ id, name, directoryId, children: [] }));
+      dispatch(addDir({ id, name, directoryId }));
     }
   }
 
@@ -337,6 +337,19 @@ export default function WorkspacePage() {
 
   const handleGroupPaneSize = ({ paneId, groupPaneId, size }: { paneId: string; groupPaneId: string; size: number }) => {
     dispatch(setGroupPaneSize({ paneId, groupPaneId, size }));
+  }
+
+  const handleMovedFileExplorerItem = (dataOnMove: SortableEvent) => {
+    const fileId = dataOnMove.item.id;
+    const fileName = dataOnMove.item.innerText;
+
+    const toDirId = dataOnMove.to.parentElement?.id || "";
+    const fromDirId = dataOnMove.from.parentElement?.id || "";
+
+    dispatch(removeFile({ id: fileId, directoryId: fromDirId }));
+
+    const fileContent = files.find((file) => file.id === fileId)?.content;
+    dispatch(addFile({ id: fileId, name: fileName, directoryId: toDirId, content: fileContent }));
   }
 
   return (
@@ -376,6 +389,7 @@ export default function WorkspacePage() {
               handlePaneSize={(val) => handleGroupPaneSize({ paneId, ...val })}
               handleVerticalPaneSize={(val) => handleVerticalPaneSize({ paneId, size: val })}
               setNewFile={(val) => handleAddFile(val)}
+              setMovedItem={(val) => handleMovedFileExplorerItem(val)}
             />
           ) : (
             <WorkspacePane
@@ -410,6 +424,7 @@ export default function WorkspacePage() {
               handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
               handlePaneSize={(val) => handlePaneSize({ paneId, size: val })}
               setNewFile={(val) => handleAddFile(val)}
+              setMovedItem={(val) => handleMovedFileExplorerItem(val)}
             />
           ))}
       </PanelGroup>

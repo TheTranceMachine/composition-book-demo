@@ -6,6 +6,7 @@ import CharactersPane from "../characters/Characters";
 import StorySettingsPane from "../storySettings/StorySettings";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
+import { SortableEvent } from 'react-sortablejs';
 
 // https://www.npmjs.com/package/@monaco-editor/react#for-nextjs-users
 const MonacoEditor = dynamic(() => import('../editor/Editor'), {
@@ -32,6 +33,7 @@ type ComponentSwitcherPropTypes = {
   handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { name: string; type?: string }) => void;
   setNewFile: (val: { name: string, directoryId: string, type: string }) => void;
+  setMovedItem: (val: SortableEvent) => void;
 };
 
 const ComponentSwitcher = ({
@@ -54,6 +56,7 @@ const ComponentSwitcher = ({
   handleDeletionRequest,
   handlePaneComponentChange,
   setNewFile,
+  setMovedItem,
 }: ComponentSwitcherPropTypes) => {
   switch (component) {
     case "Pane Manager":
@@ -83,6 +86,7 @@ const ComponentSwitcher = ({
             setSelectedFile={(val) => handleSelectedFile(val)}
             panelExpanded={panelExpanded}
             setNewFile={(val) => setNewFile(val)}
+            setMovedItem={(val) => setMovedItem(val)}
           />
         </div>
       );
