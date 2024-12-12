@@ -58,16 +58,18 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
       onEnd={(val) => handleMovedItem(val)}
     >
       {files.map((file) => (
-        <CustomContextMenu key={file.id} handleInput={(val) => createNewFile({ fileId: file.id, ...val })}>
-          <FileObject
-            file={file}
-            setSelectedFile={(val) => setSelectedFile(val)}
-            panelExpanded={panelExpanded}
-            setNewFile={(val) => setNewFile(val)}
-            setMovedItem={(val) => handleMovedItem(val)}
-            level={level + 1}
-          />
-        </CustomContextMenu>
+        <li className={`file-item ${level === 0 ? 'border-b border-b-gray-900' : ''} ${level > 1 ? 'pl-6' : ''}`} id={file.id} key={file.id}>
+          <CustomContextMenu handleInput={(val) => createNewFile({ fileId: file.id, ...val })}>
+            <FileObject
+              file={file}
+              setSelectedFile={(val) => setSelectedFile(val)}
+              panelExpanded={panelExpanded}
+              setNewFile={(val) => setNewFile(val)}
+              setMovedItem={(val) => handleMovedItem(val)}
+              level={level + 1}
+            />
+          </CustomContextMenu>
+        </li>
       ))}
     </ReactSortable>
   ) : (

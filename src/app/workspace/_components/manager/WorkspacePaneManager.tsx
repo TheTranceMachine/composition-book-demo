@@ -7,7 +7,7 @@ import NewFileInput from "./NewFileInput";
 import components from "./components";
 
 type WorkspacePaneManagerTypes = {
-  handlePaneComponentChange: (val: { name: string; }) => void;
+  handlePaneComponentChange: (val: { name: string; type?: string }) => void;
   panelExpanded: boolean | 0 | undefined;
 };
 
@@ -35,7 +35,7 @@ const WorkspacePaneManager = ({ handlePaneComponentChange, panelExpanded }: Work
       </Button>
       <div className={`flex items-center gap-2 ${panelExpanded ? '' : 'flex-col'}`}>
         <NewFileInput
-          onClick={() => handlePaneComponentChange({ name: input })}
+          onClick={() => handlePaneComponentChange({ name: input, type: "file" })}
           onChange={(e) => setInput(e.target.value)}
           panelExpanded={panelExpanded}
         />

@@ -304,7 +304,8 @@ export default function WorkspacePage() {
     dispatch(updateTab({ paneId, tabId, name: component }));
     if (type === "file") {
       // Component type - file. Add new file to the file explorer
-      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), content: '' }));
+      dispatch(addFile({ id: uuidv4(), name: component, directoryId: '', content: '' }));
+      toast.success("New file created successfully");
     }
   };
 
@@ -312,7 +313,8 @@ export default function WorkspacePage() {
     dispatch(updateGroupTab({ paneId, groupPaneId, tabId, name: component }));
     if (type === "file") {
       // Component type - file. Add new file to the file explorer
-      dispatch(addFile({ id: uuidv4(), name: component, directoryId: uuidv4(), content: '' }));
+      dispatch(addFile({ id: uuidv4(), name: component, directoryId: '', content: '' }));
+      toast.success("New file created successfully");
     }
   }
 
@@ -320,8 +322,10 @@ export default function WorkspacePage() {
     const id = uuidv4();
     if (type === 'file') {
       dispatch(addFile({ id, name, directoryId, content: '' }));
+      toast.success("New file created successfully");
     } else {
       dispatch(addDir({ id, name, directoryId }));
+      toast.success("New directory created successfully");
     }
   }
 
@@ -341,8 +345,8 @@ export default function WorkspacePage() {
     const fileId = dataOnMove.item.id;
     const fileName = dataOnMove.item.innerText;
 
-    const toDirId = dataOnMove.to.parentElement?.id || "";
-    const fromDirId = dataOnMove.from.parentElement?.id || "";
+    const toDirId = dataOnMove.to.parentElement?.parentElement?.id || "";
+    const fromDirId = dataOnMove.from.parentElement?.parentElement?.id || "";
 
     dispatch(removeFile({ id: fileId, directoryId: fromDirId }));
 

@@ -17,7 +17,7 @@ type FileObjectPropsType = Readonly<{
 
 const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }: FileObjectPropsType) => {
   const [expanded, setExpanded] = useState(false);
-  const { children: fileChildren, name: fileName, id: fileId } = file;
+  const { children: fileChildren, name: fileName } = file;
 
   // If the children field is present, the item is a directory.
   const isDirectory = Boolean(fileChildren);
@@ -30,7 +30,7 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
   };
 
   return (
-    <li className={`file-item ${level === 1 ? 'border-t border-t-black' : ''} ${level > 1 ? 'pl-6' : ''} ${expanded ? 'bg-gray-900' : ''}`} id={fileId}>
+    <>
       <div
         className={`flex items-center gap-1 ${panelExpanded ? 'justify-between' : 'justify-center'} text-white hover:bg-gray-800 cursor-pointer`}
       >
@@ -59,7 +59,7 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
           level={level + 1}
         />
       )}
-    </li>
+    </>
   );
 }
 
