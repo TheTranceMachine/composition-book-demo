@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { FileDataType } from "@/types/types";
 import FileObject from "./components/FileObject";
+import CustomContextMenu from "@/app/workspace/_components/fileExplorer/components/CustomContextMenu";
 
 type FileListPropsType = Readonly<{
   data: ReadonlyArray<FileDataType>;
@@ -9,9 +10,10 @@ type FileListPropsType = Readonly<{
   panelExpanded: boolean | 0 | undefined;
   setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
   setMovedItem: (state: SortableEvent) => void;
+  level: number;
 }>;
 
-const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMovedItem }: FileListPropsType): JSX.Element => {
+const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }: FileListPropsType): JSX.Element => {
   const directories = data.filter((fileItem) => fileItem.children);
   directories.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -35,25 +37,37 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
     setMovedItem(dataOnMove);
   };
 
+  const createNewFile = ({ fileId, type, event }: { fileId: string; type: string; event: React.KeyboardEvent<HTMLInputElement>; }) => {
+    if (event.key === "Enter") {
+      const input = event.target as HTMLInputElement;
+      const inputVal = input.value;
+      if (inputVal) {
+        setNewFile({ name: inputVal, directoryId: fileId, type });
+      }
+    }
+  };
+
   return !!files.length ? (
     <ReactSortable
       tag="ul"
       list={JSON.parse(JSON.stringify(files))} // https://github.com/SortableJS/react-sortablejs/issues/149
       setList={(updatedFiles) => setFiles(updatedFiles as FileDataType[])}
-      className={`file-list ${panelExpanded ? 'pl-2' : ''}`}
+      className="file-list"
       group="files"
       onStart={(val) => val.item.classList.add("selected")}
       onEnd={(val) => handleMovedItem(val)}
     >
       {files.map((file) => (
-        <FileObject
-          key={file.id}
-          file={file}
-          setSelectedFile={(val) => setSelectedFile(val)}
-          panelExpanded={panelExpanded}
-          setNewFile={(val) => setNewFile(val)}
-          setMovedItem={(val) => handleMovedItem(val)}
-        />
+        <CustomContextMenu key={file.id} handleInput={(val) => createNewFile({ fileId: file.id, ...val })}>
+          <FileObject
+            file={file}
+            setSelectedFile={(val) => setSelectedFile(val)}
+            panelExpanded={panelExpanded}
+            setNewFile={(val) => setNewFile(val)}
+            setMovedItem={(val) => handleMovedItem(val)}
+            level={level + 1}
+          />
+        </CustomContextMenu>
       ))}
     </ReactSortable>
   ) : (

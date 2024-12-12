@@ -67,8 +67,6 @@ export default function WorkspacePage() {
   const { characters } = useSelector((state: { characters: CharactersState }) => state.characters);
   const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
-  console.log("panes", panes)
-  console.log("files", files)
   const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
   const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
 

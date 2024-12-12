@@ -80,15 +80,14 @@ const ComponentSwitcher = ({
       );
     case "File Explorer":
       return (
-        <div className="p-3">
-          <FileExplorer
-            data={files}
-            setSelectedFile={(val) => handleSelectedFile(val)}
-            panelExpanded={panelExpanded}
-            setNewFile={(val) => setNewFile(val)}
-            setMovedItem={(val) => setMovedItem(val)}
-          />
-        </div>
+        <FileExplorer
+          data={files}
+          setSelectedFile={(val) => handleSelectedFile(val)}
+          panelExpanded={panelExpanded}
+          setMovedItem={(val) => setMovedItem(val)}
+          level={0}
+          setNewFile={setNewFile}
+        />
       );
     case "Characters":
       return (

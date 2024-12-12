@@ -1,8 +1,8 @@
-import { useRef, useState } from "react";
-import { FaFile, FaFolder, FaFolderOpen } from "react-icons/fa6";
+import { useState } from "react";
+import { ImFolder, ImFolderOpen } from "react-icons/im";
+import { FaFile } from "react-icons/fa";
 import { FileDataType } from "@/types/types";
 import CustomTooltip from "@/components/Tooltip/CustomTooltip";
-import NewFilePopover from "./NewFilePopover";
 import FileExplorer from "../FileExplorer";
 import { SortableEvent } from "react-sortablejs";
 
@@ -12,17 +12,15 @@ type FileObjectPropsType = Readonly<{
   panelExpanded: boolean | 0 | undefined;
   setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
   setMovedItem: (val: SortableEvent) => void;
+  level: number;
 }>;
 
-const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMovedItem }: FileObjectPropsType) => {
+const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }: FileObjectPropsType) => {
   const [expanded, setExpanded] = useState(false);
-  const [type, setType] = useState("file");
   const { children: fileChildren, name: fileName, id: fileId } = file;
 
   // If the children field is present, the item is a directory.
   const isDirectory = Boolean(fileChildren);
-
-  const fileNameInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileClick = () => {
     if (!isDirectory) {
@@ -31,36 +29,25 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
     setExpanded(!expanded);
   };
 
-  const createNewFile = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      const inputVal = fileNameInputRef.current?.value;
-      if (inputVal) {
-        setNewFile({ name: inputVal, directoryId: fileId, type });
-        setType("file");
-      }
-    }
-  };
-
   return (
-    <li className={`file-item ${!panelExpanded ? 'py-1' : 'pl-2'} ${expanded ? 'bg-gray-900' : ''}`} id={fileId}>
+    <li className={`file-item ${level === 1 ? 'border-t border-t-black' : ''} ${level > 1 ? 'pl-6' : ''} ${expanded ? 'bg-gray-900' : ''}`} id={fileId}>
       <div
-        className="file-item-button flex items-center gap-1 justify-between text-white hover:bg-gray-800 cursor-pointer"
+        className={`flex items-center gap-1 ${panelExpanded ? 'justify-between' : 'justify-center'} text-white hover:bg-gray-800 cursor-pointer`}
       >
-        <div className="flex items-center gap-1 w-10/12" onClick={handleFileClick}>
-          <button className={`flex items-center gap-2 ${panelExpanded ? 'truncate' : ''}`}>
+        <div className={`flex items-center gap-1 ${panelExpanded ? 'w-10/12' : 'w-12/12'} p-2`} onClick={handleFileClick}>
+          <div className={`flex items-center gap-2 ${panelExpanded ? 'truncate' : ''}`}>
             {panelExpanded ? (
               <>
-                <div className="w-3">{isDirectory ? expanded ? <FaFolderOpen /> : <FaFolder /> : <FaFile />}</div>
+                <div className="h-6 w-6">{isDirectory ? expanded ? <ImFolderOpen className="w-6 h-6" /> : <ImFolder className="w-6 h-6" /> : <FaFile className="w-6 h-6" />}</div>
                 <div className="truncate">{fileName}</div>
               </>
             ) : (
               <CustomTooltip itemName={fileName}>
-                <div className="w-3">{isDirectory ? expanded ? <FaFolderOpen /> : <FaFolder /> : <FaFile />}</div>
+                <div className="h-6 w-6">{isDirectory ? expanded ? <ImFolderOpen className="w-6 h-6" /> : <ImFolder className="w-6 h-6" /> : <FaFile className="w-6 h-6" />}</div>
               </CustomTooltip>
             )}
-          </button>
+          </div>
         </div>
-        {isDirectory && <NewFilePopover ref={fileNameInputRef} handleInput={createNewFile} setType={(val: string) => setType(val)} type={type} />}
       </div>
       {fileChildren && !!fileChildren.length && expanded && (
         <FileExplorer
@@ -69,6 +56,7 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
           panelExpanded={panelExpanded}
           setNewFile={(val) => setNewFile(val)}
           setMovedItem={(val) => setMovedItem(val)}
+          level={level + 1}
         />
       )}
     </li>
