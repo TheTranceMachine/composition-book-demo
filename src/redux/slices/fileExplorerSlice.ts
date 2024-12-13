@@ -9,6 +9,11 @@ interface PayloadFileDataType extends FileDataType {
   directoryId: string;
 }
 
+interface PayloadMoveFileDataType extends FileDataType {
+  directoryId: string;
+  children: FileDataType[];
+}
+
 const initialState: FileDataType[] = [
   {
     id: uuidv4(),
@@ -195,16 +200,16 @@ const initialState: FileDataType[] = [
   },
 ];
 
-const findInDirectories = (children: FileDataType[], payload: PayloadFileDataType, type: string) => {
-  children.map((dir) => {
+const addIntoDirectories = (items: FileDataType[], payload: PayloadFileDataType, type: string) => {
+  items.map((dir) => {
     if (dir.id === payload.directoryId) {
       dir.children?.push({
         id: payload.id,
         name: payload.name,
-        ...(type === 'file' ? { content: payload.content } : { children: [] }),
+        ...(type === 'file' ? { content: payload.content } : { children: payload.children }),
       });
     } else {
-      findInDirectories(dir.children || [], payload, type);
+      addIntoDirectories(dir.children || [], payload, type);
     }
   });
 }
@@ -213,20 +218,36 @@ export const panesSlice = createSlice({
   name: 'fileExplorer',
   initialState,
   reducers: {
-    addDir: (state, action: PayloadAction<PayloadFileDataType>) => {
+    addItem: (state, action: PayloadAction<PayloadFileDataType>) => {
       if (action.payload.directoryId !== '') {
-        findInDirectories(state, action.payload, 'dir');
+        addIntoDirectories(state, action.payload, 'dir');
       } else {
         state.push({
           id: action.payload.id,
           name: action.payload.name,
-          children: [],
+          children: action.payload.children || [],
         })
+      }
+    },
+    removeItem: (state, action: PayloadAction<{ id: string, directoryId: string }>) => {
+      const removeFromDirectories = (items: FileDataType[]) => {
+        items.map((dir) => {
+          if (dir.id === action.payload.directoryId) {
+            dir.children = dir.children?.filter((file) => file.id !== action.payload.id);
+          } else {
+            removeFromDirectories(dir.children || []);
+          }
+        });
+      }
+      if (action.payload.directoryId !== '') {
+        removeFromDirectories(state);
+      } else {
+        return state.filter((file) => file.id !== action.payload.id);
       }
     },
     addFile: (state, action: PayloadAction<PayloadFileDataType>) => {
       if (action.payload.directoryId !== '') {
-        findInDirectories(state, action.payload, 'file');
+        addIntoDirectories(state, action.payload, 'file');
       } else {
         state.push({
           id: action.payload.id,
@@ -235,24 +256,8 @@ export const panesSlice = createSlice({
         })
       }
     },
-    removeFile: (state, action: PayloadAction<{ id: string, directoryId: string }>) => {
-      const findInDirectories = (children: FileDataType[]) => {
-        children.map((dir) => {
-          if (dir.id === action.payload.directoryId) {
-            dir.children = dir.children?.filter((file) => file.id !== action.payload.id);
-          } else {
-            findInDirectories(dir.children || []);
-          }
-        });
-      }
-      if (action.payload.directoryId !== '') {
-        findInDirectories(state);
-      } else {
-        return state.filter((file) => file.id !== action.payload.id);
-      }
-    },
   },
 })
 
-export const { addDir, addFile, removeFile } = panesSlice.actions
+export const { addItem, removeItem, addFile } = panesSlice.actions
 export default panesSlice.reducer

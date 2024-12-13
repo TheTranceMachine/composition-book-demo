@@ -32,7 +32,8 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
   return (
     <>
       <div
-        className={`flex items-center gap-1 ${panelExpanded ? 'justify-between' : 'justify-center'} text-white hover:bg-gray-800 cursor-pointer`}
+        className={`flex items-center gap-1 text-white hover:bg-gray-800 cursor-pointer ${panelExpanded ? 'justify-between' : 'justify-center'}`}
+        data-directory={isDirectory}
       >
         <div className={`flex items-center gap-1 ${panelExpanded ? 'w-10/12' : 'w-12/12'} p-2`} onClick={handleFileClick}>
           <div className={`flex items-center gap-2 ${panelExpanded ? 'truncate' : ''}`}>

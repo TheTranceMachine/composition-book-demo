@@ -39,7 +39,7 @@ import {
   setGroupPaneSize,
 } from "@/redux/slices/panesSlice";
 import { setEditorEnhancedSelection, setEditorCurrentSelection, setEditorSelectionRange } from "@/redux/slices/editorSlice";
-import { addDir, addFile, removeFile } from "@/redux/slices/fileExplorerSlice";
+import { addItem, removeItem, addFile } from "@/redux/slices/fileExplorerSlice";
 import { FileDataType, CharacterTypes, StorySettingTypes, PaneTypes, EditorTypes, MovedTabs, MonacoEditorCurrentSelectionTypes, DeletionItemType, CharactersState, StorySettingsState, TabTypes } from "@/types/types";
 import WorkspaceVerticalPane from './_components/pane/WorkspaceVerticalPane';
 import "./Workspace.scss";
@@ -324,7 +324,7 @@ export default function WorkspacePage() {
       dispatch(addFile({ id, name, directoryId, content: '' }));
       toast.success("New file created successfully");
     } else {
-      dispatch(addDir({ id, name, directoryId }));
+      dispatch(addItem({ id, name, directoryId, children: [] }));
       toast.success("New directory created successfully");
     }
   }
@@ -342,16 +342,34 @@ export default function WorkspacePage() {
   }
 
   const handleMovedFileExplorerItem = (dataOnMove: SortableEvent) => {
-    const fileId = dataOnMove.item.id;
-    const fileName = dataOnMove.item.innerText;
-
+    const itemId = dataOnMove.item.id;
     const toDirId = dataOnMove.to.parentElement?.parentElement?.id || "";
     const fromDirId = dataOnMove.from.parentElement?.parentElement?.id || "";
 
-    dispatch(removeFile({ id: fileId, directoryId: fromDirId }));
+    const isDirectory = (dataOnMove.item.firstChild?.firstChild as HTMLElement)?.dataset.directory;
 
-    const fileContent = files.find((file) => file.id === fileId)?.content;
-    dispatch(addFile({ id: fileId, name: fileName, directoryId: toDirId, content: fileContent }));
+    const findItem = (items: FileDataType[]): FileDataType | undefined => {
+      for (let item of items) {
+        if (item.id === itemId) {
+          return item;
+        } else if (item.children) {
+          const children: FileDataType | undefined = findItem(item.children);
+          if (children) {
+            return children;
+          }
+        }
+      }
+    }
+
+    const item = findItem(files);
+    if (item) {
+      dispatch(removeItem({ id: item.id, directoryId: fromDirId }));
+      if (isDirectory === "true") {
+        dispatch(addItem({ ...item, directoryId: toDirId }));
+      } else {
+        dispatch(addItem({ ...item, directoryId: toDirId }));
+      }
+    }
   }
 
   return (

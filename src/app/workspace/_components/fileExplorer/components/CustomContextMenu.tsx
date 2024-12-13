@@ -27,7 +27,7 @@ const CustomContextMenu = ({ children, handleInput }: CustomContextMenuTypes) =>
     </ContextMenuTrigger>
     <ContextMenuContent>
       <ContextMenuSub>
-        <ContextMenuSubTrigger>New File</ContextMenuSubTrigger>
+        <ContextMenuSubTrigger className="cursor-pointer">New File</ContextMenuSubTrigger>
         <ContextMenuSubContent sideOffset={8}>
           <div className="flex gap-1">
             <Input placeholder="File Name" onKeyDown={(event) => handleInput({ type: 'file', event })} />
@@ -36,7 +36,7 @@ const CustomContextMenu = ({ children, handleInput }: CustomContextMenuTypes) =>
       </ContextMenuSub>
       <ContextMenuSeparator />
       <ContextMenuSub>
-        <ContextMenuSubTrigger>New Folder</ContextMenuSubTrigger>
+        <ContextMenuSubTrigger className="cursor-pointer">New Folder</ContextMenuSubTrigger>
         <ContextMenuSubContent sideOffset={8}>
           <div className="flex gap-1">
             <Input placeholder="Folder Name" onKeyDown={(event) => handleInput({ type: 'dir', event })} />

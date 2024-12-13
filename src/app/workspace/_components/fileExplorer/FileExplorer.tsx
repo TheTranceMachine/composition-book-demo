@@ -33,7 +33,7 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
   }, [data]);
 
   const handleMovedItem = (dataOnMove: SortableEvent) => {
-    dataOnMove.item.classList.remove("selected");
+    dataOnMove.item.classList.remove("pl-6");
     setMovedItem(dataOnMove);
   };
 
@@ -54,7 +54,7 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
       setList={(updatedFiles) => setFiles(updatedFiles as FileDataType[])}
       className="file-list"
       group="files"
-      onStart={(val) => val.item.classList.add("selected")}
+      onStart={(val) => val.item.classList.add("pl-6")}
       onEnd={(val) => handleMovedItem(val)}
     >
       {files.map((file) => (
