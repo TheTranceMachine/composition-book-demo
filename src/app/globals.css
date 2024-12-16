@@ -17,6 +17,13 @@ html {
   height: 100%;
 }
 
+/* File explorer */
+.diagonal-background {
+  background-color: #e5e5f7;
+  opacity: 0.8;
+  background: repeating-linear-gradient( 45deg, #15222e, #15222e 5px, #1a2a3a 5px, #1a2a3a 9px );
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

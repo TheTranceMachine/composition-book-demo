@@ -8,12 +8,12 @@ type FileListPropsType = Readonly<{
   data: ReadonlyArray<FileDataType>;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
-  setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string; }) => void;
   setMovedItem: (state: SortableEvent) => void;
   level: number;
 }>;
 
-const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }: FileListPropsType): JSX.Element => {
+const FileExplorer: React.FC<FileListPropsType> = ({ data, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }) => {
   const directories = data.filter((fileItem) => fileItem.children);
   directories.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -37,17 +37,7 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
     setMovedItem(dataOnMove);
   };
 
-  const createNewFile = ({ fileId, type, event }: { fileId: string; type: string; event: React.KeyboardEvent<HTMLInputElement>; }) => {
-    if (event.key === "Enter") {
-      const input = event.target as HTMLInputElement;
-      const inputVal = input.value;
-      if (inputVal) {
-        setNewFile({ name: inputVal, directoryId: fileId, type });
-      }
-    }
-  };
-
-  return !!files.length ? (
+  return (
     <ReactSortable
       tag="ul"
       list={JSON.parse(JSON.stringify(files))} // https://github.com/SortableJS/react-sortablejs/issues/149
@@ -59,7 +49,7 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
     >
       {files.map((file) => (
         <li className={`file-item ${level === 0 ? 'border-b border-b-gray-900' : ''} ${level > 1 ? 'pl-6' : ''}`} id={file.id} key={file.id}>
-          <CustomContextMenu handleInput={(val) => createNewFile({ fileId: file.id, ...val })}>
+          <CustomContextMenu handleInput={(val) => setNewFile({ directoryId: file.id, ...val })}>
             <FileObject
               file={file}
               setSelectedFile={(val) => setSelectedFile(val)}
@@ -72,9 +62,7 @@ const FileExplorer = ({ data, setSelectedFile, panelExpanded, setNewFile, setMov
         </li>
       ))}
     </ReactSortable>
-  ) : (
-    <div className="text-white">No files found</div>
-  );
+  )
 }
 
 export default FileExplorer;

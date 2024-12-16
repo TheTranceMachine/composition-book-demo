@@ -7,6 +7,8 @@ import StorySettingsPane from "../storySettings/StorySettings";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
 import { SortableEvent } from 'react-sortablejs';
+import CustomContextMenu from '../fileExplorer/components/CustomContextMenu';
+import NoFilesSpace from '../fileExplorer/components/NoFilesSpace';
 
 // https://www.npmjs.com/package/@monaco-editor/react#for-nextjs-users
 const MonacoEditor = dynamic(() => import('../editor/Editor'), {
@@ -26,13 +28,13 @@ type ComponentSwitcherPropTypes = {
   panelVerticalSize?: number | undefined;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
-  handleEditorChange: (val: { tabId: string, content: string | undefined }) => void;
+  handleEditorChange: (val: { tabId: string; content: string | undefined; }) => void;
   handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
   handleNewCharacter: (val: string) => void;
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { name: string; type?: string }) => void;
-  setNewFile: (val: { name: string, directoryId: string, type: string }) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string; }) => void;
   setMovedItem: (val: SortableEvent) => void;
 };
 
@@ -79,16 +81,21 @@ const ComponentSwitcher = ({
         />
       );
     case "File Explorer":
-      return (
-        <FileExplorer
-          data={files}
-          setSelectedFile={(val) => handleSelectedFile(val)}
-          panelExpanded={panelExpanded}
-          setMovedItem={(val) => setMovedItem(val)}
-          level={0}
-          setNewFile={setNewFile}
-        />
-      );
+      return !!files.length ? (
+        <>
+          <FileExplorer
+            data={files}
+            setSelectedFile={(val) => handleSelectedFile(val)}
+            panelExpanded={panelExpanded}
+            setMovedItem={(val) => setMovedItem(val)}
+            level={0}
+            setNewFile={setNewFile}
+          />
+          <CustomContextMenu handleInput={(val) => setNewFile({ directoryId: '', ...val })}>
+            <div className="diagonal-background border-b border-b-gray-900">&nbsp;</div>
+          </CustomContextMenu>
+        </>
+      ) : <NoFilesSpace panelExpanded={panelExpanded} setNewFile={setNewFile} />;
     case "Characters":
       return (
         <CharactersPane

@@ -14,191 +14,193 @@ interface PayloadMoveFileDataType extends FileDataType {
   children: FileDataType[];
 }
 
-const initialState: FileDataType[] = [
-  {
-    id: uuidv4(),
-    name: "README.md",
-    content: "# Welcome to the project!",
-  },
-  {
-    id: uuidv4(),
-    name: "Documents Test test",
-    children: [
-      {
-        id: uuidv4(),
-        name: "Word.doc",
-        content: "This is a word document",
-      },
-      {
-        id: uuidv4(),
-        name: "Powerpoint.ppt",
-        content: "This is a powerpoint presentation",
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Downloads",
-    children: [
-      {
-        id: uuidv4(),
-        name: "unnamed.txt",
-        content: "This is a text file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "foo.txt",
-            content: "This is a text file",
-          },
-          {
-            id: uuidv4(),
-            name: "bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Testing",
-    children: [
-      {
-        id: uuidv4(),
-        name: "unnamed.txt",
-        content: "This is a text file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "foo.txt",
-            content: "This is a text file",
-          },
-          {
-            id: uuidv4(),
-            name: "bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Jokes",
-    children: [
-      {
-        id: uuidv4(),
-        name: "joke.md",
-        content: "This is a markdown file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "foo.pdf",
-            content: "This is a pdf file",
-          },
-          {
-            id: uuidv4(),
-            name: "bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Favourites",
-    children: [
-      {
-        id: uuidv4(),
-        name: "food.txt",
-        content: "This is a text file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "cake.txt",
-            content: "This is a text file",
-          },
-          {
-            id: uuidv4(),
-            name: "choco-bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Comedies",
-    children: [
-      {
-        id: uuidv4(),
-        name: "loopy.txt",
-        content: "This is a text file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "fake.txt",
-            content: "This is a text file",
-          },
-          {
-            id: uuidv4(),
-            name: "monkey-bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: uuidv4(),
-    name: "Dramas",
-    children: [
-      {
-        id: uuidv4(),
-        name: "sad.txt",
-        content: "This is a text file",
-      },
-      {
-        id: uuidv4(),
-        name: "Misc",
-        children: [
-          {
-            id: uuidv4(),
-            name: "fools.txt",
-            content: "This is a text file",
-          },
-          {
-            id: uuidv4(),
-            name: "bar.txt",
-            content: "This is a text file",
-          },
-        ],
-      },
-    ],
-  },
-];
+// const initialState: FileDataType[] = [
+//   {
+//     id: uuidv4(),
+//     name: "README.md",
+//     content: "# Welcome to the project!",
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Documents Test test",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "Word.doc",
+//         content: "This is a word document",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Powerpoint.ppt",
+//         content: "This is a powerpoint presentation",
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Downloads",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "unnamed.txt",
+//         content: "This is a text file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "foo.txt",
+//             content: "This is a text file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Testing",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "unnamed.txt",
+//         content: "This is a text file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "foo.txt",
+//             content: "This is a text file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Jokes",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "joke.md",
+//         content: "This is a markdown file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "foo.pdf",
+//             content: "This is a pdf file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Favourites",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "food.txt",
+//         content: "This is a text file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "cake.txt",
+//             content: "This is a text file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "choco-bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Comedies",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "loopy.txt",
+//         content: "This is a text file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "fake.txt",
+//             content: "This is a text file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "monkey-bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     id: uuidv4(),
+//     name: "Dramas",
+//     children: [
+//       {
+//         id: uuidv4(),
+//         name: "sad.txt",
+//         content: "This is a text file",
+//       },
+//       {
+//         id: uuidv4(),
+//         name: "Misc",
+//         children: [
+//           {
+//             id: uuidv4(),
+//             name: "fools.txt",
+//             content: "This is a text file",
+//           },
+//           {
+//             id: uuidv4(),
+//             name: "bar.txt",
+//             content: "This is a text file",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ];
+
+const initialState: FileDataType[] = [];
 
 const addIntoDirectories = (items: FileDataType[], payload: PayloadFileDataType, type: string) => {
   items.map((dir) => {

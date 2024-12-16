@@ -10,7 +10,7 @@ type FileObjectPropsType = Readonly<{
   file: FileDataType;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
-  setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string; }) => void;
   setMovedItem: (val: SortableEvent) => void;
   level: number;
 }>;
