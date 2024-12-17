@@ -1,9 +1,10 @@
 import dynamic from "next/dynamic";
-import React from "react";
+import { useState } from "react";
 import { Selection } from "monaco-editor";
 import { Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { VscClose, VscSplitHorizontal, VscSplitVertical } from "react-icons/vsc";
+import { FiMaximize, FiMinimize } from "react-icons/fi";
 import {
   CharacterTypes,
   DeletionItemType,
@@ -90,7 +91,19 @@ const WorkspacePane = ({
   removeFileExplorerItem,
   setMovedItem,
 }: WorkspacePaneProps) => {
+  const [fullScreen, setFullScreen] = useState(false);
   const panelExpanded = panelSize && panelSize > 8;
+
+  const togglePaneFullScreen = (id: string) => {
+    const div = document.getElementById(id);
+    if (document.fullscreenElement) {
+      setFullScreen(false);
+      document.exitFullscreen();
+    } else {
+      setFullScreen(true);
+      div?.requestFullscreen();
+    }
+  };
 
   return (
     <>
@@ -129,9 +142,24 @@ const WorkspacePane = ({
               )}
             </ReactSortable>
             <div className="flex items-center h-8">
-              <VscSplitVertical className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addVerticalPane} />
-              <VscSplitHorizontal className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addPane} />
-              <VscClose className="text-white cursor-pointer w-4 h-4 mx-1" onClick={removePane} />
+              {fullScreen ? (
+                <FiMinimize
+                  className="text-white cursor-pointer w-4 h-4 mx-1"
+                  onClick={() => togglePaneFullScreen(paneId)}
+                />
+              ) : (
+                <FiMaximize
+                  className="text-white cursor-pointer w-4 h-4 mx-1"
+                  onClick={() => togglePaneFullScreen(paneId)}
+                />
+              )}
+              {!fullScreen && (
+                <>
+                  <VscSplitVertical className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addVerticalPane} />
+                  <VscSplitHorizontal className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addPane} />
+                  <VscClose className="text-white cursor-pointer w-4 h-4 mx-1" onClick={removePane} />
+                </>
+              )}
             </div>
           </div>
           {tabs.map(({ id, content, active, name }) => (
