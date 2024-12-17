@@ -1,16 +1,23 @@
 import dynamic from "next/dynamic";
 import React from "react";
-import { Selection } from 'monaco-editor';
+import { Selection } from "monaco-editor";
 import { Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { VscClose, VscSplitHorizontal, VscSplitVertical } from "react-icons/vsc";
-import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, StorySettingTypes, TabTypes } from "@/types/types";
+import {
+  CharacterTypes,
+  DeletionItemType,
+  FileDataType,
+  MonacoEditorCurrentSelectionTypes,
+  StorySettingTypes,
+  TabTypes,
+} from "@/types/types";
 import ComponentSwitcher from "./ComponentSwitcher";
 import components from "../manager/components";
 
-const WorkspacePaneTabs = dynamic(() => import('./WorkspacePaneTabs'), {
+const WorkspacePaneTabs = dynamic(() => import("./WorkspacePaneTabs"), {
   ssr: false,
-})
+});
 
 type WorkspacePaneProps = {
   paneId: string;
@@ -28,7 +35,7 @@ type WorkspacePaneProps = {
   panelVerticalSize?: number | undefined;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
-  setTabContent: (val: { tabId: string; content: string | undefined; }) => void;
+  setTabContent: (val: { tabId: string; content: string | undefined }) => void;
   sortTabs: (val: TabTypes[]) => void;
   removeTab: (val: string) => void;
   setTabActive: (val: string) => void;
@@ -41,9 +48,10 @@ type WorkspacePaneProps = {
   handleNewCharacter: (val: string) => void;
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
-  handlePaneComponentChange: (val: { name: string; type?: string; tabId: string; component: string; }) => void;
-  handlePaneSize: (val: number) => void
-  setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  handlePaneComponentChange: (val: { name: string; type?: string; tabId: string; component: string }) => void;
+  handlePaneSize: (val: number) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
+  removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
   setMovedItem: (val: SortableEvent) => void;
 };
 
@@ -79,6 +87,7 @@ const WorkspacePane = ({
   handlePaneComponentChange,
   handlePaneSize,
   setNewFile,
+  removeFileExplorerItem,
   setMovedItem,
 }: WorkspacePaneProps) => {
   const panelExpanded = panelSize && panelSize > 8;
@@ -103,31 +112,31 @@ const WorkspacePane = ({
               className="pages-tabs flex flex-nowrap gap-0.5 w-full h-8 bg-black overflow-x-auto overflow-y-hidden"
               draggable=".draggable"
             >
-              {!!tabs.length ? tabs.map(({ id, name, active }) => (
-                <WorkspacePaneTabs
-                  key={id}
-                  active={active}
-                  name={name}
-                  setTabActive={() => setTabActive(id)}
-                  removeTab={() => removeTab(id)}
-                />
-              )) : <div className="flex items-center justify-center w-full h-full text-white opacity-20 text-sm">Empty</div>}
+              {!!tabs.length ? (
+                tabs.map(({ id, name, active }) => (
+                  <WorkspacePaneTabs
+                    key={id}
+                    active={active}
+                    name={name}
+                    setTabActive={() => setTabActive(id)}
+                    removeTab={() => removeTab(id)}
+                  />
+                ))
+              ) : (
+                <div className="flex items-center justify-center w-full h-full text-white opacity-20 text-sm">
+                  Empty
+                </div>
+              )}
             </ReactSortable>
             <div className="flex items-center h-8">
-              <VscSplitVertical
-                className="text-white cursor-pointer w-4 h-4 mx-1"
-                onClick={addVerticalPane}
-              />
-              <VscSplitHorizontal
-                className="text-white cursor-pointer w-4 h-4 mx-1"
-                onClick={addPane}
-              />
+              <VscSplitVertical className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addVerticalPane} />
+              <VscSplitHorizontal className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addPane} />
               <VscClose className="text-white cursor-pointer w-4 h-4 mx-1" onClick={removePane} />
             </div>
           </div>
           {tabs.map(({ id, content, active, name }) => (
             <div
-              className={`pane-content-wrapper relative ${active ? "active" : ""} ${components.find(comp => comp.name === name) ? "overflow-y-auto" : ""}`}
+              className={`pane-content-wrapper relative ${active ? "active" : ""} ${components.find((comp) => comp.name === name) ? "overflow-y-auto" : ""}`}
               key={id}
               id={`editor-${id}`}
             >
@@ -153,6 +162,7 @@ const WorkspacePane = ({
                 handleNewCharacter={handleNewCharacter}
                 handleNewSetting={handleNewSetting}
                 setNewFile={(val) => setNewFile(val)}
+                removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
                 setMovedItem={(val) => setMovedItem(val)}
               />
             </div>
@@ -161,7 +171,7 @@ const WorkspacePane = ({
       </Panel>
       <PanelResizeHandle className={`bg-black hover:bg-neutral-100 ${resizeHandleClassName}`} />
     </>
-  )
+  );
 };
 
 export default WorkspacePane;

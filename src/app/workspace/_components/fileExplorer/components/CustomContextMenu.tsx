@@ -20,25 +20,28 @@ import { useRef } from "react";
 type CustomContextMenuTypes = {
   children: React.ReactNode;
   handleInput: (val: { type: string; name: string | undefined }) => void;
+  removeFileExplorerItem?: () => void;
 };
 
-
-const CustomContextMenu = ({ children, handleInput }: CustomContextMenuTypes) => {
+const CustomContextMenu = ({ children, handleInput, removeFileExplorerItem }: CustomContextMenuTypes) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dirInputRef = useRef<HTMLInputElement>(null);
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger>
-        {children}
-      </ContextMenuTrigger>
+      <ContextMenuTrigger>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuSub>
           <ContextMenuSubTrigger className="cursor-pointer">New File</ContextMenuSubTrigger>
           <ContextMenuSubContent sideOffset={8}>
             <div className="flex gap-1">
               <Input placeholder="File Name" ref={fileInputRef} />
-              <Button variant="default" onClick={() => handleInput({ type: 'file', name: fileInputRef.current?.value })}>Create</Button>
+              <Button
+                variant="default"
+                onClick={() => handleInput({ type: "file", name: fileInputRef.current?.value })}
+              >
+                Create
+              </Button>
             </div>
           </ContextMenuSubContent>
         </ContextMenuSub>
@@ -48,13 +51,19 @@ const CustomContextMenu = ({ children, handleInput }: CustomContextMenuTypes) =>
           <ContextMenuSubContent sideOffset={8}>
             <div className="flex gap-1">
               <Input placeholder="Folder Name" ref={dirInputRef} />
-              <Button variant="default" onClick={() => handleInput({ type: 'dir', name: dirInputRef.current?.value })}>Create</Button>
+              <Button variant="default" onClick={() => handleInput({ type: "dir", name: dirInputRef.current?.value })}>
+                Create
+              </Button>
             </div>
           </ContextMenuSubContent>
         </ContextMenuSub>
+        <ContextMenuSeparator />
+        <ContextMenuItem onSelect={removeFileExplorerItem} className="cursor-pointer">
+          Remove
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
-  )
+  );
 };
 
 export default CustomContextMenu;

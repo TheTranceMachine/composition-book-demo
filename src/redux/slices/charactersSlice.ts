@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { CharactersState, CharacterTypes } from '@/types/types';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { CharactersState, CharacterTypes } from "@/types/types";
 
 const initialState: CharactersState = {
   characters: [],
-}
+};
 
 export const charactersSlice = createSlice({
-  name: 'characters',
+  name: "characters",
   initialState,
   reducers: {
     setCharacter: (state, action: PayloadAction<CharacterTypes>) => {
@@ -17,17 +17,17 @@ export const charactersSlice = createSlice({
       // immutable state based off those changes
       return {
         characters: [...state.characters, action.payload],
-      }
+      };
     },
     removeCharacter: (state, action: PayloadAction<string>) => {
       return {
         characters: state.characters.filter((character) => character.id !== action.payload),
-      }
+      };
     },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { setCharacter, removeCharacter } = charactersSlice.actions
+export const { setCharacter, removeCharacter } = charactersSlice.actions;
 
-export default charactersSlice.reducer
+export default charactersSlice.reducer;

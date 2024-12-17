@@ -1,12 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { uniqueObjectsById } from '@/utils/utils';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { uniqueObjectsById } from "@/utils/utils";
 import { FileDataType } from "@/types/types";
-
 
 interface PayloadFileDataType extends FileDataType {
   directoryId: string;
+  type: string;
 }
 
 interface PayloadMoveFileDataType extends FileDataType {
@@ -208,58 +208,46 @@ const addIntoDirectories = (items: FileDataType[], payload: PayloadFileDataType,
       dir.children?.push({
         id: payload.id,
         name: payload.name,
-        ...(type === 'file' ? { content: payload.content } : { children: payload.children }),
+        ...(type === "file" ? { content: payload.content } : { children: payload.children }),
       });
     } else {
       addIntoDirectories(dir.children || [], payload, type);
     }
   });
-}
+};
 
 export const panesSlice = createSlice({
-  name: 'fileExplorer',
+  name: "fileExplorer",
   initialState,
   reducers: {
     addItem: (state, action: PayloadAction<PayloadFileDataType>) => {
-      if (action.payload.directoryId !== '') {
-        addIntoDirectories(state, action.payload, 'dir');
+      if (action.payload.directoryId !== "") {
+        addIntoDirectories(state, action.payload, action.payload.type);
       } else {
         state.push({
           id: action.payload.id,
           name: action.payload.name,
-          children: action.payload.children || [],
-        })
-      }
-    },
-    removeItem: (state, action: PayloadAction<{ id: string, directoryId: string }>) => {
-      const removeFromDirectories = (items: FileDataType[]) => {
-        items.map((dir) => {
-          if (dir.id === action.payload.directoryId) {
-            dir.children = dir.children?.filter((file) => file.id !== action.payload.id);
-          } else {
-            removeFromDirectories(dir.children || []);
-          }
+          ...(action.payload.type === "file"
+            ? { content: action.payload.content }
+            : { children: action.payload.children || [] }),
         });
       }
-      if (action.payload.directoryId !== '') {
-        removeFromDirectories(state);
-      } else {
-        return state.filter((file) => file.id !== action.payload.id);
-      }
     },
-    addFile: (state, action: PayloadAction<PayloadFileDataType>) => {
-      if (action.payload.directoryId !== '') {
-        addIntoDirectories(state, action.payload, 'file');
-      } else {
-        state.push({
-          id: action.payload.id,
-          name: action.payload.name,
-          content: action.payload.content,
-        })
-      }
+    removeItem: (state, action: PayloadAction<{ id: string }>) => {
+      const filterItems = (children: FileDataType[]): FileDataType[] =>
+        children
+          .map((file) =>
+            file.id === action.payload.id
+              ? null
+              : file.children && file.children.length
+                ? { ...file, children: filterItems(file.children) }
+                : file
+          )
+          .filter((item) => item !== null);
+      return filterItems(state);
     },
   },
-})
+});
 
-export const { addItem, removeItem, addFile } = panesSlice.actions
-export default panesSlice.reducer
+export const { addItem, removeItem } = panesSlice.actions;
+export default panesSlice.reducer;

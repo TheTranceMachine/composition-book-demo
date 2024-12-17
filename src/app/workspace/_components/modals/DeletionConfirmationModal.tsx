@@ -7,22 +7,16 @@ type DeletionConfirmationModalPropTypes = {
   setShow: () => void;
   onDelete: () => void;
   item: string;
-  type: string;
 };
 
-const DeletionConfirmationModal = ({ show, setShow, onDelete, item, type }: DeletionConfirmationModalPropTypes) => (
-  <CustomDialog
-    dialogOpen={show}
-    setDialogOpen={setShow}
-  >
+const DeletionConfirmationModal = ({ show, setShow, onDelete, item }: DeletionConfirmationModalPropTypes) => (
+  <CustomDialog dialogOpen={show} setDialogOpen={setShow}>
     <DialogContent>
       <DialogTitle>
-        <div className="flex gap-2 items-center text-black">
-          You&apos;re deleting a {type}
-        </div>
+        <div className="flex gap-2 items-center text-black">Deleting</div>
       </DialogTitle>
       <p className="text-black">
-        Are you sure you want to delete <b>{item}</b> from {type}s?
+        Are you sure you want to delete <b>{item}</b>?
       </p>
       <DialogFooter>
         <div className="flex gap-2">

@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
-import { StorySettingsState, StorySettingTypes } from '@/types/types';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { StorySettingsState, StorySettingTypes } from "@/types/types";
 
 const initialState: StorySettingsState = {
-  storySettings: []
-}
+  storySettings: [],
+};
 
 export const storySettingSlice = createSlice({
-  name: 'storySettings',
+  name: "storySettings",
   initialState,
   reducers: {
     setStorySetting: (state, action: PayloadAction<StorySettingTypes>) => {
@@ -17,17 +17,17 @@ export const storySettingSlice = createSlice({
       // immutable state based off those changes
       return {
         storySettings: [...state.storySettings, action.payload],
-      }
+      };
     },
     removeStorySetting: (state, action: PayloadAction<string>) => {
       return {
         storySettings: state.storySettings.filter((storySetting) => storySetting.id !== action.payload),
-      }
+      };
     },
   },
-})
+});
 
 // Action creators are generated for each case reducer function
-export const { setStorySetting, removeStorySetting } = storySettingSlice.actions
+export const { setStorySetting, removeStorySetting } = storySettingSlice.actions;
 
-export default storySettingSlice.reducer
+export default storySettingSlice.reducer;

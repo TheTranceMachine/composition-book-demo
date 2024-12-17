@@ -1,7 +1,15 @@
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Selection } from 'monaco-editor';
+import { Selection } from "monaco-editor";
 import { SortableEvent } from "react-sortablejs";
-import { CharacterTypes, DeletionItemType, FileDataType, MonacoEditorCurrentSelectionTypes, PaneTypes, StorySettingTypes, TabTypes } from "@/types/types";
+import {
+  CharacterTypes,
+  DeletionItemType,
+  FileDataType,
+  MonacoEditorCurrentSelectionTypes,
+  PaneTypes,
+  StorySettingTypes,
+  TabTypes,
+} from "@/types/types";
 import WorkspacePane from "./WorkspacePane";
 
 type WorkspaceVerticalPaneProps = {
@@ -18,10 +26,10 @@ type WorkspaceVerticalPaneProps = {
   panelSize: number;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: { groupPaneId: string; file: FileDataType }) => void;
-  setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined; }) => void;
+  setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined }) => void;
   sortTabs: (val: { groupPaneId: string; tabs: TabTypes[] }) => void;
-  removeTab: (val: { groupPaneId: string; tabId: string; }) => void;
-  setTabActive: (val: { groupPaneId: string; tabId: string; }) => void;
+  removeTab: (val: { groupPaneId: string; tabId: string }) => void;
+  setTabActive: (val: { groupPaneId: string; tabId: string }) => void;
   setActiveTabOnMove: (val: SortableEvent) => void;
   addVerticalPane: (val: string) => void;
   addPane: () => void;
@@ -31,47 +39,54 @@ type WorkspaceVerticalPaneProps = {
   handleNewCharacter: (val: string) => void;
   handleNewSetting: (val: string) => void;
   handleDeletionRequest: (val: DeletionItemType) => void;
-  handlePaneComponentChange: (val: { groupPaneId: string; name: string; type?: string; tabId: string; component: string; }) => void;
+  handlePaneComponentChange: (val: {
+    groupPaneId: string;
+    name: string;
+    type?: string;
+    tabId: string;
+    component: string;
+  }) => void;
   handlePaneSize: (val: { groupPaneId: string; size: number }) => void;
   handleVerticalPaneSize: (val: number) => void;
-  setNewFile: (val: { name: string; directoryId: string; type: string; }) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
+  removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
   setMovedItem: (val: SortableEvent) => void;
-}
+};
 
-const WorkspaceVerticalPane = (
-  {
-    paneId,
-    order,
-    group,
-    files,
-    editorEnhancedSelection,
-    editorSelectionRange,
-    characters,
-    storySettings,
-    isMobile,
-    isLaptop,
-    panelSize,
-    setEnhancementPaneOpen,
-    handleSelectedFile,
-    setTabContent,
-    sortTabs,
-    removeTab,
-    setTabActive,
-    setActiveTabOnMove,
-    addVerticalPane,
-    addPane,
-    removePane,
-    setPaneActive,
-    handleEditorCurrentSelection,
-    handleNewCharacter,
-    handleNewSetting,
-    handleDeletionRequest,
-    handlePaneComponentChange,
-    handlePaneSize,
-    handleVerticalPaneSize,
-    setNewFile,
-    setMovedItem,
-  }: WorkspaceVerticalPaneProps) => (
+const WorkspaceVerticalPane = ({
+  paneId,
+  order,
+  group,
+  files,
+  editorEnhancedSelection,
+  editorSelectionRange,
+  characters,
+  storySettings,
+  isMobile,
+  isLaptop,
+  panelSize,
+  setEnhancementPaneOpen,
+  handleSelectedFile,
+  setTabContent,
+  sortTabs,
+  removeTab,
+  setTabActive,
+  setActiveTabOnMove,
+  addVerticalPane,
+  addPane,
+  removePane,
+  setPaneActive,
+  handleEditorCurrentSelection,
+  handleNewCharacter,
+  handleNewSetting,
+  handleDeletionRequest,
+  handlePaneComponentChange,
+  handlePaneSize,
+  handleVerticalPaneSize,
+  setNewFile,
+  removeFileExplorerItem,
+  setMovedItem,
+}: WorkspaceVerticalPaneProps) => (
   <>
     <Panel
       id={paneId}
@@ -115,6 +130,7 @@ const WorkspaceVerticalPane = (
             handlePaneComponentChange={(val) => handlePaneComponentChange({ groupPaneId, ...val })}
             handlePaneSize={(val) => handlePaneSize({ groupPaneId, size: val })}
             setNewFile={(val) => setNewFile(val)}
+            removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
             setMovedItem={(val) => setMovedItem(val)}
           />
         ))}

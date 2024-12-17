@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc",
+    "watch-prettier": "onchange \"src/**/*\" -- prettier --config ./.prettierrc --write --ignore-unknown {{changed}}",
+    "watch-dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "concurrently \"npm:watch-*\""
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
@@ -43,8 +46,10 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "class-variance-authority": "^0.7.0",
+    "concurrently": "^9.1.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
+    "onchange": "^7.1.0",
     "postcss": "^8",
     "prettier": "^3.3.3",
     "sass": "^1.81.0",

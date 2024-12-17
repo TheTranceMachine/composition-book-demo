@@ -10,17 +10,25 @@ type FileObjectPropsType = Readonly<{
   file: FileDataType;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
-  setNewFile: (val: { name: string | undefined; directoryId: string; type: string; }) => void;
+  setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
+  removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
   setMovedItem: (val: SortableEvent) => void;
   level: number;
+  isDirectory: boolean;
 }>;
 
-const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMovedItem, level }: FileObjectPropsType) => {
+const FileObject = ({
+  file,
+  setSelectedFile,
+  panelExpanded,
+  setNewFile,
+  removeFileExplorerItem,
+  setMovedItem,
+  level,
+  isDirectory,
+}: FileObjectPropsType) => {
   const [expanded, setExpanded] = useState(false);
   const { children: fileChildren, name: fileName } = file;
-
-  // If the children field is present, the item is a directory.
-  const isDirectory = Boolean(fileChildren);
 
   const handleFileClick = () => {
     if (!isDirectory) {
@@ -32,19 +40,42 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
   return (
     <>
       <div
-        className={`flex items-center gap-1 text-white hover:bg-gray-800 cursor-pointer ${panelExpanded ? 'justify-between' : 'justify-center'}`}
+        className={`flex items-center gap-1 text-white hover:bg-gray-800 cursor-pointer ${panelExpanded ? "justify-between" : "justify-center"}`}
         data-directory={isDirectory}
       >
-        <div className={`flex items-center gap-1 ${panelExpanded ? 'w-10/12' : 'w-12/12'} p-2`} onClick={handleFileClick}>
-          <div className={`flex items-center gap-2 ${panelExpanded ? 'truncate' : ''}`}>
+        <div
+          className={`flex items-center gap-1 ${panelExpanded ? "w-10/12" : "w-12/12"} p-2`}
+          onClick={handleFileClick}
+        >
+          <div className={`flex items-center gap-2 ${panelExpanded ? "truncate" : ""}`}>
             {panelExpanded ? (
               <>
-                <div className="h-6 w-6">{isDirectory ? expanded ? <ImFolderOpen className="w-6 h-6" /> : <ImFolder className="w-6 h-6" /> : <FaFile className="w-6 h-6" />}</div>
+                <div className="h-6 w-6">
+                  {isDirectory ? (
+                    expanded ? (
+                      <ImFolderOpen className="w-6 h-6" />
+                    ) : (
+                      <ImFolder className="w-6 h-6" />
+                    )
+                  ) : (
+                    <FaFile className="w-6 h-6" />
+                  )}
+                </div>
                 <div className="truncate">{fileName}</div>
               </>
             ) : (
               <CustomTooltip itemName={fileName}>
-                <div className="h-6 w-6">{isDirectory ? expanded ? <ImFolderOpen className="w-6 h-6" /> : <ImFolder className="w-6 h-6" /> : <FaFile className="w-6 h-6" />}</div>
+                <div className="h-6 w-6">
+                  {isDirectory ? (
+                    expanded ? (
+                      <ImFolderOpen className="w-6 h-6" />
+                    ) : (
+                      <ImFolder className="w-6 h-6" />
+                    )
+                  ) : (
+                    <FaFile className="w-6 h-6" />
+                  )}
+                </div>
               </CustomTooltip>
             )}
           </div>
@@ -58,10 +89,11 @@ const FileObject = ({ file, setSelectedFile, panelExpanded, setNewFile, setMoved
           setNewFile={(val) => setNewFile(val)}
           setMovedItem={(val) => setMovedItem(val)}
           level={level + 1}
+          removeFileExplorerItem={removeFileExplorerItem}
         />
       )}
     </>
   );
-}
+};
 
 export default FileObject;
