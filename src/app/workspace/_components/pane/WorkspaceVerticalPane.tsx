@@ -24,6 +24,7 @@ type WorkspaceVerticalPaneProps = {
   isMobile: boolean;
   isLaptop: boolean;
   panelSize: number;
+  fullScreen: boolean;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: { groupPaneId: string; file: FileDataType }) => void;
   setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined }) => void;
@@ -51,6 +52,7 @@ type WorkspaceVerticalPaneProps = {
   setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
   removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
   setMovedItem: (val: SortableEvent) => void;
+  togglePaneFullScreen: (val: string) => void;
 };
 
 const WorkspaceVerticalPane = ({
@@ -65,6 +67,7 @@ const WorkspaceVerticalPane = ({
   isMobile,
   isLaptop,
   panelSize,
+  fullScreen,
   setEnhancementPaneOpen,
   handleSelectedFile,
   setTabContent,
@@ -86,6 +89,7 @@ const WorkspaceVerticalPane = ({
   setNewFile,
   removeFileExplorerItem,
   setMovedItem,
+  togglePaneFullScreen,
 }: WorkspaceVerticalPaneProps) => (
   <>
     <Panel
@@ -112,6 +116,7 @@ const WorkspaceVerticalPane = ({
             resizeHandleClassName="h-[3px]"
             panelSize={panelSize}
             panelVerticalSize={size}
+            fullScreen={fullScreen}
             setEnhancementPaneOpen={setEnhancementPaneOpen}
             handleSelectedFile={(val) => handleSelectedFile({ groupPaneId, file: val })}
             setTabContent={(val) => setTabContent({ groupPaneId, ...val })}
@@ -132,6 +137,7 @@ const WorkspaceVerticalPane = ({
             setNewFile={(val) => setNewFile(val)}
             removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
             setMovedItem={(val) => setMovedItem(val)}
+            togglePaneFullScreen={() => togglePaneFullScreen(groupPaneId)}
           />
         ))}
       </PanelGroup>

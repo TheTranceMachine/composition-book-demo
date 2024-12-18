@@ -72,6 +72,7 @@ interface HandleVerticalPaneComponentChangeTypes extends HandlePaneComponentChan
 }
 
 export default function WorkspacePage() {
+  const workspaceRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isLaptop = useMediaQuery("(max-width: 1024px)");
@@ -93,6 +94,10 @@ export default function WorkspacePage() {
     id: "",
     title: "",
     type: "",
+  });
+  const [fullScreen, setFullScreen] = useState({
+    paneId: "",
+    fullScreen: false,
   });
 
   const handleEditorCurrentSelection = ({ range, currentSelection }: MonacoEditorCurrentSelectionTypes) => {
@@ -447,8 +452,19 @@ export default function WorkspacePage() {
     setDeletionConfirmationModal(true);
   };
 
+  const togglePaneFullScreen = (id: string) => {
+    const div = document.getElementById(id);
+    if (document.fullscreenElement) {
+      setFullScreen({ paneId: "", fullScreen: false });
+      document.exitFullscreen();
+    } else {
+      setFullScreen({ paneId: id, fullScreen: true });
+      div?.requestFullscreen();
+    }
+  };
+
   return (
-    <div className="workspace w-full h-full">
+    <div className="workspace w-full h-full" ref={workspaceRef}>
       <PanelGroup direction="horizontal">
         {panes.map(({ id: paneId, order, tabs, group, size }) =>
           !!group.length ? (
@@ -465,6 +481,7 @@ export default function WorkspacePage() {
               isMobile={isMobile}
               isLaptop={isLaptop}
               panelSize={size}
+              fullScreen={fullScreen.fullScreen}
               setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, ...val })}
               setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
@@ -486,6 +503,7 @@ export default function WorkspacePage() {
               setNewFile={(val) => handleAddFile(val)}
               removeFileExplorerItem={(val) => handleRemoveFileExplorerItem(val)}
               setMovedItem={(val) => handleMovedFileExplorerItem(val)}
+              togglePaneFullScreen={(val) => togglePaneFullScreen(val)}
             />
           ) : (
             <WorkspacePane
@@ -502,6 +520,7 @@ export default function WorkspacePage() {
               isLaptop={isLaptop}
               resizeHandleClassName="w-[3px]"
               panelSize={size}
+              fullScreen={fullScreen.fullScreen}
               setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
               setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
@@ -522,12 +541,18 @@ export default function WorkspacePage() {
               setNewFile={(val) => handleAddFile(val)}
               removeFileExplorerItem={(val) => handleRemoveFileExplorerItem(val)}
               setMovedItem={(val) => handleMovedFileExplorerItem(val)}
+              togglePaneFullScreen={() => togglePaneFullScreen(paneId)}
             />
           )
         )}
       </PanelGroup>
       <Suspense>
         <NewCharacterModal
+          panelElement={
+            fullScreen.fullScreen
+              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
+              : null
+          }
           show={newCharacterModal}
           setShow={() => setNewCharacterModal(false)}
           onSave={(val) => handleNewCharacterSave(val)}
@@ -536,6 +561,11 @@ export default function WorkspacePage() {
       </Suspense>
       <Suspense>
         <NewStorySettingModal
+          panelElement={
+            fullScreen.fullScreen
+              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
+              : null
+          }
           show={newStorySettingModal}
           setShow={() => setNewStorySettingModal(false)}
           onSave={(storySetting: StorySettingTypes) => handleNewStorySettingSave(storySetting)}
@@ -544,6 +574,11 @@ export default function WorkspacePage() {
       </Suspense>
       <Suspense>
         <DeletionConfirmationModal
+          panelElement={
+            fullScreen.fullScreen
+              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
+              : null
+          }
           show={deletionConfirmationModal}
           setShow={() => setDeletionConfirmationModal(false)}
           onDelete={() => handleDeleteItem(deletionItem.id, deletionItem.type)}

@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Selection } from "monaco-editor";
 import { Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
@@ -34,6 +34,7 @@ type WorkspacePaneProps = {
   resizeHandleClassName: string;
   panelSize: number | undefined;
   panelVerticalSize?: number | undefined;
+  fullScreen: boolean;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
   setTabContent: (val: { tabId: string; content: string | undefined }) => void;
@@ -54,6 +55,7 @@ type WorkspacePaneProps = {
   setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
   removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
   setMovedItem: (val: SortableEvent) => void;
+  togglePaneFullScreen: () => void;
 };
 
 const WorkspacePane = ({
@@ -70,6 +72,7 @@ const WorkspacePane = ({
   resizeHandleClassName,
   panelSize,
   panelVerticalSize,
+  fullScreen,
   setEnhancementPaneOpen,
   handleSelectedFile,
   setTabContent,
@@ -90,21 +93,10 @@ const WorkspacePane = ({
   setNewFile,
   removeFileExplorerItem,
   setMovedItem,
+  togglePaneFullScreen,
 }: WorkspacePaneProps) => {
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const [fullScreen, setFullScreen] = useState(false);
   const panelExpanded = panelSize && panelSize > 8;
-
-  const togglePaneFullScreen = (id: string) => {
-    const div = document.getElementById(id);
-    if (document.fullscreenElement) {
-      setFullScreen(false);
-      document.exitFullscreen();
-    } else {
-      setFullScreen(true);
-      div?.requestFullscreen();
-    }
-  };
 
   return (
     <>
@@ -144,18 +136,10 @@ const WorkspacePane = ({
             </ReactSortable>
             <div className="flex items-center h-8">
               {fullScreen ? (
-                <FiMinimize
-                  className="text-white cursor-pointer w-4 h-4 mx-1"
-                  onClick={() => togglePaneFullScreen(paneId)}
-                />
+                <FiMinimize className="text-white cursor-pointer w-4 h-4 mx-1" onClick={togglePaneFullScreen} />
               ) : (
-                <FiMaximize
-                  className="text-white cursor-pointer w-4 h-4 mx-1"
-                  onClick={() => togglePaneFullScreen(paneId)}
-                />
-              )}
-              {!fullScreen && (
                 <>
+                  <FiMaximize className="text-white cursor-pointer w-4 h-4 mx-1" onClick={togglePaneFullScreen} />
                   <VscSplitVertical className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addVerticalPane} />
                   <VscSplitHorizontal className="text-white cursor-pointer w-4 h-4 mx-1" onClick={addPane} />
                   <VscClose className="text-white cursor-pointer w-4 h-4 mx-1" onClick={removePane} />
