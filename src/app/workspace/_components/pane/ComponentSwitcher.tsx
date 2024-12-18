@@ -22,6 +22,7 @@ const MonacoEditor = dynamic(() => import("../editor/Editor"), {
 });
 
 type ComponentSwitcherPropTypes = {
+  panelElement: HTMLDivElement | null;
   id: string;
   component: string;
   content: string | undefined;
@@ -46,6 +47,7 @@ type ComponentSwitcherPropTypes = {
 };
 
 const ComponentSwitcher = ({
+  panelElement,
   id,
   component,
   content,
@@ -104,13 +106,17 @@ const ComponentSwitcher = ({
             level={0}
             setNewFile={setNewFile}
             removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
+            panelElement={panelElement}
           />
-          <CustomContextMenu handleInput={(val) => setNewFile({ directoryId: "", ...val })}>
+          <CustomContextMenu
+            handleInput={(val) => setNewFile({ directoryId: "", ...val })}
+            panelElement={panelElement}
+          >
             <div className="diagonal-background border-b border-b-gray-900">&nbsp;</div>
           </CustomContextMenu>
         </>
       ) : (
-        <NoFilesSpace panelExpanded={panelExpanded} setNewFile={setNewFile} />
+        <NoFilesSpace panelExpanded={panelExpanded} setNewFile={setNewFile} panelElement={panelElement} />
       );
     case "Characters":
       return (

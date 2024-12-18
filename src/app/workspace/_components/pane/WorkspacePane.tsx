@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Selection } from "monaco-editor";
 import { Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
@@ -91,6 +91,7 @@ const WorkspacePane = ({
   removeFileExplorerItem,
   setMovedItem,
 }: WorkspacePaneProps) => {
+  const panelRef = useRef<HTMLDivElement | null>(null);
   const [fullScreen, setFullScreen] = useState(false);
   const panelExpanded = panelSize && panelSize > 8;
 
@@ -114,7 +115,7 @@ const WorkspacePane = ({
         order={order}
         onResize={(size) => handlePaneSize(size)}
       >
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full" ref={panelRef}>
           <div className="flex justify-between bg-black h-8">
             <ReactSortable
               group="tabs"
@@ -169,6 +170,7 @@ const WorkspacePane = ({
               id={`editor-${id}`}
             >
               <ComponentSwitcher
+                panelElement={panelRef.current}
                 id={id}
                 component={name}
                 content={content}

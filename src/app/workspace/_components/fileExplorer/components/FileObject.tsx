@@ -7,6 +7,7 @@ import FileExplorer from "../FileExplorer";
 import { SortableEvent } from "react-sortablejs";
 
 type FileObjectPropsType = Readonly<{
+  panelElement: HTMLDivElement | null;
   file: FileDataType;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
@@ -18,6 +19,7 @@ type FileObjectPropsType = Readonly<{
 }>;
 
 const FileObject = ({
+  panelElement,
   file,
   setSelectedFile,
   panelExpanded,
@@ -90,6 +92,7 @@ const FileObject = ({
           setMovedItem={(val) => setMovedItem(val)}
           level={level + 1}
           removeFileExplorerItem={removeFileExplorerItem}
+          panelElement={panelElement}
         />
       )}
     </>

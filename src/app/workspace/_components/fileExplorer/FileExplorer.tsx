@@ -5,6 +5,7 @@ import FileObject from "./components/FileObject";
 import CustomContextMenu from "@/app/workspace/_components/fileExplorer/components/CustomContextMenu";
 
 type FileListPropsType = Readonly<{
+  panelElement: HTMLDivElement | null;
   data: ReadonlyArray<FileDataType>;
   setSelectedFile: (file: FileDataType) => void;
   panelExpanded: boolean | 0 | undefined;
@@ -15,6 +16,7 @@ type FileListPropsType = Readonly<{
 }>;
 
 const FileExplorer: React.FC<FileListPropsType> = ({
+  panelElement,
   data,
   setSelectedFile,
   panelExpanded,
@@ -71,6 +73,7 @@ const FileExplorer: React.FC<FileListPropsType> = ({
                 type: Boolean(file.children) ? "directory" : "file",
               })
             }
+            panelElement={panelElement}
           >
             <FileObject
               file={file}
@@ -81,6 +84,7 @@ const FileExplorer: React.FC<FileListPropsType> = ({
               level={level + 1}
               removeFileExplorerItem={removeFileExplorerItem}
               isDirectory={Boolean(file.children)}
+              panelElement={panelElement}
             />
           </CustomContextMenu>
         </li>
