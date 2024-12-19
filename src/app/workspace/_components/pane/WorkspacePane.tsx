@@ -1,18 +1,10 @@
 import dynamic from "next/dynamic";
 import { useRef } from "react";
-import { Selection } from "monaco-editor";
 import { Panel, PanelResizeHandle } from "react-resizable-panels";
 import { ReactSortable, SortableEvent } from "react-sortablejs";
 import { VscClose, VscSplitHorizontal, VscSplitVertical } from "react-icons/vsc";
 import { FiMaximize, FiMinimize } from "react-icons/fi";
-import {
-  CharacterTypes,
-  DeletionItemType,
-  FileDataType,
-  MonacoEditorCurrentSelectionTypes,
-  StorySettingTypes,
-  TabTypes,
-} from "@/types/types";
+import { FileDataType, TabTypes } from "@/types/types";
 import ComponentSwitcher from "./ComponentSwitcher";
 import components from "../manager/components";
 
@@ -25,19 +17,13 @@ type WorkspacePaneProps = {
   order: number;
   tabs: TabTypes[];
   files: FileDataType[];
-  editorEnhancedSelection: string;
-  editorSelectionRange: Selection;
-  characters: CharacterTypes[];
-  storySettings: StorySettingTypes[];
   isMobile: boolean;
   isLaptop: boolean;
   resizeHandleClassName: string;
   panelSize: number | undefined;
   panelVerticalSize?: number | undefined;
   fullScreen: boolean;
-  setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
-  setTabContent: (val: { tabId: string; content: string | undefined }) => void;
   sortTabs: (val: TabTypes[]) => void;
   removeTab: (val: string) => void;
   setTabActive: (val: string) => void;
@@ -46,10 +32,6 @@ type WorkspacePaneProps = {
   addPane: () => void;
   removePane: () => void;
   setPaneActive: () => void;
-  handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
-  handleNewCharacter: (val: string) => void;
-  handleNewSetting: (val: string) => void;
-  handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { name: string; type?: string; tabId: string; component: string }) => void;
   handlePaneSize: (val: number) => void;
   setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
@@ -63,19 +45,13 @@ const WorkspacePane = ({
   order,
   tabs,
   files,
-  editorEnhancedSelection,
-  editorSelectionRange,
-  characters,
-  storySettings,
   isMobile,
   isLaptop,
   resizeHandleClassName,
   panelSize,
   panelVerticalSize,
   fullScreen,
-  setEnhancementPaneOpen,
   handleSelectedFile,
-  setTabContent,
   sortTabs,
   removeTab,
   setTabActive,
@@ -84,10 +60,6 @@ const WorkspacePane = ({
   addPane,
   removePane,
   setPaneActive,
-  handleEditorCurrentSelection,
-  handleNewCharacter,
-  handleNewSetting,
-  handleDeletionRequest,
   handlePaneComponentChange,
   handlePaneSize,
   setNewFile,
@@ -155,27 +127,16 @@ const WorkspacePane = ({
             >
               <ComponentSwitcher
                 panelElement={panelRef.current}
-                id={id}
                 component={name}
                 content={content}
                 files={files}
-                editorEnhancedSelection={editorEnhancedSelection}
-                editorSelectionRange={editorSelectionRange}
-                characters={characters}
-                storySettings={storySettings}
                 panelExpanded={panelExpanded}
                 panelVerticalSize={panelVerticalSize}
                 fullScreen={fullScreen}
-                setEnhancementPaneOpen={setEnhancementPaneOpen}
-                handleDeletionRequest={(val) => handleDeletionRequest(val)}
                 handlePaneComponentChange={(val) =>
                   handlePaneComponentChange({ tabId: id, component: val.name, ...val })
                 }
                 handleSelectedFile={handleSelectedFile}
-                handleEditorChange={setTabContent}
-                handleEditorCurrentSelection={handleEditorCurrentSelection}
-                handleNewCharacter={handleNewCharacter}
-                handleNewSetting={handleNewSetting}
                 setNewFile={(val) => setNewFile(val)}
                 removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
                 setMovedItem={(val) => setMovedItem(val)}

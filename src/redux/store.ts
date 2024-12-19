@@ -1,18 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import charactersReducer from "./slices/charactersSlice";
-import storySettingsReducer from "./slices/storySettingsSlice";
 import panesReducer from "./slices/panesSlice";
 import fileExplorerReducer from "./slices/fileExplorerSlice";
-import editorReducer from "./slices/editorSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      characters: charactersReducer,
-      storySettings: storySettingsReducer,
       panes: panesReducer,
       fileExplorer: fileExplorerReducer,
-      editor: editorReducer,
     },
   });
 };

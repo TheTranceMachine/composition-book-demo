@@ -8,8 +8,6 @@ import { SortableEvent } from "react-sortablejs";
 import { useMediaQuery } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "sonner";
-import { setStorySetting, removeStorySetting } from "@/redux/slices/storySettingsSlice";
-import { setCharacter, removeCharacter } from "@/redux/slices/charactersSlice";
 import {
   addPane,
   addGroupPane,
@@ -29,29 +27,13 @@ import {
   setTabActiveByName,
   updateTab,
   updateGroupTab,
-  updateTabContent,
   sortTabs,
   sortGroupTabs,
   setPaneSize,
   setGroupPaneSize,
 } from "@/redux/slices/panesSlice";
-import {
-  setEditorEnhancedSelection,
-  setEditorCurrentSelection,
-  setEditorSelectionRange,
-} from "@/redux/slices/editorSlice";
 import { addItem, removeItem } from "@/redux/slices/fileExplorerSlice";
-import {
-  FileDataType,
-  CharacterTypes,
-  StorySettingTypes,
-  PaneTypes,
-  EditorTypes,
-  MonacoEditorCurrentSelectionTypes,
-  DeletionItemType,
-  CharactersState,
-  StorySettingsState,
-} from "@/types/types";
+import { FileDataType, PaneTypes } from "@/types/types";
 import WorkspaceVerticalPane from "./_components/pane/WorkspaceVerticalPane";
 import "./Workspace.scss";
 
@@ -59,8 +41,6 @@ const WorkspacePane = dynamic(() => import("./_components/pane/WorkspacePane"), 
   ssr: false,
 });
 
-const NewCharacterModal = lazy(() => import("./_components/modals/NewCharacterModal"));
-const NewStorySettingModal = lazy(() => import("./_components/modals/NewStorySettingModal"));
 const DeletionConfirmationModal = lazy(() => import("./_components/modals/DeletionConfirmationModal"));
 
 type HandlePaneComponentChangeTypes = { paneId: string; name: string; type?: string; tabId: string; component: string };
@@ -75,16 +55,8 @@ export default function WorkspacePage() {
   const isLaptop = useMediaQuery("(max-width: 1024px)");
 
   const files = useSelector((state: { fileExplorer: FileDataType[] }) => state.fileExplorer);
-  const { characters } = useSelector((state: { characters: CharactersState }) => state.characters);
-  const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
-  const editorStore = useSelector((state: { editor: EditorTypes }) => state.editor);
-  const { editorSelectionRange, editorCurrentSelection, editorEnhancedSelection } = editorStore;
 
-  const [newCharacterName, setNewCharacterName] = useState<string>("");
-  const [newStorySettingTitle, setNewStorySettingTitle] = useState<string>("");
-  const [newCharacterModal, setNewCharacterModal] = useState<boolean>(false);
-  const [newStorySettingModal, setNewStorySettingModal] = useState<boolean>(false);
   const [deletionConfirmationModal, setDeletionConfirmationModal] = useState<boolean>(false);
   const [deletionItem, setDeletionItem] = useState({
     id: "",
@@ -96,63 +68,8 @@ export default function WorkspacePage() {
     fullScreen: false,
   });
 
-  const handleEditorCurrentSelection = ({ range, currentSelection }: MonacoEditorCurrentSelectionTypes) => {
-    if (range) {
-      dispatch(setEditorSelectionRange(range));
-    }
-    dispatch(setEditorCurrentSelection(currentSelection));
-    dispatch(setEditorEnhancedSelection(""));
-  };
-
-  const handleOpenEnhancementPane = () => {
-    // Add new pane rendering AI Enhancement Tab with current selection
-    const tab = { id: uuidv4(), name: "AI Enhancement", content: editorCurrentSelection, active: true };
-    const newPaneId = uuidv4();
-    const newPane = { id: newPaneId, order: panes.length + 1, active: true, tabs: [tab], group: [], size: 50 };
-    dispatch(addPane(newPane));
-  };
-
-  // const handleEditorEnhancedSelection = (enhancedText: string) => {
-  //   dispatch(setEditorEnhancedSelection(enhancedText));
-  // };
-
-  const handleNewCharacter = (name: string) => {
-    setNewCharacterName(name);
-    setNewCharacterModal(true);
-  };
-
-  const handleNewSetting = (title: string) => {
-    setNewStorySettingTitle(title);
-    setNewStorySettingModal(true);
-  };
-
-  const handleNewCharacterSave = (character: CharacterTypes) => {
-    const id = uuidv4();
-    dispatch(setCharacter({ ...character, id }));
-    setNewCharacterModal(false);
-    toast.success("New character created successfully");
-  };
-
-  const handleNewStorySettingSave = (storySetting: StorySettingTypes) => {
-    const id = uuidv4();
-    dispatch(setStorySetting({ ...storySetting, id }));
-    setNewStorySettingModal(false);
-    toast.success("New story setting created successfully");
-  };
-
-  const handleDeletionRequest = (deletionItem: DeletionItemType) => {
-    setDeletionItem(deletionItem);
-    setDeletionConfirmationModal(true);
-  };
-
   const handleDeleteItem = (id: string, type: string) => {
-    if (type === "story setting") {
-      dispatch(removeStorySetting(id));
-    } else if (type === "character") {
-      dispatch(removeCharacter(id));
-    } else {
-      dispatch(removeItem({ id }));
-    }
+    dispatch(removeItem({ id }));
     setDeletionConfirmationModal(false);
     toast.success(`${type} deleted successfully`);
   };
@@ -281,18 +198,6 @@ export default function WorkspacePage() {
 
   const removePaneGroup = ({ paneId, groupPaneId }: { paneId: string; groupPaneId: string }) => {
     dispatch(removeGroupedPane({ paneId, groupPaneId }));
-  };
-
-  const handleTabContentUpdate = ({
-    tabId,
-    content,
-    paneId,
-  }: {
-    tabId: string;
-    content: string | undefined;
-    paneId: string;
-  }) => {
-    dispatch(updateTabContent({ paneId, tabId, content }));
   };
 
   const handleSelectTab = ({ paneId, tabId }: { paneId: string; tabId: string }) => {
@@ -496,17 +401,11 @@ export default function WorkspacePage() {
               order={order}
               group={group}
               files={files}
-              editorEnhancedSelection={editorEnhancedSelection}
-              editorSelectionRange={editorSelectionRange}
-              characters={characters}
-              storySettings={storySettings}
               isMobile={isMobile}
               isLaptop={isLaptop}
               panelSize={size}
               fullScreen={fullScreen.fullScreen}
-              setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, ...val })}
-              setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
               setTabActive={(val) => handleSelectGroupTab({ paneId, ...val })}
               setActiveTabOnMove={(val) => handleSetActiveTabsOnMove(val)}
               addVerticalPane={(val) => handleAddGroupPane({ paneId: val, order })}
@@ -515,10 +414,6 @@ export default function WorkspacePage() {
               addPane={() => handleAddNewPane(order)}
               removePane={(val) => removePaneGroup({ paneId, groupPaneId: val })}
               setPaneActive={(val) => dispatch(setGoupPaneActive({ paneId, groupPaneId: val }))}
-              handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-              handleNewCharacter={(val) => handleNewCharacter(val)}
-              handleNewSetting={(val) => handleNewSetting(val)}
-              handleDeletionRequest={(val) => handleDeletionRequest(val)}
               handlePaneComponentChange={(val) => handleGroupPaneComponentChange({ paneId, ...val })}
               handlePaneSize={(val) => handleGroupPaneSize({ paneId, ...val })}
               handleVerticalPaneSize={(val) => handleVerticalPaneSize({ paneId, size: val })}
@@ -534,18 +429,12 @@ export default function WorkspacePage() {
               order={order}
               tabs={tabs}
               files={files}
-              editorEnhancedSelection={editorEnhancedSelection}
-              editorSelectionRange={editorSelectionRange}
-              characters={characters}
-              storySettings={storySettings}
               isMobile={isMobile}
               isLaptop={isLaptop}
               resizeHandleClassName="w-[3px]"
               panelSize={size}
               fullScreen={fullScreen.fullScreen}
-              setEnhancementPaneOpen={handleOpenEnhancementPane}
               handleSelectedFile={(val) => handleSelectedFile({ paneId, file: val })}
-              setTabContent={(val) => handleTabContentUpdate({ paneId, ...val })}
               setTabActive={(val) => handleSelectTab({ paneId, tabId: val })}
               setActiveTabOnMove={(val) => handleSetActiveTabsOnMove(val)}
               addVerticalPane={() => handleAddGroupPane({ paneId, order })}
@@ -554,10 +443,6 @@ export default function WorkspacePage() {
               addPane={() => handleAddNewPane(order)}
               removePane={() => handleRemovePane(paneId)}
               setPaneActive={() => dispatch(setPaneActive(paneId))}
-              handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-              handleNewCharacter={(val) => handleNewCharacter(val)}
-              handleNewSetting={(val) => handleNewSetting(val)}
-              handleDeletionRequest={(val) => handleDeletionRequest(val)}
               handlePaneComponentChange={(val) => handlePaneComponentChange({ paneId, ...val })}
               handlePaneSize={(val) => handlePaneSize({ paneId, size: val })}
               setNewFile={(val) => handleAddFile(val)}
@@ -568,24 +453,6 @@ export default function WorkspacePage() {
           )
         )}
       </PanelGroup>
-      <Suspense>
-        <NewCharacterModal
-          panelElement={getPanelElement(fullScreen.paneId)}
-          show={newCharacterModal}
-          setShow={() => setNewCharacterModal(false)}
-          onSave={(val) => handleNewCharacterSave(val)}
-          newCharacterName={newCharacterName}
-        />
-      </Suspense>
-      <Suspense>
-        <NewStorySettingModal
-          panelElement={getPanelElement(fullScreen.paneId)}
-          show={newStorySettingModal}
-          setShow={() => setNewStorySettingModal(false)}
-          onSave={(storySetting: StorySettingTypes) => handleNewStorySettingSave(storySetting)}
-          newSettingTitle={newStorySettingTitle}
-        />
-      </Suspense>
       <Suspense>
         <DeletionConfirmationModal
           panelElement={getPanelElement(fullScreen.paneId)}

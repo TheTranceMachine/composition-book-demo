@@ -1,15 +1,5 @@
 import dynamic from "next/dynamic";
-import { Selection } from "monaco-editor";
-// import { AiEnhancements } from "../AiEnhancements/AiEnhancements";
-import {
-  CharacterTypes,
-  DeletionItemType,
-  FileDataType,
-  MonacoEditorCurrentSelectionTypes,
-  StorySettingTypes,
-} from "@/types/types";
-import CharactersPane from "../characters/Characters";
-import StorySettingsPane from "../storySettings/StorySettings";
+import { FileDataType } from "@/types/types";
 import FileExplorer from "../fileExplorer/FileExplorer";
 import WorkspacePaneManager from "../manager/WorkspacePaneManager";
 import { SortableEvent } from "react-sortablejs";
@@ -23,24 +13,13 @@ const MonacoEditor = dynamic(() => import("../editor/Editor"), {
 
 type ComponentSwitcherPropTypes = {
   panelElement: HTMLDivElement | null;
-  id: string;
   component: string;
   content: string | undefined;
   files: FileDataType[];
-  editorSelectionRange: Selection;
-  editorEnhancedSelection: string;
-  characters: CharacterTypes[];
-  storySettings: StorySettingTypes[];
   panelExpanded: boolean | 0 | undefined;
   panelVerticalSize?: number | undefined;
   fullScreen: boolean;
-  setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
-  handleEditorChange: (val: { tabId: string; content: string | undefined }) => void;
-  handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
-  handleNewCharacter: (val: string) => void;
-  handleNewSetting: (val: string) => void;
-  handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: { name: string; type?: string }) => void;
   setNewFile: (val: { name: string | undefined; directoryId: string; type: string }) => void;
   removeFileExplorerItem: (val: { id: string; name: string; type: string }) => void;
@@ -49,24 +28,13 @@ type ComponentSwitcherPropTypes = {
 
 const ComponentSwitcher = ({
   panelElement,
-  id,
   component,
   content,
   files,
-  editorEnhancedSelection,
-  editorSelectionRange,
-  characters,
-  storySettings,
   panelExpanded,
   panelVerticalSize,
   fullScreen,
-  setEnhancementPaneOpen,
   handleSelectedFile,
-  handleEditorChange,
-  handleEditorCurrentSelection,
-  handleNewCharacter,
-  handleNewSetting,
-  handleDeletionRequest,
   handlePaneComponentChange,
   setNewFile,
   removeFileExplorerItem,
@@ -78,24 +46,6 @@ const ComponentSwitcher = ({
         <WorkspacePaneManager
           handlePaneComponentChange={(val) => handlePaneComponentChange(val)}
           panelExpanded={panelExpanded}
-        />
-      );
-    case "New File":
-      return (
-        <MonacoEditor
-          changeEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-          editorEnhancedSelection={editorEnhancedSelection}
-          editorSelectionRange={editorSelectionRange}
-          characters={characters}
-          storySettings={storySettings}
-          newCharacter={(val) => handleNewCharacter(val)}
-          newSetting={(val) => handleNewSetting(val)}
-          setEnhancementPaneOpen={setEnhancementPaneOpen}
-          handleEditorChange={(val) => handleEditorChange({ tabId: id, content: val })}
-          editorValue={content}
-          panelExpanded={panelExpanded}
-          panelVerticalSize={panelVerticalSize}
-          fullScreen={fullScreen}
         />
       );
     case "File Explorer":
@@ -118,36 +68,18 @@ const ComponentSwitcher = ({
       ) : (
         <NoFilesSpace panelExpanded={panelExpanded} setNewFile={setNewFile} panelElement={panelElement} />
       );
-    case "Characters":
+    case "New File":
       return (
-        <CharactersPane
-          characters={characters}
-          removeCharacter={({ id, name: title }) => handleDeletionRequest({ id, title, type: "character" })}
+        <MonacoEditor
+          editorValue={content}
           panelExpanded={panelExpanded}
+          panelVerticalSize={panelVerticalSize}
+          fullScreen={fullScreen}
         />
       );
-    case "Story Settings":
-      return (
-        <StorySettingsPane
-          storySettings={storySettings}
-          removeStorySetting={({ id, title }) => handleDeletionRequest({ id, title, type: "story setting" })}
-          panelExpanded={panelExpanded}
-        />
-      );
-    // case "Enhancements":
-    //   return <AiEnhancements />;
     default:
       return (
         <MonacoEditor
-          changeEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-          editorEnhancedSelection={editorEnhancedSelection}
-          editorSelectionRange={editorSelectionRange}
-          characters={characters}
-          storySettings={storySettings}
-          newCharacter={(val) => handleNewCharacter(val)}
-          newSetting={(val) => handleNewSetting(val)}
-          setEnhancementPaneOpen={setEnhancementPaneOpen}
-          handleEditorChange={(val) => handleEditorChange({ tabId: id, content: val })}
           editorValue={content}
           panelExpanded={panelExpanded}
           panelVerticalSize={panelVerticalSize}

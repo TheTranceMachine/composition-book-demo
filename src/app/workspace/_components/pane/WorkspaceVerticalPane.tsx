@@ -1,15 +1,6 @@
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { Selection } from "monaco-editor";
 import { SortableEvent } from "react-sortablejs";
-import {
-  CharacterTypes,
-  DeletionItemType,
-  FileDataType,
-  MonacoEditorCurrentSelectionTypes,
-  PaneTypes,
-  StorySettingTypes,
-  TabTypes,
-} from "@/types/types";
+import { FileDataType, PaneTypes, TabTypes } from "@/types/types";
 import WorkspacePane from "./WorkspacePane";
 
 type WorkspaceVerticalPaneProps = {
@@ -17,17 +8,11 @@ type WorkspaceVerticalPaneProps = {
   order: number;
   group: PaneTypes[];
   files: FileDataType[];
-  editorEnhancedSelection: string;
-  editorSelectionRange: Selection;
-  characters: CharacterTypes[];
-  storySettings: StorySettingTypes[];
   isMobile: boolean;
   isLaptop: boolean;
   panelSize: number;
   fullScreen: boolean;
-  setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: { groupPaneId: string; file: FileDataType }) => void;
-  setTabContent: (val: { groupPaneId: string; tabId: string; content: string | undefined }) => void;
   sortTabs: (val: { groupPaneId: string; tabs: TabTypes[] }) => void;
   removeTab: (val: { groupPaneId: string; tabId: string }) => void;
   setTabActive: (val: { groupPaneId: string; tabId: string }) => void;
@@ -36,10 +21,6 @@ type WorkspaceVerticalPaneProps = {
   addPane: () => void;
   removePane: (val: string) => void;
   setPaneActive: (val: string) => void;
-  handleEditorCurrentSelection: (val: MonacoEditorCurrentSelectionTypes) => void;
-  handleNewCharacter: (val: string) => void;
-  handleNewSetting: (val: string) => void;
-  handleDeletionRequest: (val: DeletionItemType) => void;
   handlePaneComponentChange: (val: {
     groupPaneId: string;
     name: string;
@@ -60,17 +41,11 @@ const WorkspaceVerticalPane = ({
   order,
   group,
   files,
-  editorEnhancedSelection,
-  editorSelectionRange,
-  characters,
-  storySettings,
   isMobile,
   isLaptop,
   panelSize,
   fullScreen,
-  setEnhancementPaneOpen,
   handleSelectedFile,
-  setTabContent,
   sortTabs,
   removeTab,
   setTabActive,
@@ -79,10 +54,6 @@ const WorkspaceVerticalPane = ({
   addPane,
   removePane,
   setPaneActive,
-  handleEditorCurrentSelection,
-  handleNewCharacter,
-  handleNewSetting,
-  handleDeletionRequest,
   handlePaneComponentChange,
   handlePaneSize,
   handleVerticalPaneSize,
@@ -107,19 +78,13 @@ const WorkspaceVerticalPane = ({
             order={order}
             tabs={tabs}
             files={files}
-            editorEnhancedSelection={editorEnhancedSelection}
-            editorSelectionRange={editorSelectionRange}
-            characters={characters}
-            storySettings={storySettings}
             isMobile={isMobile}
             isLaptop={isLaptop}
             resizeHandleClassName="h-[3px]"
             panelSize={panelSize}
             panelVerticalSize={size}
             fullScreen={fullScreen}
-            setEnhancementPaneOpen={setEnhancementPaneOpen}
             handleSelectedFile={(val) => handleSelectedFile({ groupPaneId, file: val })}
-            setTabContent={(val) => setTabContent({ groupPaneId, ...val })}
             setTabActive={(val) => setTabActive({ groupPaneId, tabId: val })}
             setActiveTabOnMove={(val) => setActiveTabOnMove(val)}
             addVerticalPane={() => addVerticalPane(groupPaneId)}
@@ -128,10 +93,6 @@ const WorkspaceVerticalPane = ({
             addPane={addPane}
             removePane={() => removePane(groupPaneId)}
             setPaneActive={() => setPaneActive(groupPaneId)}
-            handleEditorCurrentSelection={(val) => handleEditorCurrentSelection(val)}
-            handleNewCharacter={(val) => handleNewCharacter(val)}
-            handleNewSetting={(val) => handleNewSetting(val)}
-            handleDeletionRequest={(val) => handleDeletionRequest(val)}
             handlePaneComponentChange={(val) => handlePaneComponentChange({ groupPaneId, ...val })}
             handlePaneSize={(val) => handlePaneSize({ groupPaneId, size: val })}
             setNewFile={(val) => setNewFile(val)}

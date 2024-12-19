@@ -1,30 +1,8 @@
-import { Selection } from "monaco-editor";
-
 export type FileDataType = {
   id: string;
   name: string;
   content?: string;
   children?: FileDataType[];
-};
-
-export type CharactersState = {
-  characters: CharacterTypes[];
-};
-
-export type CharacterTypes = {
-  id: string;
-  name: string;
-  description: string;
-};
-
-export type StorySettingsState = {
-  storySettings: StorySettingTypes[];
-};
-
-export type StorySettingTypes = {
-  id: string;
-  title: string;
-  description: string;
 };
 
 export type TabTypes = {
@@ -50,21 +28,9 @@ export type PaneTypes = {
   size: number;
 };
 
-export type EditorTypes = {
-  editorCurrentSelection: string;
-  editorSelectionRange: Selection;
-  editorEnhancedSelection: string;
-  editorEnhancementCount: number;
-};
-
 export type MovedTabs = {
   from: { paneId: string; tabId?: string };
   to: { paneId: string; tabId: string };
-};
-
-export type MonacoEditorCurrentSelectionTypes = {
-  range: Selection | null;
-  currentSelection: string;
 };
 
 export type DeletionItemType = {
