@@ -1,15 +1,15 @@
 import { useRef } from "react";
-import { editor, Position } from 'monaco-editor';
+import { editor, Position } from "monaco-editor";
 import { renderToString } from "react-dom/server";
 import Popup from "./Popup";
 import { CharacterTypes, StorySettingTypes } from "@/types/types";
 
 type showPopupTypes = {
-  position: Position
-  title: string
-  description: string
-  type: string
-  currentWidgetIdRef: { current: string }
+  position: Position;
+  title: string;
+  description: string;
+  type: string;
+  currentWidgetIdRef: { current: string };
 };
 
 type UseEditorPopupTypes = {

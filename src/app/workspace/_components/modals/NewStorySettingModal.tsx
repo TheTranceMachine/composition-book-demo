@@ -3,15 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { BsImageFill } from "react-icons/bs";
 import { StorySettingTypes } from "@/types/types";
 import CustomDialog from "@/components/Modal/Modal";
-import {
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogContent, DialogFooter, DialogOverlay, DialogPortal, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

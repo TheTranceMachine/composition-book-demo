@@ -110,14 +110,14 @@ export const panesSlice = createSlice({
           : pane
       );
     },
-    addTab: (state, action: PayloadAction<{ paneId: string; tab: FileDataType }>) => {
+    addTab: (state, action: PayloadAction<{ paneId: string; tab: TabTypes }>) => {
       return state.map((pane) =>
         pane.id === action.payload.paneId
           ? { ...pane, tabs: uniqueObjectsById<FileDataType>([...pane.tabs, action.payload.tab]) }
           : pane
       );
     },
-    addGroupTab: (state, action: PayloadAction<{ paneId: string; groupPaneId: string; tab: FileDataType }>) => {
+    addGroupTab: (state, action: PayloadAction<{ paneId: string; groupPaneId: string; tab: TabTypes }>) => {
       return state.map((pane) =>
         pane.id === action.payload.paneId
           ? {
@@ -164,7 +164,7 @@ export const panesSlice = createSlice({
           : pane
       );
     },
-    setTabActiveByName: (state, action: PayloadAction<{ paneId: string; tabName: string }>) => {
+    setTabActiveByName: (state, action: PayloadAction<{ paneId: string | undefined; tabName: string }>) => {
       return state.map((pane) =>
         pane.id === action.payload.paneId
           ? {
@@ -197,7 +197,7 @@ export const panesSlice = createSlice({
     },
     setGroupTabActiveByName: (
       state,
-      action: PayloadAction<{ paneId: string; groupPaneId: string; tabName: string }>
+      action: PayloadAction<{ paneId: string | undefined; groupPaneId: string | undefined; tabName: string }>
     ) => {
       return state.map((pane) =>
         pane.id === action.payload.paneId

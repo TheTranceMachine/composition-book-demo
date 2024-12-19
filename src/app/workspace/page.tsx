@@ -1,13 +1,13 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { LegacyRef, Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PanelGroup } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
 import { useMediaQuery } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { setStorySetting, removeStorySetting } from "@/redux/slices/storySettingsSlice";
 import { setCharacter, removeCharacter } from "@/redux/slices/charactersSlice";
 import {
@@ -47,12 +47,10 @@ import {
   StorySettingTypes,
   PaneTypes,
   EditorTypes,
-  MovedTabs,
   MonacoEditorCurrentSelectionTypes,
   DeletionItemType,
   CharactersState,
   StorySettingsState,
-  TabTypes,
 } from "@/types/types";
 import WorkspaceVerticalPane from "./_components/pane/WorkspaceVerticalPane";
 import "./Workspace.scss";
@@ -77,7 +75,6 @@ export default function WorkspacePage() {
   const isLaptop = useMediaQuery("(max-width: 1024px)");
 
   const files = useSelector((state: { fileExplorer: FileDataType[] }) => state.fileExplorer);
-  console.log(files);
   const { characters } = useSelector((state: { characters: CharactersState }) => state.characters);
   const { storySettings } = useSelector((state: { storySettings: StorySettingsState }) => state.storySettings);
   const panes = useSelector((state: { panes: PaneTypes[] }) => state.panes);
@@ -111,7 +108,8 @@ export default function WorkspacePage() {
     // Add new pane rendering AI Enhancement Tab with current selection
     const tab = { id: uuidv4(), name: "AI Enhancement", content: editorCurrentSelection, active: true };
     const newPaneId = uuidv4();
-    dispatch(addPane({ id: newPaneId, order: panes.length + 1, active: true, tabs: [tab], group: [] }));
+    const newPane = { id: newPaneId, order: panes.length + 1, active: true, tabs: [tab], group: [], size: 50 };
+    dispatch(addPane(newPane));
   };
 
   // const handleEditorEnhancedSelection = (enhancedText: string) => {
@@ -162,9 +160,10 @@ export default function WorkspacePage() {
   const handleAddNewPane = (order: number) => {
     const tab = { id: uuidv4(), name: "Pane Manager", content: "", active: true };
     const newPaneId = uuidv4();
+    const newPane = { id: newPaneId, order: order + 1, active: true, tabs: [tab], group: [], size: 50 };
 
     dispatch(shiftPanes(order));
-    dispatch(addPane({ id: newPaneId, order: order + 1, active: true, tabs: [tab], group: [] }));
+    dispatch(addPane(newPane));
     dispatch(setPaneOrder());
     dispatch(setPaneActive(newPaneId));
   };
@@ -194,23 +193,23 @@ export default function WorkspacePage() {
       })
       .filter(Boolean);
 
-    if (!!tabExists.length) {
-      if (tabExists[0]?.group) {
+    if (!!tabExists.length && tabExists[0]) {
+      if (tabExists[0].group && tabExists[0].tab) {
         dispatch(
           setGroupTabActive({
-            paneId: tabExists[0]?.pane.id,
-            groupPaneId: tabExists[0]?.group.id,
-            tabId: tabExists[0]?.tab?.id,
+            paneId: tabExists[0].pane.id,
+            groupPaneId: tabExists[0].group.id,
+            tabId: tabExists[0].tab.id,
           })
         );
-      } else {
-        dispatch(setTabActive({ paneId: tabExists[0]?.pane.id, tabId: tabExists[0]?.tab?.id }));
+      } else if (tabExists[0].tab) {
+        dispatch(setTabActive({ paneId: tabExists[0].pane.id, tabId: tabExists[0].tab.id }));
       }
     } else {
       if (groupPaneId) {
-        dispatch(addGroupTab({ paneId, groupPaneId, tab: file }));
+        dispatch(addGroupTab({ paneId, groupPaneId, tab: { ...file, active: false } }));
       } else {
-        dispatch(addTab({ paneId, tab: file }));
+        dispatch(addTab({ paneId, tab: { ...file, active: false } }));
       }
     }
   };
@@ -398,7 +397,16 @@ export default function WorkspacePage() {
     }
   };
 
-  const handleAddFile = ({ name, directoryId, type }: { name: string; directoryId: string; type: string }) => {
+  const handleAddFile = ({
+    name,
+    directoryId,
+    type,
+  }: {
+    name: string | undefined;
+    directoryId: string;
+    type: string;
+  }) => {
+    if (!name) return;
     const id = uuidv4();
     if (type === "file") {
       if (!validation(name)) return;
@@ -438,7 +446,7 @@ export default function WorkspacePage() {
     const isDirectory = (dataOnMove.item.firstChild?.firstChild as HTMLElement)?.dataset.directory;
 
     const findItem = (items: FileDataType[]): FileDataType | undefined => {
-      for (let item of items) {
+      for (const item of items) {
         if (item.id === itemId) {
           return item;
         } else if (item.children) {

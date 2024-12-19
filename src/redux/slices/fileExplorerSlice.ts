@@ -1,17 +1,10 @@
-import { v4 as uuidv4 } from "uuid";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { uniqueObjectsById } from "@/utils/utils";
 import { FileDataType } from "@/types/types";
 
 interface PayloadFileDataType extends FileDataType {
   directoryId: string;
   type: string;
-}
-
-interface PayloadMoveFileDataType extends FileDataType {
-  directoryId: string;
-  children: FileDataType[];
 }
 
 // const initialState: FileDataType[] = [

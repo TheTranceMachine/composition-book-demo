@@ -11,7 +11,12 @@ type NewFileInputTypes = {
 const NewFileInput = ({ onClick, onChange, panelExpanded }: NewFileInputTypes) => (
   <>
     <Input onChange={onChange} className="text-white" placeholder="File Name" />
-    <Button variant="secondary" onClick={onClick} size={`${panelExpanded ? 'default' : 'sm'}`} className={`${panelExpanded ? '' : 'w-full'}`}>
+    <Button
+      variant="secondary"
+      onClick={onClick}
+      size={`${panelExpanded ? "default" : "sm"}`}
+      className={`${panelExpanded ? "" : "w-full"}`}
+    >
       Create File
     </Button>
   </>

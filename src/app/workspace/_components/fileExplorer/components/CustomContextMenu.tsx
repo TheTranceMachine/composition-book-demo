@@ -20,12 +20,7 @@ type CustomContextMenuTypes = {
   panelElement: HTMLDivElement | null;
 };
 
-const CustomContextMenu = ({
-  children,
-  handleInput,
-  removeFileExplorerItem,
-  panelElement,
-}: CustomContextMenuTypes) => {
+const CustomContextMenu = ({ children, handleInput, removeFileExplorerItem, panelElement }: CustomContextMenuTypes) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dirInputRef = useRef<HTMLInputElement>(null);
 

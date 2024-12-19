@@ -1,9 +1,9 @@
 import { BsFileEarmarkPersonFill, BsImageFill } from "react-icons/bs";
 
 type PopupContentTypes = {
-  title: string
-  description: string
-  type: string
+  title: string;
+  description: string;
+  type: string;
 };
 
 const Popup = ({ title, description, type }: PopupContentTypes) => (

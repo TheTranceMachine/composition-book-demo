@@ -1,4 +1,4 @@
-import { editor, IRange } from 'monaco-editor';
+import { editor, IRange } from "monaco-editor";
 
 type EditorEnhanceTextTypes = {
   editorInstance: editor.IStandaloneCodeEditor | undefined;
@@ -6,7 +6,11 @@ type EditorEnhanceTextTypes = {
   editorSelectionRange: IRange;
 };
 
-const useEditorEnhanceText = ({ editorInstance, editorEnhancedSelection, editorSelectionRange }: EditorEnhanceTextTypes) => {
+const useEditorEnhanceText = ({
+  editorInstance,
+  editorEnhancedSelection,
+  editorSelectionRange,
+}: EditorEnhanceTextTypes) => {
   if (!editorInstance) return;
   if (editorEnhancedSelection !== "") {
     const options = {

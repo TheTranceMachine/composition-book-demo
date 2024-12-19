@@ -1,11 +1,11 @@
-import Img from '@/assets/notfound.png'
-import Image from 'next/image'
-import { Metadata } from 'next'
+import Img from "@/assets/notfound.png";
+import Image from "next/image";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: '404 | Not Found',
-  description: 'Composition Book 404 Page',
-}
+  title: "404 | Not Found",
+  description: "Composition Book 404 Page",
+};
 
 const Notfound = () => {
   return (
@@ -16,17 +16,11 @@ const Notfound = () => {
           <div className="text-4xl">Not Found!</div>
         </div>
         <div className="pt-10 hidden md:block">
-          <Image
-            src={Img}
-            alt="Notfund"
-            width={400}
-            height={200}
-            className="w-[400px]"
-          />
+          <Image src={Img} alt="Notfund" width={400} height={200} className="w-[400px]" />
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Notfound
+export default Notfound;

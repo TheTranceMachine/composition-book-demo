@@ -1,13 +1,6 @@
 import CustomDialog from "@/components/Modal/Modal";
 import { Button } from "@/components/ui/button";
-import {
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogContent, DialogFooter, DialogOverlay, DialogPortal, DialogTitle } from "@/components/ui/dialog";
 
 type DeletionConfirmationModalPropTypes = {
   panelElement: HTMLDivElement | null;

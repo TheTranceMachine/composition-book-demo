@@ -4,7 +4,7 @@ import { FullCard, CollapsedCard } from "@components/CustomCardWithPopover/Custo
 
 type StorySettingsPaneTypes = {
   storySettings: StorySettingTypes[];
-  removeStorySetting: (val: { id: string, title: string }) => void;
+  removeStorySetting: (val: { id: string; title: string }) => void;
   panelExpanded: boolean | 0 | undefined;
 };
 

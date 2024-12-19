@@ -4,7 +4,7 @@ import { FullCard, CollapsedCard } from "@components/CustomCardWithPopover/Custo
 
 type CharactersPaneTypes = {
   characters: CharacterTypes[];
-  removeCharacter: (val: { id: string, name: string }) => void;
+  removeCharacter: (val: { id: string; name: string }) => void;
   panelExpanded: boolean | 0 | undefined;
 };
 

@@ -3,15 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { BsFileEarmarkPersonFill } from "react-icons/bs";
 import { CharacterTypes } from "@/types/types";
 import CustomDialog from "@/components/Modal/Modal";
-import {
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogOverlay,
-  DialogPortal,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { DialogContent, DialogFooter, DialogOverlay, DialogPortal, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

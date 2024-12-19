@@ -22,18 +22,28 @@ const WorkspacePaneManager = ({ handlePaneComponentChange, panelExpanded }: Work
   return page === 1 ? (
     <NavigationMenu orientation="vertical" className="m-3 rounded-md border-2 border-black bg-white">
       <NavigationMenuList>
-        {components.map(item => (
-          <Items key={item.id} onClick={(val) => paneComponentSelection(val)} item={item} panelExpanded={panelExpanded} />
+        {components.map((item) => (
+          <Items
+            key={item.id}
+            onClick={(val) => paneComponentSelection(val)}
+            item={item}
+            panelExpanded={panelExpanded}
+          />
         ))}
       </NavigationMenuList>
     </NavigationMenu>
   ) : (
     <div className="flex flex-col m-3 gap-4">
-      <Button variant="secondary" size="sm" onClick={() => setPage(1)} className={`${panelExpanded ? 'w-24' : 'w-full'}`}>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => setPage(1)}
+        className={`${panelExpanded ? "w-24" : "w-full"}`}
+      >
         <VscChevronLeft className="w-5 h-5 text-black" />
         Back
       </Button>
-      <div className={`flex items-center gap-2 ${panelExpanded ? '' : 'flex-col'}`}>
+      <div className={`flex items-center gap-2 ${panelExpanded ? "" : "flex-col"}`}>
         <NewFileInput
           onClick={() => handlePaneComponentChange({ name: input, type: "file" })}
           onChange={(e) => setInput(e.target.value)}

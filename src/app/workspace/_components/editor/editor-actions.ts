@@ -1,4 +1,4 @@
-import { KeyMod, KeyCode } from 'monaco-editor';
+import { KeyMod, KeyCode } from "monaco-editor";
 
 export default [
   {

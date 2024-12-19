@@ -1,5 +1,5 @@
 import { EditorAction, MonacoEditorCurrentSelectionTypes } from "@/types/types";
-import { editor } from 'monaco-editor';
+import { editor } from "monaco-editor";
 
 type EnhanceEditorFunctionsTypes = {
   editor: editor.IStandaloneCodeEditor | undefined;

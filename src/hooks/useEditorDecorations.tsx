@@ -1,4 +1,4 @@
-import { editor } from 'monaco-editor';
+import { editor } from "monaco-editor";
 import { CharacterTypes, StorySettingTypes } from "@/types/types";
 import { findMatchesAndDecorate } from "@/utils/utils";
 
