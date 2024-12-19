@@ -165,6 +165,7 @@ const WorkspacePane = ({
                 storySettings={storySettings}
                 panelExpanded={panelExpanded}
                 panelVerticalSize={panelVerticalSize}
+                fullScreen={fullScreen}
                 setEnhancementPaneOpen={setEnhancementPaneOpen}
                 handleDeletionRequest={(val) => handleDeletionRequest(val)}
                 handlePaneComponentChange={(val) =>

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { LegacyRef, Suspense, lazy, useRef, useState } from "react";
+import { LegacyRef, Suspense, lazy, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PanelGroup } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
@@ -72,7 +72,6 @@ interface HandleVerticalPaneComponentChangeTypes extends HandlePaneComponentChan
 }
 
 export default function WorkspacePage() {
-  const workspaceRef = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const isLaptop = useMediaQuery("(max-width: 1024px)");
@@ -366,13 +365,22 @@ export default function WorkspacePage() {
     }
   };
 
+  const validation = (val: string) => {
+    const isNameValid = /^[a-zA-Z0-9_.-]*$/.test(val);
+    if (!isNameValid) {
+      toast.error("Invalid file name. Please use only letters, numbers, and the following characters: - _ .");
+      return false;
+    }
+    return true;
+  };
+
   const handlePaneComponentChange = ({ paneId, tabId, component, type }: HandlePaneComponentChangeTypes) => {
-    dispatch(updateTab({ paneId, tabId, name: component }));
     if (type === "file") {
-      // Component type - file. Add new file to the file explorer
+      if (!validation(component)) return;
       dispatch(addItem({ id: uuidv4(), name: component, directoryId: "", content: "", type }));
       toast.success("New file created successfully");
     }
+    dispatch(updateTab({ paneId, tabId, name: component }));
   };
 
   const handleGroupPaneComponentChange = ({
@@ -384,7 +392,7 @@ export default function WorkspacePage() {
   }: HandleVerticalPaneComponentChangeTypes) => {
     dispatch(updateGroupTab({ paneId, groupPaneId, tabId, name: component }));
     if (type === "file") {
-      // Component type - file. Add new file to the file explorer
+      if (!validation(component)) return;
       dispatch(addItem({ id: uuidv4(), name: component, directoryId: "", content: "", type }));
       toast.success("New file created successfully");
     }
@@ -393,9 +401,11 @@ export default function WorkspacePage() {
   const handleAddFile = ({ name, directoryId, type }: { name: string; directoryId: string; type: string }) => {
     const id = uuidv4();
     if (type === "file") {
+      if (!validation(name)) return;
       dispatch(addItem({ id, name, directoryId, content: "", type }));
       toast.success("New file created successfully");
     } else {
+      if (!validation(name)) return;
       dispatch(addItem({ id, name, directoryId, children: [], type }));
       toast.success("New directory created successfully");
     }
@@ -463,8 +473,12 @@ export default function WorkspacePage() {
     }
   };
 
+  const getPanelElement = (paneId: string) => {
+    return fullScreen.fullScreen ? (document.querySelector(`[data-panel-id="${paneId}"]`) as HTMLDivElement) : null;
+  };
+
   return (
-    <div className="workspace w-full h-full" ref={workspaceRef}>
+    <div className="workspace w-full h-full">
       <PanelGroup direction="horizontal">
         {panes.map(({ id: paneId, order, tabs, group, size }) =>
           !!group.length ? (
@@ -548,11 +562,7 @@ export default function WorkspacePage() {
       </PanelGroup>
       <Suspense>
         <NewCharacterModal
-          panelElement={
-            fullScreen.fullScreen
-              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
-              : null
-          }
+          panelElement={getPanelElement(fullScreen.paneId)}
           show={newCharacterModal}
           setShow={() => setNewCharacterModal(false)}
           onSave={(val) => handleNewCharacterSave(val)}
@@ -561,11 +571,7 @@ export default function WorkspacePage() {
       </Suspense>
       <Suspense>
         <NewStorySettingModal
-          panelElement={
-            fullScreen.fullScreen
-              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
-              : null
-          }
+          panelElement={getPanelElement(fullScreen.paneId)}
           show={newStorySettingModal}
           setShow={() => setNewStorySettingModal(false)}
           onSave={(storySetting: StorySettingTypes) => handleNewStorySettingSave(storySetting)}
@@ -574,11 +580,7 @@ export default function WorkspacePage() {
       </Suspense>
       <Suspense>
         <DeletionConfirmationModal
-          panelElement={
-            fullScreen.fullScreen
-              ? (workspaceRef.current?.querySelector(`[data-panel-id="${fullScreen.paneId}"]`) as HTMLDivElement)
-              : null
-          }
+          panelElement={getPanelElement(fullScreen.paneId)}
           show={deletionConfirmationModal}
           setShow={() => setDeletionConfirmationModal(false)}
           onDelete={() => handleDeleteItem(deletionItem.id, deletionItem.type)}

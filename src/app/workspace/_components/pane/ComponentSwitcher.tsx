@@ -33,6 +33,7 @@ type ComponentSwitcherPropTypes = {
   storySettings: StorySettingTypes[];
   panelExpanded: boolean | 0 | undefined;
   panelVerticalSize?: number | undefined;
+  fullScreen: boolean;
   setEnhancementPaneOpen: () => void;
   handleSelectedFile: (val: FileDataType) => void;
   handleEditorChange: (val: { tabId: string; content: string | undefined }) => void;
@@ -58,6 +59,7 @@ const ComponentSwitcher = ({
   storySettings,
   panelExpanded,
   panelVerticalSize,
+  fullScreen,
   setEnhancementPaneOpen,
   handleSelectedFile,
   handleEditorChange,
@@ -93,6 +95,7 @@ const ComponentSwitcher = ({
           editorValue={content}
           panelExpanded={panelExpanded}
           panelVerticalSize={panelVerticalSize}
+          fullScreen={fullScreen}
         />
       );
     case "File Explorer":
@@ -108,10 +111,7 @@ const ComponentSwitcher = ({
             removeFileExplorerItem={(val) => removeFileExplorerItem(val)}
             panelElement={panelElement}
           />
-          <CustomContextMenu
-            handleInput={(val) => setNewFile({ directoryId: "", ...val })}
-            panelElement={panelElement}
-          >
+          <CustomContextMenu handleInput={(val) => setNewFile({ directoryId: "", ...val })} panelElement={panelElement}>
             <div className="diagonal-background border-b border-b-gray-900">&nbsp;</div>
           </CustomContextMenu>
         </>
@@ -151,6 +151,7 @@ const ComponentSwitcher = ({
           editorValue={content}
           panelExpanded={panelExpanded}
           panelVerticalSize={panelVerticalSize}
+          fullScreen={fullScreen}
         />
       );
   }
