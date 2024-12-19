@@ -1,7 +1,13 @@
 {
-  "name": "composition-book-panels",
+  "name": "composition-book-demo",
   "version": "0.1.0",
   "private": true,
+  "license": "GPL-3.0-only",
+  "author": {
+    "name": "Greg Smolin",
+    "email": "grzegorz.smolin2@gmail.com"
+  },
+  "description": "Composition Book - A simple code editor with a file explorer and a pane manager",
   "scripts": {
     "build": "next build",
     "start": "next start",
