@@ -19,7 +19,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { PanelGroup } from "react-resizable-panels";
 import { SortableEvent } from "react-sortablejs";
@@ -407,6 +407,21 @@ export default function WorkspacePage() {
   const getPanelElement = (paneId: string) => {
     return fullScreen.fullScreen ? (document.querySelector(`[data-panel-id="${paneId}"]`) as HTMLDivElement) : null;
   };
+
+  useEffect(() => {
+    const handleEscapeFullscreen = () => {
+      if (!document.fullscreenElement) {
+        setFullScreen({ paneId: "", fullScreen: false });
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleEscapeFullscreen);
+
+    // Cleanup the event listener on unmount
+    return () => {
+      document.removeEventListener("fullscreenchange", handleEscapeFullscreen);
+    };
+  }, []);
 
   return (
     <div className="workspace w-full h-full">
