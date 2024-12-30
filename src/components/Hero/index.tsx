@@ -28,6 +28,7 @@ const Hero = () => {
                   </Link>
                   <Link
                     href="https://github.com/TheTranceMachine/composition-book-demo"
+                    target="_blank"
                     className="flex gap-x-2 rounded-sm bg-black px-6 py-4 text-base font-semibold text-white duration-300 ease-in-out hover:bg-black/90 dark:bg-white/10 dark:text-white dark:hover:bg-white/5"
                   >
                     <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
