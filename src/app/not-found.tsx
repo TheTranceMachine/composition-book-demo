@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const Notfound = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-ajc-primary-500 p-10">
+    <div className="w-full h-screen flex items-center justify-center bg-sandwisp p-10">
       <div className="max-w-[800px] w-full rounded-xl shadow grid md:grid-cols-2 bg-white">
         <div className="flex items-center justify-center flex-col p-10">
           <div className="text-4xl ">404</div>

@@ -1,3 +1,20 @@
+// Landing page
+export type Feature = {
+  id: number;
+  icon: JSX.Element;
+  title: string;
+  paragraph: string;
+};
+
+export type Menu = {
+  id: number;
+  title: string;
+  path: string;
+  newTab: boolean;
+  submenu?: Menu[];
+};
+
+// Workspace
 export type FileDataType = {
   id: string;
   name: string;

@@ -10,7 +10,7 @@ type NewFileInputTypes = {
 
 const NewFileInput = ({ onClick, onChange, panelExpanded }: NewFileInputTypes) => (
   <>
-    <Input onChange={onChange} className="text-white" placeholder="File Name" />
+    <Input onChange={onChange} className="bg-white rounded-md" placeholder="File Name" />
     <Button
       variant="secondary"
       onClick={onClick}
