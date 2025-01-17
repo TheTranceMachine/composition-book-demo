@@ -1,6 +1,37 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const Hero = () => {
+  const [sampleIndex, setSampleIndex] = useState(0);
+
+  const samples = [
+    "for complex document editing",
+    "for novel writing",
+    "for academic writing",
+    "for technical writing",
+    "for creative writing",
+    "for collaborative writing",
+    "for project management",
+    "for task management",
+    "for note-taking",
+    "for journaling",
+    "for blogging",
+    "for documentation",
+  ];
+
+  useEffect(() => {
+    const sampleH3 = document.querySelector(".typewriter h3");
+    setTimeout(() => {
+      setSampleIndex((prev) => (prev === samples.length - 1 ? 0 : sampleIndex + 1));
+      sampleH3?.classList.remove("typewriter--animation");
+      // https://www.harrytheo.com/blog/2021/02/restart-a-css-animation-with-javascript/#dom--reflow
+      void sampleH3?.getBoundingClientRect();
+      sampleH3?.classList.add("typewriter--animation");
+    }, 5000);
+  });
+
   return (
     <>
       <section
@@ -10,11 +41,15 @@ const Hero = () => {
         <div className="container">
           <div className="-mx-4 flex flex-wrap">
             <div className="w-full px-4">
-              <div className="mx-auto max-w-[800px] text-center">
-                <h1 className="mb-5 text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight">
-                  Powerful Interface <br />
-                  for complex document editing
-                </h1>
+              <div className="grid mx-auto max-w-[800px] text-center">
+                <div className="mb-5">
+                  <h1 className="text-3xl font-bold leading-tight text-black dark:text-white sm:text-4xl sm:leading-tight md:text-5xl md:leading-tight justify-self-center">
+                    Powerful Interface
+                  </h1>
+                  <div className="typewriter grid justify-self-center w-fit">
+                    <h3 className="justify-self-center text-xl">{samples[sampleIndex]}</h3>
+                  </div>
+                </div>
                 <p className="mb-12 text-base !leading-relaxed text-body-color dark:text-body-color-dark sm:text-lg md:text-xl">
                   <b>Composition Book</b> empowers you to write and edit multiple pages at once. With its intuitive
                   interface, you can easily navigate between pages and organize them in a way that suits your workflow.
