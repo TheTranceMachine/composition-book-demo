@@ -46,6 +46,9 @@ html {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+
+    --shimmer-hue-1: 213deg;
+    --shimmer-hue-2: 248deg;
   }
 
   body {
@@ -82,6 +85,7 @@ html {
   background: repeating-linear-gradient(45deg, #15222e, #15222e 5px, #1a2a3a 5px, #1a2a3a 9px);
 }
 
+/* Typewriter effect */
 .typewriter--animation {
   overflow: hidden;
   white-space: nowrap;
@@ -103,5 +107,50 @@ html {
 @keyframes blink {
   50% {
     border-color: transparent;
+  }
+}
+
+/* The glowing button effect */
+.hero__demo-button__shimmer {
+  position: absolute;
+  inset: -1px;
+  mix-blend-mode: color-dodge;
+  mix-blend-mode: plus-lighter;
+  pointer-events: none;
+  animation: pulse 3s linear infinite both -0.5s;
+}
+
+.hero__demo-button__shimmer::before,
+.hero__demo-button__shimmer::after {
+  position: absolute;
+  content: "";
+  inset: 1px;
+}
+
+.hero__demo-button__shimmer::before {
+  box-shadow:
+    0 0 3px 2px hsl(var(--shimmer-hue-1) 20% 95%),
+    0 0 7px 4px hsl(var(--shimmer-hue-1) 20% 80%),
+    0 0 13px 8px hsl(var(--shimmer-hue-2) 40% 60%),
+    0 0 22px 6px hsl(var(--shimmer-hue-2) 20% 40%);
+  z-index: -1;
+}
+
+.hero__demo-button__shimmer::after {
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--shimmer-hue-2) 70% 95%),
+    inset 0 0 3px 1px hsl(var(--shimmer-hue-2) 100% 80%),
+    inset 0 0 9px 1px hsl(var(--shimmer-hue-2) 100% 70%);
+  z-index: 2;
+}
+
+@keyframes pulse {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
   }
 }
