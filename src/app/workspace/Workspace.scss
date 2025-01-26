@@ -17,3 +17,12 @@
     }
   }
 }
+
+// prevent selecting text when trying to invoke context menu on mobile view
+.no-file-space,
+.file-object,
+.file-creation-area {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
