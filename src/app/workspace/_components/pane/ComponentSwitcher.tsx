@@ -62,7 +62,7 @@ const ComponentSwitcher = ({
             panelElement={panelElement}
           />
           <CustomContextMenu handleInput={(val) => setNewFile({ directoryId: "", ...val })} panelElement={panelElement}>
-            <div className="diagonal-background border-b border-b-gray-900">&nbsp;</div>
+            <div className="file-creation-area diagonal-background border-b border-b-gray-900">&nbsp;</div>
           </CustomContextMenu>
         </>
       ) : (

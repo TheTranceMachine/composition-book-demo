@@ -42,7 +42,7 @@ const FileObject = ({
   return (
     <>
       <div
-        className={`flex items-center gap-1 text-white hover:bg-gray-800 cursor-pointer ${panelExpanded ? "justify-between" : "justify-center"}`}
+        className={`file-object flex items-center gap-1 text-white hover:bg-gray-800 cursor-pointer ${panelExpanded ? "justify-between" : "justify-center"}`}
         data-directory={isDirectory}
       >
         <div

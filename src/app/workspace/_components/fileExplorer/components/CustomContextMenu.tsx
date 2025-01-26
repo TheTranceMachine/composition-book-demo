@@ -33,7 +33,7 @@ const CustomContextMenu = ({ children, handleInput, removeFileExplorerItem, pane
             <ContextMenuSubTrigger className="cursor-pointer">New File</ContextMenuSubTrigger>
             <ContextMenuSubContent sideOffset={8}>
               <div className="flex gap-1">
-                <Input placeholder="File Name" ref={fileInputRef} />
+                <Input placeholder="File Name" ref={fileInputRef} className="w-28 sm:w-full" />
                 <Button
                   variant="default"
                   onClick={() => handleInput({ type: "file", name: fileInputRef.current?.value })}
@@ -48,7 +48,7 @@ const CustomContextMenu = ({ children, handleInput, removeFileExplorerItem, pane
             <ContextMenuSubTrigger className="cursor-pointer">New Folder</ContextMenuSubTrigger>
             <ContextMenuSubContent sideOffset={8}>
               <div className="flex gap-1">
-                <Input placeholder="Folder Name" ref={dirInputRef} />
+                <Input placeholder="Folder Name" ref={dirInputRef} className="w-28 sm:w-full" />
                 <Button
                   variant="default"
                   onClick={() => handleInput({ type: "dir", name: dirInputRef.current?.value })}
